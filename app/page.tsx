@@ -138,7 +138,7 @@ export default function Home() {
         </div>
       </div>
 
-      <BottomNav active="home" />
+      <BottomNav />
     </main>
   )
 }
