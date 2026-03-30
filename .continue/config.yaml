@@ -1,0 +1,13 @@
+name: Local Config
+version: 1.0.0
+schema: v1
+models:
+  deepseek-coder-v2:
+    title: Deepseek Coder
+    provider: ollama
+  claude-sonnet:
+    title: Claude Sonnet
+    provider: anthropic
+    model: claude-sonnet-4-6
+    apiKey: YOUR_ANTHROPIC_API_KEY
+tabAutocompleteModel: deepseek-coder-v2
