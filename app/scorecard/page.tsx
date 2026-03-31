@@ -48,6 +48,7 @@ export default function Scorecard() {
           </div>
         ))}
       </div>
+      <BottomNav />
     </main>
   )
 }

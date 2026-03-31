@@ -116,7 +116,9 @@ export default function Home() {
             <p className="text-white/40 text-xs uppercase tracking-widest">Club Tournament</p>
             <p className="text-white text-lg font-bold mt-1">Member-Guest Classic</p>
             <p className="text-white/40 text-xs mt-1">June 14–16 · Stroke + Stableford</p>
-            <button className="mt-3 bg-[#c9a84c] text-[#0a1628] text-xs font-bold px-4 py-2 rounded-full">
+            <button 
+              onClick={() => window.location.href = '/tournament'}
+              className="mt-3 bg-[#c9a84c] text-[#0a1628] text-xs font-bold px-4 py-2 rounded-full">
               View Leaderboard →
             </button>
           </div>

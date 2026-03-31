@@ -41,6 +41,7 @@ export default function GPS() {
           ))}
         </div>
       </div>
-    </main>
+    <BottomNav />
+  </main>
   )
 }
