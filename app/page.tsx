@@ -3,17 +3,24 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import BottomNav from "./components/BottomNav"
 
-export default function Home() {
-  const [splash, setSplash] = useState(true)
+const [splash, setSplash] = useState(() => {
+  if (typeof window === 'undefined') return false
+  return !sessionStorage.getItem('splashShown')
+})
 
-  useEffect(() => {
-    const timer = setTimeout(() => setSplash(false), 2500)
+useEffect(() => {
+  if (splash) {
+    const timer = setTimeout(() => {
+      setSplash(false)
+      sessionStorage.setItem('splashShown', 'true')
+    }, 2500)
     return () => clearTimeout(timer)
-  }, [])
+  }
+}, [splash])
 
   if (splash) {
     return (
-      <main className="min-h-screen bg-[#152644] flex flex-col items-center justify-center">
+      <main className="fixed inset-0 bg-[#152644] flex flex-col items-center justify-center z-50">
         <div className="flex flex-col items-center gap-6">
           <Image
             src="/lebaron-logo-transparent.png"
