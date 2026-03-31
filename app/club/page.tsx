@@ -74,6 +74,7 @@ export default function Club() {
           </div>
         </div>
       </div>
+      <BottomNav/>
     </main>
   )
 }

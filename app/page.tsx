@@ -4,20 +4,20 @@ import Image from "next/image"
 import BottomNav from "./components/BottomNav"
 
 export default function Home() {
-  const [splash, setSplash] = useState(() => {
-    if (typeof window === 'undefined') return false
-    return !sessionStorage.getItem('splashShown')
-  })
+  const [splash, setSplash] = useState(true)
 
   useEffect(() => {
-    if (splash) {
-      const timer = setTimeout(() => {
-        setSplash(false)
-        sessionStorage.setItem('splashShown', 'true')
-      }, 2500)
-      return () => clearTimeout(timer)
+    const hasShown = sessionStorage.getItem('splashShown')
+    if (hasShown) {
+      setSplash(false)
+      return
     }
-  }, [splash])
+    const timer = setTimeout(() => {
+      setSplash(false)
+      sessionStorage.setItem('splashShown', 'true')
+    }, 2500)
+    return () => clearTimeout(timer)
+  }, [])
 
   if (splash) {
     return (

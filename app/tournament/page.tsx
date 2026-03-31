@@ -53,6 +53,7 @@ export default function Tournament() {
           </div>
         ))}
       </div>
+      <BottomNav/>
     </main>
   )
 }
