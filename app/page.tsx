@@ -60,7 +60,7 @@ export default function HomePage() {
             .select('strokes, holes(par)')
             .eq('round_id', round.id)
             .order('holes(hole_number)')
-          setLastRound({ ...round, scores: scores || [] })
+          setLastRound({ ...round, scores: (scores || []) as any })
         }
       } else {
         // Guest
@@ -105,7 +105,7 @@ export default function HomePage() {
 
   // Last round total + net
   const lastGross = lastRound?.scores.reduce((a, s) => a + s.strokes, 0) ?? 0
-  const lastPar   = lastRound?.scores.reduce((a, s) => a + (s.holes as any)?.par ?? 0, 0) ?? 72
+  const lastPar = lastRound?.scores.reduce((a, s) => a + ((s.holes as any)?.par || 0), 0) || 72
 
   return (
     <main className="min-h-screen pb-24" style={{ background: '#f1f5f9' }}>

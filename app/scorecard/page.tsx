@@ -41,12 +41,12 @@ type Player = { id: number; name: string; handicap: number | null; avatarColor: 
 
 // Score vs par → CSS classes for bubble
 const BUBBLE: Record<string, string> = {
-  eagle:  'border-[2.5px] border-double border-amber-400 text-amber-500',
-  birdie: 'border-2 border-red-500 text-red-500 rounded-full',
-  par:    'border border-slate-300 text-slate-800',
-  bogey:  'rounded-[5px] border border-slate-700 text-slate-700',
-  double: 'rounded-[5px] border-[3px] border-double border-slate-500 text-slate-500',
-  triple: 'rounded-[5px] border border-red-400 text-red-500 bg-red-50',
+  eagle:  'rounded-full outline outline-2 outline-offset-1 outline-slate-800 border-2 border-slate-800 text-slate-800',
+  birdie: 'rounded-full border-2 border-slate-800 text-slate-800',
+  par:    'text-slate-800',
+  bogey:  'rounded-sm border border-slate-800 text-slate-800',
+  double: 'rounded-sm outline outline-2 outline-offset-1 outline-slate-800 border border-slate-800 text-slate-800',
+  triple: 'rounded-sm outline outline-2 outline-offset-1 outline-slate-800 border border-slate-800 text-slate-800',
 }
 
 // Score grid button outline shapes
@@ -431,15 +431,20 @@ export default function ScorecardPage() {
               {[1,2,3,4,5,6,7,8,9].map(v => {
                 const diff = v - par
                 const isSelected = selScore === v
-                let shapeClass = 'rounded-lg'
-                if (diff <= -1) shapeClass = 'rounded-full'
-                if (diff === 1) shapeClass = 'rounded-sm border-2 border-slate-300'
-                if (diff >= 2)  shapeClass = 'rounded-sm border-[3px] border-double border-slate-300'
-                return (
+                let shapeClass = 'rounded-2xl'
+                  return (
                   <button key={v} onClick={() => setSelScore(v)}
-                    className={`py-3 flex items-center justify-center font-bold text-lg active:scale-95 ${shapeClass}`}
+                    className="rounded-2xl py-3 flex items-center justify-center font-bold text-lg active:scale-95"
                     style={{ background: isSelected ? '#152644' : '#f1f5f9', color: isSelected ? 'white' : '#1e293b' }}>
-                    {v}
+                    <span className={`w-8 h-8 flex items-center justify-center flex-col
+                      ${diff <= -2 ? 'rounded-full outline outline-2 outline-offset-2 outline-current border-2 border-current rounded-full' :
+                        diff === -1 ? 'rounded-full border-2 border-current' :
+                        diff === 0  ? '' :
+                        diff === 1  ? 'rounded-sm border border-current' :
+                                      'rounded-sm outline outline-2 outline-offset-2 outline-current border border-current'}`}>
+                      <span>{v}</span>
+                      {diff === 0 && <span className="text-[8px] font-normal leading-none" style={{ color: isSelected ? 'rgba(255,255,255,0.6)' : '#94a3b8' }}>Par</span>}
+                    </span>
                   </button>
                 )
               })}
