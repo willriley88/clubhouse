@@ -1,53 +1,582 @@
-import BottomNav from "../components/BottomNav"
+'use client'
+import React from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import BottomNav from '../components/BottomNav'
+import { supabase } from '@/lib/supabase'
 
-export default function Scorecard() {
-  const holes = [
-    { hole: 1, par: 4, yds: 424, score: null },
-    { hole: 2, par: 4, yds: 415, score: null },
-    { hole: 3, par: 5, yds: 543, score: null },
-    { hole: 4, par: 3, yds: 183, score: null },
-    { hole: 5, par: 4, yds: 380, score: null },
-    { hole: 6, par: 4, yds: 438, score: null },
-    { hole: 7, par: 4, yds: 412, score: null },
-    { hole: 8, par: 3, yds: 178, score: null },
-    { hole: 9, par: 5, yds: 521, score: null },
-  ]
+// ── Course Data ──────────────────────────────────────────────────────────────
+const HOLES = [
+  { h: 1,  par: 4, hcp: 11 },
+  { h: 2,  par: 4, hcp: 3  },
+  { h: 3,  par: 5, hcp: 9  },
+  { h: 4,  par: 3, hcp: 15 },
+  { h: 5,  par: 4, hcp: 13 },
+  { h: 6,  par: 4, hcp: 1  },
+  { h: 7,  par: 4, hcp: 5  },
+  { h: 8,  par: 3, hcp: 17 },
+  { h: 9,  par: 5, hcp: 7  },
+  { h: 10, par: 5, hcp: 18 },
+  { h: 11, par: 3, hcp: 16 },
+  { h: 12, par: 4, hcp: 12 },
+  { h: 13, par: 3, hcp: 14 },
+  { h: 14, par: 4, hcp: 2  },
+  { h: 15, par: 5, hcp: 8  },
+  { h: 16, par: 4, hcp: 6  },
+  { h: 17, par: 4, hcp: 4  },
+  { h: 18, par: 4, hcp: 10 },
+]
+
+const TEE_DATA: Record<string, { label: string; rating: number; slope: number; yds: number[]; frontYds: number; backYds: number }> = {
+  blue:  { label: 'Blue',  rating: 73.4, slope: 136, frontYds: 3415, backYds: 3388, yds: [424,415,543,183,380,438,353,168,511,491,184,339,210,413,552,412,389,398] },
+  white: { label: 'White', rating: 71.2, slope: 130, frontYds: 3221, backYds: 3171, yds: [400,393,509,174,349,412,327,164,493,470,147,330,193,386,507,391,370,377] },
+  green: { label: 'Green', rating: 69.8, slope: 124, frontYds: 3131, backYds: 3010, yds: [374,381,509,174,349,382,302,164,496,470,147,330,163,351,481,347,370,351] },
+  gold:  { label: 'Gold',  rating: 68.1, slope: 118, frontYds: 3011, backYds: 2886, yds: [374,381,469,161,334,382,302,154,454,432,121,313,163,351,481,347,327,351] },
+}
+
+const COURSE_ID = 'b0000000-0000-0000-0000-000000000001'
+const AVATAR_COLORS = ['#152644', '#c9a84c', '#2d6a4f', '#7b2d8b']
+
+type Player = { id: number; name: string; handicap: number | null; avatarColor: string; isUser: boolean }
+
+// Score vs par → CSS classes for bubble
+const BUBBLE: Record<string, string> = {
+  eagle:  'border-[2.5px] border-double border-amber-400 text-amber-500',
+  birdie: 'border-2 border-red-500 text-red-500 rounded-full',
+  par:    'border border-slate-300 text-slate-800',
+  bogey:  'rounded-[5px] border border-slate-700 text-slate-700',
+  double: 'rounded-[5px] border-[3px] border-double border-slate-500 text-slate-500',
+  triple: 'rounded-[5px] border border-red-400 text-red-500 bg-red-50',
+}
+
+// Score grid button outline shapes
+const GRID_SHAPE: Record<string, string> = {
+  eagle:  'outline outline-[2.5px] outline-offset-[-3px] outline-amber-400',
+  birdie: '!rounded-full',
+  par:    '',
+  bogey:  'border-2 border-amber-400',
+  double: 'border-[3px] border-double border-slate-400',
+  triple: 'border-2 border-red-400',
+}
+
+function scoreClass(score: number, par: number) {
+  const d = score - par
+  if (d <= -2) return 'eagle'
+  if (d === -1) return 'birdie'
+  if (d === 0)  return 'par'
+  if (d === 1)  return 'bogey'
+  if (d === 2)  return 'double'
+  return 'triple'
+}
+
+export default function ScorecardPage() {
+  const router = useRouter()
+  const [user,    setUser]    = useState<any>(null)
+  const [players, setPlayers] = useState<Player[]>([
+    { id: 0, name: 'Guest', handicap: null, avatarColor: AVATAR_COLORS[0], isUser: true }
+  ])
+  const [scores, setScores] = useState<(number|null)[][]>([Array(18).fill(null)])
+  const [putts,  setPutts]  = useState<(number|null)[][]>([Array(18).fill(null)])
+  const [tee,    setTee]    = useState('blue')
+
+  // Sheet state
+  const [sheetOpen,     setSheetOpen]     = useState(false)
+  const [sheetHole,     setSheetHole]     = useState(0)
+  const [sheetPlayer,   setSheetPlayer]   = useState(0)
+  const [selScore,      setSelScore]      = useState<number|null>(null)
+  const [selPutt,       setSelPutt]       = useState<number|null>(null)
+
+  // Profile modal
+  const [profileOpen, setProfileOpen] = useState(false)
+  const [editName,    setEditName]    = useState('Guest')
+  const [editHcp,     setEditHcp]     = useState('')
+
+  //FIR/GIR 
+  const [selFairway, setSelFairway] = useState<'hit'|'miss'|null>(null)
+  const [selGir,     setSelGir]     = useState<'hit'|'miss'|null>(null)
+
+  // Misc
+  const [saving,          setSaving]          = useState(false)
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false)
+  const [roundActive,     setRoundActive]     = useState(false)
+
+  // Load user + profile on mount
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        setUser(data.user)
+        const name = data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'You'
+        setEditName(name)
+        setPlayers([{ id: 0, name, handicap: null, avatarColor: AVATAR_COLORS[0], isUser: true }])
+        supabase.from('profiles').select('full_name,handicap').eq('id', data.user.id).single()
+          .then(({ data: p }) => {
+            if (p) {
+              setEditName(p.full_name || name)
+              setEditHcp(p.handicap?.toString() || '')
+              setPlayers(prev => prev.map((pl, i) => i === 0 ? { ...pl, name: p.full_name || name, handicap: p.handicap } : pl))
+            }
+          })
+      } else {
+        // Guest — restore from localStorage
+        try {
+          const g = JSON.parse(localStorage.getItem('clubhouse_guest') || '{}')
+          if (g.name) {
+            setEditName(g.name)
+            setEditHcp(g.handicap?.toString() || '')
+            setPlayers([{ id: 0, name: g.name, handicap: g.handicap || null, avatarColor: AVATAR_COLORS[0], isUser: true }])
+          }
+        } catch {}
+      }
+    })
+  }, [])
+
+  // Detect round active
+  useEffect(() => {
+    if (scores[0].some(s => s !== null)) setRoundActive(true)
+  }, [scores])
+
+  const teeData = TEE_DATA[tee]
+  const filled  = scores[0].filter(s => s !== null).length
+  const total0  = scores[0].reduce((a, v) => a + (v ?? 0), 0)
+  const parSoFar = HOLES.slice(0, filled).reduce((a, h) => a + h.par, 0)
+  const toPar   = filled > 0 ? total0 - parSoFar : null
+
+  function sub(pIdx: number, start: number, end: number) {
+    return scores[pIdx]?.slice(start, end).reduce((a, v) => a + (v ?? 0), 0) ?? 0
+  }
+  function anyFilled(pIdx: number, start: number, end: number) {
+    return scores[pIdx]?.slice(start, end).some(v => v !== null) ?? false
+  }
+
+  function addPlayer() {
+    if (players.length >= 4) return
+    const idx = players.length
+    setPlayers(p => [...p, { id: idx, name: `Guest ${idx + 1}`, handicap: null, avatarColor: AVATAR_COLORS[idx], isUser: false }])
+    setScores(s => [...s, Array(18).fill(null)])
+    setPutts(p => [...p, Array(18).fill(null)])
+  }
+
+  function openSheet(holeIdx: number, playerIdx: number) {
+    setSheetHole(holeIdx)
+    setSheetPlayer(playerIdx)
+    setSelScore(scores[playerIdx]?.[holeIdx] ?? null)
+    setSelPutt(putts[playerIdx]?.[holeIdx] ?? null)
+    setSheetOpen(true)
+  }
+
+  function commitSheet(hIdx: number, pIdx: number, sc: number|null, pt: number|null) {
+    if (sc === null) return
+    setScores(prev => { const n = prev.map(r => [...r]); n[pIdx][hIdx] = sc; return n })
+    setPutts(prev => { const n = prev.map(r => [...r]); n[pIdx][hIdx] = pt; return n })
+  }
+
+  function closeSheet() {
+    commitSheet(sheetHole, sheetPlayer, selScore, selPutt)
+    setSheetOpen(false)
+  }
+
+  function nextHole() {
+    commitSheet(sheetHole, sheetPlayer, selScore, selPutt)
+    if (sheetHole < 17) {
+      const next = sheetHole + 1
+      setSheetHole(next)
+      setSelScore(scores[sheetPlayer]?.[next] ?? null)
+      setSelPutt(putts[sheetPlayer]?.[next] ?? null)
+    } else {
+      setSheetOpen(false)
+    }
+  }
+
+  async function finishRound() {
+    if (!user) { setShowLoginPrompt(true); return }
+    setSaving(true)
+    const { data: round, error } = await supabase
+      .from('rounds').insert({ profile_id: user.id, course_id: COURSE_ID, format: 'stroke' })
+      .select().single()
+    if (error || !round) { setSaving(false); return }
+
+    const { data: holeRows } = await supabase
+      .from('holes').select('id,hole_number').eq('course_id', COURSE_ID).order('hole_number')
+
+    if (holeRows) {
+      await supabase.from('scores').insert(
+        holeRows.map((h, i) => ({ round_id: round.id, hole_id: h.id, strokes: scores[0][i] ?? 0, putts: putts[0][i] ?? null }))
+      )
+    }
+    const diff = ((total0 - teeData.rating) * 113) / teeData.slope
+    await supabase.from('rounds').update({ format: `stroke|diff:${diff.toFixed(1)}` }).eq('id', round.id)
+    setSaving(false)
+    router.push('/')
+  }
+
+  async function saveProfile() {
+    const hcp = editHcp ? parseFloat(editHcp) : null
+    setPlayers(p => p.map((pl, i) => i === 0 ? { ...pl, name: editName, handicap: hcp } : pl))
+    if (user) {
+      await supabase.from('profiles').update({ full_name: editName, handicap: hcp }).eq('id', user.id)
+    } else {
+      localStorage.setItem('clubhouse_guest', JSON.stringify({ name: editName, handicap: hcp }))
+    }
+    setProfileOpen(false)
+  }
+
+  const par = HOLES[sheetHole]?.par ?? 4
 
   return (
-    <main className="min-h-screen bg-gray-100 pb-24">
-      <div className="bg-[#152644] px-4 pt-12 pb-4">
-        <p className="text-white/40 text-xs uppercase tracking-widest mb-1">Round in Progress</p>
-        <h1 className="text-white text-2xl font-bold">LeBaron Hills CC</h1>
-        <p className="text-white/40 text-xs mt-1">White Tees · Par 72 · 6,392 yds</p>
-        <div className="flex gap-4 mt-3">
-          {[{ val: "—", key: "Score" }, { val: "—", key: "To Par" }, { val: "0", key: "Holes" }].map(s => (
-            <div key={s.key} className="text-center">
-              <div className="text-white text-xl font-bold">{s.val}</div>
-              <div className="text-white/40 text-xs">{s.key}</div>
+    <main className="min-h-screen pb-60" style={{ background: '#f1f5f9' }}>
+
+      {/* ── HEADER ── */}
+      <div className="sticky top-0 z-40 px-4 pt-12 pb-3" style={{ background: '#152644' }}>
+        <div className="flex justify-between items-start mb-1">
+          <div>
+            <p className="text-[10px] uppercase tracking-widest mb-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              {roundActive ? 'Round in Progress' : 'LeBaron Hills CC'}
+            </p>
+            <h1 className="text-xl font-bold text-white">LeBaron Hills CC</h1>
+            <p className="text-[11px] mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              {teeData.label} Tees · Par 72 · {teeData.yds.reduce((a,v)=>a+v,0).toLocaleString()} yds · {teeData.rating}/{teeData.slope}
+            </p>
+          </div>
+          <button onClick={() => router.push('/rounds')}
+            className="text-xs font-semibold px-3 py-1.5 rounded-xl"
+            style={{ background: 'rgba(255,255,255,0.12)', color: 'white' }}>
+            History →
+          </button>
+        </div>
+
+        <div className="flex items-center justify-between mt-2.5">
+          {[
+            { val: filled > 0 ? total0 : '—', lbl: 'Score' },
+            { val: toPar !== null ? (toPar > 0 ? `+${toPar}` : toPar === 0 ? 'E' : toPar) : '—', lbl: 'To Par' },
+            { val: `${filled}/18`, lbl: 'Holes' },
+          ].map(s => (
+            <div key={s.lbl} className="text-center">
+              <div className="text-lg font-bold text-white">{s.val}</div>
+              <div className="text-[10px] uppercase" style={{ color: 'rgba(255,255,255,0.4)' }}>{s.lbl}</div>
             </div>
           ))}
+          <div className="relative">
+            <select value={tee} onChange={e => setTee(e.target.value)}
+              className="w-auto text-xs font-semibold pl-3 pr-7 py-1.5 rounded-xl border-none outline-none appearance-none cursor-pointer"
+              style={{ background: 'rgba(255,255,255,0.12)', color: 'white' }}>
+              <option value="blue" style={{ background: 'white', color: '#1e293b' }}>Blue</option>
+              <option value="white" style={{ background: 'white', color: '#1e293b' }}>White</option>
+              <option value="green" style={{ background: 'white', color: '#1e293b' }}>Green</option>
+              <option value="gold" style={{ background: 'white', color: '#1e293b' }}>Gold</option>
+            </select>
+            <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-white text-[10px]">▾</span>
+          </div>
         </div>
       </div>
 
-      <div className="bg-white mx-4 mt-4 rounded-2xl overflow-hidden">
-        <div className="grid grid-cols-4 px-4 py-2 bg-gray-50 border-b border-gray-100">
-          {["Hole", "Par", "Yds", "Score"].map(h => (
-            <div key={h} className="text-xs font-semibold text-gray-400 uppercase tracking-wide text-center">{h}</div>
-          ))}
+      {/* ── TABLE ── */}
+      <div className="px-3 pt-3">
+        <div className="bg-white rounded-2xl overflow-hidden shadow-sm">
+          <table className="w-full border-collapse" style={{ tableLayout: 'fixed' }}>
+            <colgroup>
+              <col style={{ width: 44 }} />{/* Hole */}
+              <col style={{ width: 36 }} />{/* Par */}
+              <col style={{ width: 50 }} />{/* Yds */}
+              {players.map((_, i) => <col key={i} style={{ width: 72 }} />)}
+              {players.length < 4 && <col style={{ width: 52 }} />}
+            </colgroup>
+
+            <thead>
+              <tr style={{ background: '#f8fafc', borderBottom: '1px solid #f1f5f9' }}>
+                <th className="text-left pl-2.5 py-2 text-[10px] font-bold uppercase tracking-wide text-slate-400">Hole</th>
+                <th className="text-center py-2 text-[10px] font-bold uppercase tracking-wide text-slate-400">Par</th>
+                <th className="text-center py-2 text-[10px] font-bold uppercase tracking-wide text-slate-400">Yds</th>
+                {players.map((player, i) => (
+                  <th key={i} className="text-center py-1.5 relative">
+                       {/* X to remove non-user players */}
+                      {!player.isUser && (
+                        <button
+                          onClick={() => {
+                            setPlayers(p => p.filter((_, pi) => pi !== i))
+                            setScores(s => s.filter((_, si) => si !== i))
+                            setPutts(p => p.filter((_, pi) => pi !== i))
+                           }}
+                          className="absolute top-0 right-1 text-slate-400 text-xs leading-none"
+                         >×</button>
+                       )}
+                       <button onClick={() => player.isUser && setProfileOpen(true)}
+                          className="flex flex-col items-center gap-0.5 w-full">
+                         <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold mx-auto"
+                          style={{ background: player.avatarColor }}>
+                          {player.name.charAt(0).toUpperCase()}
+                        </div>
+                        <span className="text-[10px] font-bold text-slate-700">{player.name.split(' ')[0]}</span>
+                         {player.isUser && <span className="text-[9px] font-medium text-blue-400">edit</span>}
+                       </button>
+                     </th>
+                    ))}
+                {players.length < 4 && (
+                  <th className="text-center py-1.5">
+                    <button onClick={addPlayer} className="flex flex-col items-center gap-0.5 w-full">
+                      <div className="w-7 h-7 rounded-full border-2 border-dashed flex items-center justify-center text-lg font-light mx-auto"
+                        style={{ borderColor: '#c9a84c', color: '#c9a84c' }}>+</div>
+                      <span className="text-[9px] font-semibold" style={{ color: '#c9a84c' }}>Add</span>
+                    </button>
+                  </th>
+                )}
+              </tr>
+            </thead>
+
+            <tbody>
+              {HOLES.map((hole, i) => (
+                <React.Fragment key={hole.h}>
+                    {i === 9 && (
+                    <tr key="out" style={{ background: '#f0f4f8', borderTop: '1px solid #dde3ea', borderBottom: '1px solid #dde3ea' }}>
+                      <td className="pl-2.5 py-2 text-xs font-bold" style={{ color: '#152644' }}>Out</td>
+                      <td className="text-center text-xs font-bold" style={{ color: '#152644' }}>36</td>
+                      <td className="text-center text-xs text-slate-400">{teeData.frontYds.toLocaleString()}</td>
+                      {players.map((_, pIdx) => (
+                        <td key={pIdx} className="text-center text-xs font-bold" style={{ color: '#152644' }}>
+                          {anyFilled(pIdx, 0, 9) ? sub(pIdx, 0, 9) : '—'}
+                        </td>
+                      ))}
+                      {players.length < 4 && <td />}
+                    </tr>
+                  )}
+
+                  <tr key={hole.h} style={{ background: i % 2 === 0 ? 'white' : '#fafbfc', borderBottom: '1px solid #f8fafc' }}>
+                    <td className="pl-2.5 py-2.5">
+                      <div className="text-sm font-bold" style={{ color: '#152644' }}>{hole.h}</div>
+                      <div className="text-[10px] text-slate-400">H{hole.hcp}</div>
+                    </td>
+                    <td className="text-center text-sm font-semibold text-slate-600">{hole.par}</td>
+                    <td className="text-center text-xs text-slate-400">{teeData.yds[i]}</td>
+                    {players.map((_, pIdx) => {
+                      const s = scores[pIdx]?.[i] ?? null
+                      const cls = s !== null ? scoreClass(s, hole.par) : null
+                      return (
+                        <td key={pIdx} className="text-center py-2">
+                          <button onClick={() => openSheet(i, pIdx)}
+                            className={`w-8 h-8 inline-flex items-center justify-center text-sm font-semibold transition-transform active:scale-90
+                              ${cls ? BUBBLE[cls] : 'rounded-full border border-dashed border-slate-300 text-slate-300'}`}>
+                            {s ?? '—'}
+                          </button>
+                        </td>
+                      )
+                    })}
+                    {players.length < 4 && <td />}
+                  </tr>
+                </React.Fragment>
+              ))}
+
+              {/* IN subtotal */}
+              <tr style={{ background: '#f0f4f8', borderTop: '1px solid #dde3ea', borderBottom: '1px solid #dde3ea' }}>
+                <td className="pl-2.5 py-2 text-xs font-bold" style={{ color: '#152644' }}>In</td>
+                <td className="text-center text-xs font-bold" style={{ color: '#152644' }}>36</td>
+                <td className="text-center text-xs text-slate-400">{teeData.backYds.toLocaleString()}</td>
+                {players.map((_, pIdx) => (
+                  <td key={pIdx} className="text-center text-xs font-bold" style={{ color: '#152644' }}>
+                    {anyFilled(pIdx, 9, 18) ? sub(pIdx, 9, 18) : '—'}
+                  </td>
+                ))}
+                {players.length < 4 && <td />}
+              </tr>
+
+              {/* TOTAL */}
+              <tr style={{ background: '#152644' }}>
+                <td className="pl-2.5 py-2.5 text-xs font-bold" style={{ color: '#c9a84c' }}>Tot</td>
+                <td className="text-center text-xs font-bold" style={{ color: '#c9a84c' }}>72</td>
+                <td />
+                {players.map((_, pIdx) => {
+                  const t = scores[pIdx]?.reduce((a, v) => a + (v ?? 0), 0) ?? 0
+                  const f = scores[pIdx]?.filter(v => v !== null).length ?? 0
+                  return (
+                    <td key={pIdx} className="text-center text-sm font-bold" style={{ color: '#c9a84c' }}>
+                      {f > 0 ? t : '—'}
+                    </td>
+                  )
+                })}
+                {players.length < 4 && <td />}
+              </tr>
+            </tbody>
+          </table>
         </div>
-        {holes.map((h, i) => (
-          <div key={h.hole} className={`grid grid-cols-4 px-4 py-3 items-center ${i < holes.length - 1 ? "border-b border-gray-100" : ""}`}>
-            <div className="text-sm font-bold text-[#152644] text-center">{h.hole}</div>
-            <div className="text-sm text-gray-500 text-center">{h.par}</div>
-            <div className="text-sm text-gray-400 text-center">{h.yds}</div>
-            <div className="flex justify-center">
-              <div className="w-9 h-9 rounded-lg border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-300 text-sm">
-                —
+      </div>
+
+      {/* ── BOTTOM BAR ── */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-4 pt-2 pb-20 z-30">
+        <button onClick={finishRound} disabled={saving}
+          className="w-full py-3.5 rounded-2xl text-white font-bold text-base mb-1"
+          style={{ background: '#c9a84c' }}>
+          {saving ? 'Saving...' : 'Finish Round'}
+        </button>
+        {roundActive && (
+          <button
+            onClick={() => { setScores([Array(18).fill(null)]); setRoundActive(false) }}
+            className="w-full py-1 text-xs font-medium text-red-400">
+            Delete Round
+          </button>
+        )}
+      </div>
+
+   {/* ── SCORE INPUT SHEET ── */}
+      {sheetOpen && (
+        <div
+          className="fixed inset-0 flex items-end justify-center"
+          style={{ zIndex: 100, background: 'rgba(0,0,0,0.45)' }}
+          onClick={e => { if (e.target === e.currentTarget) closeSheet() }}>
+          <div className="bg-white w-full rounded-t-3xl px-4 pt-4 pb-8" style={{ maxHeight: '45vh', overflowY: 'auto' }}>
+
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-sm font-bold" style={{ color: '#152644' }}>Hole {sheetHole + 1} · Par {par}</span>
+              <button onClick={closeSheet} className="text-sm font-semibold" style={{ color: '#c9a84c' }}>Done</button>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 mb-3">
+              {[1,2,3,4,5,6,7,8,9].map(v => {
+                const diff = v - par
+                const isSelected = selScore === v
+                let shapeClass = 'rounded-lg'
+                if (diff <= -1) shapeClass = 'rounded-full'
+                if (diff === 1) shapeClass = 'rounded-sm border-2 border-slate-300'
+                if (diff >= 2)  shapeClass = 'rounded-sm border-[3px] border-double border-slate-300'
+                return (
+                  <button key={v} onClick={() => setSelScore(v)}
+                    className={`py-3 flex items-center justify-center font-bold text-lg active:scale-95 ${shapeClass}`}
+                    style={{ background: isSelected ? '#152644' : '#f1f5f9', color: isSelected ? 'white' : '#1e293b' }}>
+                    {v}
+                  </button>
+                )
+              })}
+            </div>
+
+            <p className="text-xs font-semibold text-slate-400 mb-1.5">Putts</p>
+            <div className="flex gap-1.5 mb-3">
+              {[0,1,2,3,'≥4'].map((v, i) => {
+                const val = i === 4 ? 4 : Number(v)
+                const isSel = selPutt === val
+                return (
+                  <button key={i} onClick={() => setSelPutt(val)}
+                    className="flex-1 py-2 rounded-lg font-semibold text-sm"
+                    style={{ background: isSel ? '#152644' : '#f1f5f9', color: isSel ? 'white' : '#152644' }}>
+                    {v}
+                  </button>
+                )
+              })}
+            </div>
+
+            <div className="flex gap-3 mb-4">
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-slate-400 mb-1.5">Fairway</p>
+                <div className="flex gap-1.5">
+                  {[{ label: '✓', val: 'hit' as const }, { label: '✕', val: 'miss' as const }].map(opt => (
+                    <button key={opt.val}
+                      onClick={() => setSelFairway(selFairway === opt.val ? null : opt.val)}
+                      className="flex-1 py-2.5 rounded-xl text-base font-bold transition-all"
+                      style={{
+                        background: selFairway === opt.val ? (opt.val === 'hit' ? '#152644' : '#fee2e2') : '#f1f5f9',
+                        color: selFairway === opt.val ? (opt.val === 'hit' ? 'white' : '#ef4444') : '#94a3b8'
+                      }}>
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-slate-400 mb-1.5">GIR</p>
+                <div className="flex gap-1.5">
+                  {[{ label: '✓', val: 'hit' as const }, { label: '✕', val: 'miss' as const }].map(opt => (
+                    <button key={opt.val}
+                      onClick={() => setSelGir(selGir === opt.val ? null : opt.val)}
+                      className="flex-1 py-2.5 rounded-xl text-base font-bold transition-all"
+                      style={{
+                        background: selGir === opt.val ? (opt.val === 'hit' ? '#152644' : '#fee2e2') : '#f1f5f9',
+                        color: selGir === opt.val ? (opt.val === 'hit' ? 'white' : '#ef4444') : '#94a3b8'
+                      }}>
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-base font-bold" style={{ color: '#152644' }}>Hole {sheetHole + 1}</div>
+                <button onClick={closeSheet} className="text-xs font-semibold" style={{ color: '#c9a84c' }}>Finish Hole</button>
+              </div>
+              <button onClick={nextHole}
+                className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xl"
+                style={{ background: '#152644' }}>›</button>
+            </div>
+
           </div>
-        ))}
-      </div>
+        </div>
+      )}
+      {/* ── EDIT PROFILE MODAL ── */}
+      {profileOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-5"
+          style={{ background: 'rgba(0,0,0,0.45)' }}
+          onClick={e => { if (e.target === e.currentTarget) setProfileOpen(false) }}>
+          <div className="bg-white w-full max-w-sm rounded-3xl px-5 pt-6 pb-8">
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-lg font-bold" style={{ color: '#152644' }}>Edit Profile</h2>
+              <button onClick={() => setProfileOpen(false)} className="text-slate-400 text-2xl leading-none">×</button>
+            </div>
+
+            <div className="flex justify-center mb-5">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-bold"
+                style={{ background: '#152644' }}>
+                {editName.charAt(0).toUpperCase()}
+              </div>
+            </div>
+
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Name</label>
+            <input value={editName} onChange={e => setEditName(e.target.value)}
+              className="w-full border rounded-xl px-4 py-3 text-sm mb-4 outline-none"
+              style={{ borderColor: '#dde3ea' }} placeholder="Your name" />
+
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Handicap Index</label>
+            <input value={editHcp} onChange={e => setEditHcp(e.target.value)}
+              className="w-full border rounded-xl px-4 py-3 text-sm mb-4 outline-none"
+              style={{ borderColor: '#dde3ea' }} placeholder="e.g. 12.4" type="number" step="0.1" />
+
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Preferred Tees</label>
+            <select value={tee} onChange={e => setTee(e.target.value)}
+              className="w-full border rounded-xl px-4 py-3 text-sm mb-6 outline-none appearance-none"
+              style={{ borderColor: '#dde3ea' }}>
+              {Object.entries(TEE_DATA).map(([k, v]) => (
+                <option key={k} value={k}>{v.label} Tees</option>
+              ))}
+            </select>
+
+            <button onClick={saveProfile}
+              className="w-full py-4 rounded-2xl text-white font-bold text-base mb-3"
+              style={{ background: '#c9a84c' }}>
+              {user ? 'Save Profile' : 'Save as Guest'}
+            </button>
+
+            {!user && (
+              <button onClick={() => { setProfileOpen(false); router.push('/login') }}
+                className="w-full py-3 text-sm font-semibold text-center" style={{ color: '#152644' }}>
+                Log in to sync your profile →
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── LOGIN PROMPT ── */}
+      {showLoginPrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-6"
+          style={{ background: 'rgba(0,0,0,0.5)' }}>
+          <div className="bg-white rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl">
+            <h2 className="text-xl font-bold mb-2" style={{ color: '#152644' }}>Save Your Round</h2>
+            <p className="text-sm text-slate-500 mb-5">Log in to save your scorecard and track your handicap over time.</p>
+            <button onClick={() => router.push('/login')}
+              className="w-full py-3.5 rounded-2xl text-white font-bold mb-2"
+              style={{ background: '#c9a84c' }}>Log In</button>
+            <button onClick={() => setShowLoginPrompt(false)}
+              className="w-full py-2.5 text-sm text-slate-400">Continue without saving</button>
+          </div>
+        </div>
+      )}
+
       <BottomNav />
     </main>
   )
