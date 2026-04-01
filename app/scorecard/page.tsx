@@ -137,7 +137,7 @@ export default function ScorecardPage() {
 
   const teeData = TEE_DATA[tee]
   const filled  = scores[0].filter(s => s !== null).length
-  const total0  = scores[0].reduce((a, v) => (a ?? 0) + (v ?? 0), 0)
+  const total0  = scores[0].reduce((a: number, v) => a + (v ?? 0), 0)
   const parSoFar = HOLES.slice(0, filled).reduce((a, h) => a + h.par, 0)
   const toPar   = filled > 0 ? total0 - parSoFar : null
 
