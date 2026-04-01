@@ -142,7 +142,7 @@ export default function ScorecardPage() {
   const toPar   = filled > 0 ? total0 - parSoFar : null
 
   function sub(pIdx: number, start: number, end: number) {
-    return scores[pIdx]?.slice(start, end).reduce((a, v) => a + (v ?? 0), 0) ?? 0
+    return scores[pIdx]?.slice(start, end).reduce((a: number, v) => a + (v ?? 0), 0) ?? 0
   }
   function anyFilled(pIdx: number, start: number, end: number) {
     return scores[pIdx]?.slice(start, end).some(v => v !== null) ?? false
