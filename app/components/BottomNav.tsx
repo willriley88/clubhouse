@@ -1,32 +1,95 @@
-"use client"
-import { useRouter, usePathname } from "next/navigation"
+'use client'
+import { usePathname, useRouter } from 'next/navigation'
+
+const NAV_ITEMS = [
+  {
+    label: 'GPS',
+    path: '/gps',
+    icon: (active: boolean) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke={active ? '#c9a84c' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+        <circle cx="12" cy="12" r="9" strokeOpacity="0.3"/>
+      </svg>
+    ),
+  },
+  {
+    label: 'Scorecard',
+    path: '/scorecard',
+    icon: (active: boolean) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke={active ? '#c9a84c' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="5" y="2" width="14" height="20" rx="2"/>
+        <line x1="9" y1="7" x2="15" y2="7"/>
+        <line x1="9" y1="11" x2="15" y2="11"/>
+        <line x1="9" y1="15" x2="12" y2="15"/>
+      </svg>
+    ),
+  },
+  {
+    label: 'Home',
+    path: '/',
+    icon: (active: boolean) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke={active ? '#c9a84c' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
+        <path d="M9 21V12h6v9"/>
+      </svg>
+    ),
+  },
+  {
+    label: 'Events',
+    path: '/tournament',
+    icon: (active: boolean) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke={active ? '#c9a84c' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6 9H4.5a2.5 2.5 0 0 0 0 5H6"/>
+        <path d="M18 9h1.5a2.5 2.5 0 0 1 0 5H18"/>
+        <path d="M6 3v18M18 3v18M6 9h12v6H6z"/>
+      </svg>
+    ),
+  },
+  {
+    label: 'Club',
+    path: '/club',
+    icon: (active: boolean) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke={active ? '#c9a84c' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        <path d="M21 21v-2a4 4 0 0 0-3-3.85"/>
+      </svg>
+    ),
+  },
+]
 
 export default function BottomNav() {
-  const router = useRouter()
-  const path = usePathname()
-
-  const tabs = [
-    { id: "scorecard", label: "Scorecard", icon: "📋", href: "/scorecard" },
-    { id: "gps", label: "GPS", icon: "📍", href: "/gps" },
-    { id: "home", label: "Home", icon: "🏠", href: "/" },
-    { id: "tournament", label: "Tournament", icon: "🏆", href: "/tournament" },
-    { id: "club", label: "Club", icon: "⛳", href: "/club" },
-  ]
+  const pathname = usePathname()
+  const router   = useRouter()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex pb-4 pt-2 z-50">
-      {tabs.map((tab) => (
-        <button
-          key={tab.id}
-          onClick={() => router.push(tab.href)}
-          className={`flex-1 flex flex-col items-center gap-1 text-xs font-medium ${
-            path === tab.href ? "text-[#152644]" : "text-gray-400"
-          }`}
-        >
-          <span className="text-xl">{tab.icon}</span>
-          {tab.label}
-        </button>
-      ))}
+    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t"
+      style={{ background: 'white', borderColor: '#f1f5f9' }}>
+      <div className="flex items-stretch">
+        {NAV_ITEMS.map(item => {
+          const active = pathname === item.path || (item.path !== '/' && pathname.startsWith(item.path))
+          return (
+            <button
+              key={item.path}
+              onClick={() => router.push(item.path)}
+              className="flex-1 flex flex-col items-center justify-center py-2 pb-5 gap-0.5"
+            >
+              {item.icon(active)}
+              <span className="text-[10px] font-medium"
+                style={{ color: active ? '#c9a84c' : '#94a3b8' }}>
+                {item.label}
+              </span>
+            </button>
+          )
+        })}
+      </div>
     </nav>
   )
 }
