@@ -383,7 +383,7 @@ export default function ScorecardPage() {
                 <td className="text-center text-xs font-bold" style={{ color: '#c9a84c' }}>72</td>
                 <td />
                 {players.map((_, pIdx) => {
-                  const t = scores[pIdx]?.reduce((a, v) => a + (v ?? 0), 0) ?? 0
+                  const t = scores[pIdx]?.reduce((a: number, v) => a + (v ?? 0), 0) ?? 0
                   const f = scores[pIdx]?.filter(v => v !== null).length ?? 0
                   return (
                     <td key={pIdx} className="text-center text-sm font-bold" style={{ color: '#c9a84c' }}>
