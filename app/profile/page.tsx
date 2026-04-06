@@ -197,6 +197,55 @@ export default function ProfilePage() {
       </div>
 
       <div className="px-4 pt-4 space-y-3">
+
+        {/* Handicap trend sparkline — shown when ≥2 completed rounds exist */}
+        {!loading && rounds.filter(r => r.gross > 0 && r.par_total > 0).length >= 2 && (() => {
+          // Reverse to chronological order (oldest left), compute WHS differentials
+          const completed = rounds.filter(r => r.gross > 0 && r.par_total > 0).slice().reverse()
+          const diffs = completed.map(r => ((r.gross - 73.4) * 113) / 136)
+          const min = Math.min(...diffs)
+          const max = Math.max(...diffs)
+          const range = max - min || 1
+          const W = 200, H = 40, PAD = 6
+          const x = (i: number) => PAD + (i / (diffs.length - 1)) * (W - PAD * 2)
+          const y = (v: number) => H - PAD - ((v - min) / range) * (H - PAD * 2)
+          const points = diffs.map((v, i) => `${x(i)},${y(v)}`).join(' ')
+          const area = `M${x(0)},${H} ` + diffs.map((v, i) => `L${x(i)},${y(v)}`).join(' ') + ` L${x(diffs.length-1)},${H} Z`
+          const trend = diffs[diffs.length - 1] - diffs[0]
+          const trendLabel = trend < -0.5 ? '↓ Improving' : trend > 0.5 ? '↑ Rising' : '— Steady'
+          const trendColor = trend < -0.5 ? '#4ade80' : trend > 0.5 ? '#f87171' : '#94a3b8'
+          return (
+            <div className="bg-white rounded-2xl shadow-sm px-4 py-3">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-[10px] uppercase tracking-widest" style={{ color: '#94a3b8' }}>
+                  Handicap Trend
+                </p>
+                <span className="text-xs font-semibold" style={{ color: trendColor }}>{trendLabel}</span>
+              </div>
+              <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: 40 }}>
+                <defs>
+                  <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#c9a84c" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="#c9a84c" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                {/* Gradient fill under the line */}
+                <path d={area} fill="url(#sparkGrad)" />
+                {/* The line itself */}
+                <polyline points={points} fill="none" stroke="#c9a84c" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+                {/* Dots at each data point */}
+                {diffs.map((v, i) => (
+                  <circle key={i} cx={x(i)} cy={y(v)} r="3" fill="#c9a84c" />
+                ))}
+              </svg>
+              <div className="flex justify-between mt-1">
+                <span className="text-[9px]" style={{ color: '#94a3b8' }}>{diffs[0].toFixed(1)}</span>
+                <span className="text-[9px]" style={{ color: '#94a3b8' }}>{diffs[diffs.length-1].toFixed(1)}</span>
+              </div>
+            </div>
+          )
+        })()}
+
         <p className="text-[10px] uppercase tracking-widest" style={{ color: '#94a3b8' }}>
           Recent Rounds
         </p>
