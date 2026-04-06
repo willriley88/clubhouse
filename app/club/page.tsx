@@ -1,19 +1,67 @@
+import { createSupabaseServerClient } from "@/lib/supabase-server"
 import BottomNav from "../components/BottomNav"
 
-export default function Club() {
-  const teeSheet = [
-    { time: "7:00 AM", players: "Sullivan, Ricci, Monroe, Chen", open: false },
-    { time: "7:12 AM", players: "Walsh, Peters", open: true, spots: 2 },
-    { time: "7:24 AM", players: "", open: true, spots: 4 },
-    { time: "7:36 AM", players: "Kim, Torres, Adams", open: true, spots: 1 },
-    { time: "7:48 AM", players: "Thompson, Lee, Burke, Grant", open: false },
-  ]
+type FeedPost = {
+  id: string
+  author_name: string
+  author_initials: string
+  post_type: string
+  content: string
+  created_at: string
+}
 
-  const feed = [
-    { initials: "TR", name: "Tom R.", msg: "Course is in great shape today, greens rolling fast", time: "1h ago", bg: "bg-blue-100", text: "text-blue-700" },
-    { initials: "Admin", name: "Club Admin", msg: "Pro shop sale this weekend — 20% off all apparel", time: "3h ago", bg: "bg-[#152644]", text: "text-[#c9a84c]" },
-    { initials: "MK", name: "Mike K.", msg: "Anyone up for a game Saturday morning?", time: "Yesterday", bg: "bg-green-100", text: "text-green-700" },
+type TeeSlot = {
+  id: string
+  tee_date: string
+  tee_time: string
+  tee_order: number
+  players: string
+  max_players: number
+}
+
+function relativeTime(ts: string): string {
+  const diff = Date.now() - new Date(ts).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 60) return `${mins}m ago`
+  const hours = Math.floor(mins / 60)
+  if (hours < 24) return `${hours}h ago`
+  const days = Math.floor(hours / 24)
+  if (days === 1) return "Yesterday"
+  return `${days}d ago`
+}
+
+// Deterministic avatar color from initials — admin gets brand colors
+function avatarStyle(postType: string, initials: string): { bg: string; color: string } {
+  if (postType === "admin") return { bg: "#152644", color: "#c9a84c" }
+  const palette = [
+    { bg: "#dbeafe", color: "#1d4ed8" },
+    { bg: "#dcfce7", color: "#15803d" },
+    { bg: "#fef9c3", color: "#854d0e" },
+    { bg: "#fce7f3", color: "#9d174d" },
   ]
+  const idx = (initials.charCodeAt(0) + (initials.charCodeAt(1) || 0)) % palette.length
+  return palette[idx]
+}
+
+export default async function Club() {
+  const supabase = createSupabaseServerClient()
+  const today = new Date().toISOString().split("T")[0]
+
+  const [{ data: postRows }, { data: slotRows }] = await Promise.all([
+    supabase
+      .from("feed_posts")
+      .select("id, author_name, author_initials, post_type, content, created_at")
+      .order("created_at", { ascending: false })
+      .limit(20),
+    supabase
+      .from("tee_sheet")
+      .select("id, tee_date, tee_time, tee_order, players, max_players")
+      .eq("tee_date", today)
+      .order("tee_order"),
+  ])
+
+  const feed: FeedPost[] = postRows ?? []
+  const teeSheet: TeeSlot[] = slotRows ?? []
 
   return (
     <main className="min-h-screen bg-gray-100 pb-24">
@@ -40,41 +88,66 @@ export default function Club() {
         </div>
 
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Today's Tee Sheet</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Today&apos;s Tee Sheet</p>
           <div className="bg-white rounded-2xl overflow-hidden">
-            {teeSheet.map((slot, i) => (
-              <div key={slot.time} className={`flex items-center gap-3 px-4 py-3 ${i < teeSheet.length - 1 ? "border-b border-gray-100" : ""}`}>
-                <div className="text-sm font-bold text-[#152644] w-20">{slot.time}</div>
-                <div className="flex-1 text-xs text-gray-500">{slot.players || "Open"}</div>
-                {slot.open ? (
-                  <div className="text-xs font-semibold text-green-600">{slot.spots} open</div>
-                ) : (
-                  <div className="text-xs text-gray-300">Full</div>
-                )}
-              </div>
-            ))}
+            {teeSheet.length === 0 ? (
+              <div className="px-4 py-6 text-center text-sm text-gray-400">No tee times available today</div>
+            ) : (
+              teeSheet.map((slot, i) => {
+                const playerList = slot.players ? slot.players.split(",").map(p => p.trim()).filter(Boolean) : []
+                const openSpots = slot.max_players - playerList.length
+                const isFull = openSpots <= 0
+                return (
+                  <div
+                    key={slot.id}
+                    className={`flex items-center gap-3 px-4 py-3 ${i < teeSheet.length - 1 ? "border-b border-gray-100" : ""}`}
+                  >
+                    <div className="text-sm font-bold text-[#152644] w-20">{slot.tee_time}</div>
+                    <div className="flex-1 text-xs text-gray-500">
+                      {playerList.length > 0 ? playerList.join(", ") : "Open"}
+                    </div>
+                    {isFull ? (
+                      <div className="text-xs text-gray-300">Full</div>
+                    ) : (
+                      <div className="text-xs font-semibold text-green-600">{openSpots} open</div>
+                    )}
+                  </div>
+                )
+              })
+            )}
           </div>
         </div>
 
         <div>
           <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Club Feed</p>
           <div className="space-y-2">
-            {feed.map(item => (
-              <div key={item.name} className="bg-white rounded-2xl p-4 flex gap-3">
-                <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${item.bg} ${item.text}`}>
-                  {item.initials.length > 2 ? "A" : item.initials}
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-[#152644]">{item.name}</p>
-                  <p className="text-sm text-gray-600 mt-0.5">{item.msg}</p>
-                  <p className="text-xs text-gray-400 mt-1">{item.time}</p>
-                </div>
-              </div>
-            ))}
+            {feed.length === 0 ? (
+              <div className="bg-white rounded-2xl px-4 py-6 text-center text-sm text-gray-400">No posts yet</div>
+            ) : (
+              feed.map(post => {
+                const { bg, color } = avatarStyle(post.post_type, post.author_initials)
+                const displayInitial = post.post_type === "admin" ? "A" : post.author_initials
+                return (
+                  <div key={post.id} className="bg-white rounded-2xl p-4 flex gap-3">
+                    <div
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                      style={{ backgroundColor: bg, color }}
+                    >
+                      {displayInitial}
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-[#152644]">{post.author_name}</p>
+                      <p className="text-sm text-gray-600 mt-0.5">{post.content}</p>
+                      <p className="text-xs text-gray-400 mt-1">{relativeTime(post.created_at)}</p>
+                    </div>
+                  </div>
+                )
+              })
+            )}
           </div>
         </div>
       </div>
-      <BottomNav/>
+      <BottomNav />
     </main>
   )
 }
