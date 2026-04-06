@@ -352,7 +352,21 @@ export default function HomePage() {
         <div>
           <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-2">Club Feed</p>
           <div className="space-y-2">
-            {feedPosts.map(post => (
+            {feedPosts.length === 0 ? (
+              <div className="bg-white rounded-2xl px-4 py-8 text-center shadow-sm">
+                <p className="text-sm font-semibold mb-1" style={{ color: '#152644' }}>Nothing posted yet</p>
+                <p className="text-xs mb-4" style={{ color: '#94a3b8' }}>
+                  Club updates and member posts will appear here
+                </p>
+                <button
+                  onClick={() => router.push('/club')}
+                  className="px-5 py-2 rounded-xl text-sm font-bold"
+                  style={{ background: '#152644', color: '#c9a84c' }}
+                >
+                  Go to Club →
+                </button>
+              </div>
+            ) : feedPosts.map(post => (
               <div key={post.id} className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-start gap-3">
                 <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
                   style={{ background: '#152644' }}>

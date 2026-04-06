@@ -191,8 +191,20 @@ export default function Tournament() {
       <div className="bg-white mx-4 mt-4 rounded-2xl overflow-hidden">
         {loading ? (
           <div className="px-4 py-8 text-center text-sm text-gray-400">Loading...</div>
+        ) : !tournament ? (
+          <div className="px-4 py-10 text-center">
+            <p className="text-sm font-semibold mb-1" style={{ color: '#152644' }}>No tournament active</p>
+            <p className="text-xs" style={{ color: '#94a3b8' }}>
+              Check back when a tournament is scheduled at LeBaron Hills CC
+            </p>
+          </div>
         ) : sorted.length === 0 ? (
-          <div className="px-4 py-8 text-center text-sm text-gray-400">No players entered</div>
+          <div className="px-4 py-10 text-center">
+            <p className="text-sm font-semibold mb-1" style={{ color: '#152644' }}>No players entered yet</p>
+            <p className="text-xs" style={{ color: '#94a3b8' }}>
+              The leaderboard will appear once scores are submitted
+            </p>
+          </div>
         ) : (
           sorted.map((row, i) => {
             const pos = i + 1
