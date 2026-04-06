@@ -3,14 +3,15 @@ import { useState, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
-const LS_KEY = 'clubhouse_last_club_visit'
+const LS_CLUB_KEY = 'clubhouse_last_club_visit'
+const LS_CHAT_KEY = 'clubhouse_last_chat_visit'
 
 const NAV_ITEMS = [
   {
     label: 'GPS',
     path: '/gps',
     icon: (active: boolean) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke={active ? '#c9a84c' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="3"/>
         <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
@@ -22,7 +23,7 @@ const NAV_ITEMS = [
     label: 'Scorecard',
     path: '/scorecard',
     icon: (active: boolean) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke={active ? '#c9a84c' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="5" y="2" width="14" height="20" rx="2"/>
         <line x1="9" y1="7" x2="15" y2="7"/>
@@ -35,7 +36,7 @@ const NAV_ITEMS = [
     label: 'Home',
     path: '/',
     icon: (active: boolean) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke={active ? '#c9a84c' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
         <path d="M9 21V12h6v9"/>
@@ -46,7 +47,7 @@ const NAV_ITEMS = [
     label: 'Events',
     path: '/tournament',
     icon: (active: boolean) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke={active ? '#c9a84c' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M6 9H4.5a2.5 2.5 0 0 0 0 5H6"/>
         <path d="M18 9h1.5a2.5 2.5 0 0 1 0 5H18"/>
@@ -55,10 +56,20 @@ const NAV_ITEMS = [
     ),
   },
   {
+    label: 'Chat',
+    path: '/chat',
+    icon: (active: boolean) => (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke={active ? '#c9a84c' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+    ),
+  },
+  {
     label: 'Club',
     path: '/club',
     icon: (active: boolean) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke={active ? '#c9a84c' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="9" cy="7" r="4"/>
         <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
@@ -69,35 +80,47 @@ const NAV_ITEMS = [
   },
 ]
 
+// Paths that have unread badges, keyed to their localStorage timestamp key and data source
+const BADGE_SOURCES: Record<string, { lsKey: string; table: string }> = {
+  '/club': { lsKey: LS_CLUB_KEY, table: 'feed_posts' },
+  '/chat': { lsKey: LS_CHAT_KEY, table: 'messages'   },
+}
+
 export default function BottomNav() {
   const pathname = usePathname()
   const router   = useRouter()
-  const [hasUnread, setHasUnread] = useState(false)
+  // Set of paths with an unread badge active
+  const [unread, setUnread] = useState<Set<string>>(new Set())
 
-  // On mount: compare latest feed post timestamp against last club visit
+  // On mount: check latest row in each badge-tracked table vs localStorage timestamp
   useEffect(() => {
-    async function checkUnread() {
-      const { data } = await supabase
-        .from('feed_posts')
-        .select('created_at')
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single()
-
-      if (!data) return
-
-      const lastVisit = localStorage.getItem(LS_KEY)
-      // Show badge if there's a post newer than the last time the user visited /club
-      setHasUnread(!lastVisit || new Date(data.created_at) > new Date(lastVisit))
+    async function checkBadges() {
+      const results = await Promise.all(
+        Object.entries(BADGE_SOURCES).map(async ([path, { lsKey, table }]) => {
+          const { data } = await supabase
+            .from(table)
+            .select('created_at')
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single()
+          if (!data) return [path, false] as const
+          const lastVisit = localStorage.getItem(lsKey)
+          const hasNew = !lastVisit || new Date(data.created_at) > new Date(lastVisit)
+          return [path, hasNew] as const
+        })
+      )
+      const newUnread = new Set(results.filter(([, v]) => v).map(([p]) => p))
+      setUnread(newUnread)
     }
-    checkUnread()
+    checkBadges()
   }, [])
 
-  // When user navigates to /club, record the visit and clear the badge
+  // When user lands on a badge-tracked page, record visit timestamp and clear badge
   useEffect(() => {
-    if (pathname === '/club') {
-      localStorage.setItem(LS_KEY, new Date().toISOString())
-      setHasUnread(false)
+    const source = BADGE_SOURCES[pathname]
+    if (source) {
+      localStorage.setItem(source.lsKey, new Date().toISOString())
+      setUnread(prev => { const next = new Set(prev); next.delete(pathname); return next })
     }
   }, [pathname])
 
@@ -107,14 +130,13 @@ export default function BottomNav() {
       <div className="flex items-stretch">
         {NAV_ITEMS.map(item => {
           const active = pathname === item.path || (item.path !== '/' && pathname.startsWith(item.path))
-          const showBadge = item.path === '/club' && hasUnread && !active
+          const showBadge = unread.has(item.path) && !active
           return (
             <button
               key={item.path}
               onClick={() => router.push(item.path)}
               className="flex-1 flex flex-col items-center justify-center py-2 pb-5 gap-0.5"
             >
-              {/* Icon wrapper — position:relative so the gold dot can be absolutely placed */}
               <span className="relative">
                 {item.icon(active)}
                 {showBadge && (
