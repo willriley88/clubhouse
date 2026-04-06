@@ -48,10 +48,12 @@ function avatarStyle(postType: string, initials: string): { bg: string; color: s
 
 export default function Club() {
   const router = useRouter()
-  const [feed, setFeed]         = useState<FeedPost[]>([])
-  const [teeSheet, setTeeSheet] = useState<TeeSlot[]>([])
-  const [user, setUser]         = useState<any>(null)
+  const [feed, setFeed]           = useState<FeedPost[]>([])
+  const [teeSheet, setTeeSheet]   = useState<TeeSlot[]>([])
+  const [user, setUser]           = useState<any>(null)
   const [joiningId, setJoiningId] = useState<string | null>(null) // slot being joined
+  const [postText, setPostText]   = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0]
@@ -119,6 +121,35 @@ export default function Club() {
     }
 
     setJoiningId(null)
+  }
+
+  function getInitials(name: string): string {
+    const parts = name.trim().split(/\s+/)
+    if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+    return name.slice(0, 2).toUpperCase()
+  }
+
+  async function handlePost() {
+    if (!postText.trim() || submitting || !user) return
+    setSubmitting(true)
+
+    // Get display name from profile for the post author fields
+    const { data: profile } = await supabase
+      .from('profiles').select('full_name').eq('id', user.id).single()
+    const name     = profile?.full_name || user.email?.split('@')[0] || 'Member'
+    const initials = getInitials(name)
+
+    const { data, error } = await supabase
+      .from('feed_posts')
+      .insert({ author_name: name, author_initials: initials, post_type: 'member', content: postText.trim() })
+      .select('id, author_name, author_initials, post_type, content, created_at')
+      .single()
+
+    if (!error && data) {
+      setFeed(prev => [data as FeedPost, ...prev]) // optimistic prepend
+      setPostText('')
+    }
+    setSubmitting(false)
   }
 
   return (
@@ -190,6 +221,41 @@ export default function Club() {
 
         <div>
           <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Club Feed</p>
+
+          {/* Compose box — shown when authenticated, /club is middleware-protected */}
+          {user ? (
+            <div className="bg-white rounded-2xl px-4 py-3 flex items-center gap-3 mb-2">
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+                style={{ background: '#152644' }}
+              >
+                {(user.email?.charAt(0) ?? 'M').toUpperCase()}
+              </div>
+              <input
+                value={postText}
+                onChange={e => setPostText(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handlePost() } }}
+                placeholder="Share something with the club…"
+                maxLength={280}
+                className="flex-1 text-sm outline-none bg-transparent"
+                style={{ color: '#1e293b' }}
+              />
+              <button
+                onClick={handlePost}
+                disabled={!postText.trim() || submitting}
+                className="text-xs font-bold px-3 py-1.5 rounded-lg flex-shrink-0"
+                style={{
+                  background: postText.trim() && !submitting ? '#152644' : '#e2e8f0',
+                  color:      postText.trim() && !submitting ? '#c9a84c' : '#94a3b8',
+                }}
+              >
+                {submitting ? '…' : 'Post'}
+              </button>
+            </div>
+          ) : (
+            <p className="text-xs text-center py-2 mb-2" style={{ color: '#94a3b8' }}>Sign in to post</p>
+          )}
+
           <div className="space-y-2">
             {feed.length === 0 ? (
               <div className="bg-white rounded-2xl px-4 py-6 text-center text-sm text-gray-400">No posts yet</div>
