@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import BottomNav from '../components/BottomNav'
 
-const COURSE_ID = 'b0000000-0000-0000-0000-000000000001'
+const COURSE_ID_FALLBACK = 'b0000000-0000-0000-0000-000000000001'
 
 type Tee = 'blue' | 'white' | 'green' | 'gold'
 
@@ -31,15 +31,21 @@ export default function GPS() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase
-      .from('holes')
-      .select('hole_number, par, hcp_index, yardage_blue, yardage_white, yardage_green, yardage_gold')
-      .eq('course_id', COURSE_ID)
-      .order('hole_number')
-      .then(({ data }) => {
-        if (data) setHoles(data)
-        setLoading(false)
-      })
+    async function load() {
+      // Resolve course ID dynamically; fall back to known UUID if lookup fails
+      const { data: course } = await supabase
+        .from('courses').select('id').eq('name', 'LeBaron Hills CC').single()
+      const id = course?.id ?? COURSE_ID_FALLBACK
+
+      const { data } = await supabase
+        .from('holes')
+        .select('hole_number, par, hcp_index, yardage_blue, yardage_white, yardage_green, yardage_gold')
+        .eq('course_id', id)
+        .order('hole_number')
+      if (data) setHoles(data)
+      setLoading(false)
+    }
+    load()
   }, [])
 
   const hole = holes.find(h => h.hole_number === currentHole)

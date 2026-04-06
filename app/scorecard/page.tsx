@@ -34,7 +34,7 @@ const TEE_DATA: Record<string, { label: string; rating: number; slope: number; y
   gold:  { label: 'Gold',  rating: 68.1, slope: 118, frontYds: 3011, backYds: 2886, yds: [374,381,469,161,334,382,302,154,454,432,121,313,163,351,481,347,327,351] },
 }
 
-const COURSE_ID = 'b0000000-0000-0000-0000-000000000001'
+const COURSE_ID_FALLBACK = 'b0000000-0000-0000-0000-000000000001'
 const AVATAR_COLORS = ['#152644', '#c9a84c', '#2d6a4f', '#7b2d8b']
 
 type Player = { id: number; name: string; handicap: number | null; avatarColor: string; isUser: boolean }
@@ -96,12 +96,17 @@ export default function ScorecardPage() {
   const [selGir,     setSelGir]     = useState<'hit'|'miss'|null>(null)
 
   // Misc
+  const [courseId,        setCourseId]        = useState(COURSE_ID_FALLBACK)
   const [saving,          setSaving]          = useState(false)
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const [roundActive,     setRoundActive]     = useState(false)
 
-  // Load user + profile on mount
+  // Load user + profile + course ID on mount
   useEffect(() => {
+    // Resolve COURSE_ID dynamically so hardcoded fallback isn't load-bearing
+    supabase.from('courses').select('id').eq('name', 'LeBaron Hills CC').single()
+      .then(({ data: c }) => { if (c?.id) setCourseId(c.id) })
+
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) {
         setUser(data.user)
@@ -191,12 +196,12 @@ export default function ScorecardPage() {
     if (!user) { setShowLoginPrompt(true); return }
     setSaving(true)
     const { data: round, error } = await supabase
-      .from('rounds').insert({ profile_id: user.id, course_id: COURSE_ID, format: 'stroke' })
+      .from('rounds').insert({ profile_id: user.id, course_id: courseId, format: 'stroke' })
       .select().single()
     if (error || !round) { setSaving(false); return }
 
     const { data: holeRows } = await supabase
-      .from('holes').select('id,hole_number').eq('course_id', COURSE_ID).order('hole_number')
+      .from('holes').select('id,hole_number').eq('course_id', courseId).order('hole_number')
 
     if (holeRows) {
       await supabase.from('scores').insert(
