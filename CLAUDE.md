@@ -40,6 +40,7 @@ app/
   tournament/page.tsx   # Tournament leaderboard — stroke + stableford tabs
   club/page.tsx         # Club tab — tee sheet (Join button), feed (post submission)
   gps/page.tsx          # GPS tab — real hole data, prev/next nav, tee selector
+  chat/page.tsx         # Member chat — real-time Supabase Realtime, auth-gated
   rounds/page.tsx       # Round history — all saved rounds for logged-in user
   profile/page.tsx      # Member profile — handicap, round count, last 5 rounds
   login/page.tsx        # Magic link login page
@@ -51,6 +52,7 @@ lib/
   supabase.ts           # createBrowserClient — use in client components only
   supabase-server.ts    # createClient factory — use in server components
   auth.ts               # signInWithEmail helper
+  club-config.ts        # getClubConfig(courseId?) — server-side ClubConfig fetch
 
 public/
   manifest.json         # PWA manifest (name, theme, icon)
@@ -118,6 +120,12 @@ The splash screen only shows on first visit (sessionStorage). If BottomNav is in
 
 **tournament_scores** — `id`, `entry_id`, `hole_number` 1–18, `strokes`
 
+**club_config** — `id`, `club_id` uuid (FK→courses, unique), `club_name` text, `primary_color`, `secondary_color`, `logo_path`, `location`
+
+**messages** — `id`, `profile_id` uuid (FK→auth.users), `club_id` uuid (FK→courses), `message` text, `author_name`, `author_initials`, `created_at`; realtime-enabled
+
+**gin_requests** — `id`, `profile_id` uuid (FK→auth.users), `club_id` uuid (FK→courses), `tee_time` text, `note` text, `author_name`, `is_filled` boolean, `filled_by` text (nullable), `created_at`
+
 ### Constants
 - `COURSE_ID_FALLBACK = 'b0000000-0000-0000-0000-000000000001'` — used as fallback in scorecard and GPS if Supabase lookup fails; actual ID is fetched dynamically from `courses` where `name = 'LeBaron Hills CC'`
 
@@ -147,6 +155,9 @@ LeBaron values: rating `73.4`, slope `136`
 - **Score sharing**: after round saves, shows share bottom sheet with gross + differential; Web Share API with clipboard copy fallback; text: "Shot 78 (+6) at LeBaron Hills CC today via Clubhouse ⛳"
 - **Handicap sparkline**: profile page shows inline SVG gold trend line for last 5 rounds (oldest-left, newest-right); labels ↓ Improving / ↑ Rising / — Steady
 - **Club tab badge**: gold dot on Club icon in BottomNav when there are unread feed posts; tracks last visit via `clubhouse_last_club_visit` in localStorage; clears on /club visit
+- **Chat** (`/chat`): real-time member chat via Supabase Realtime subscription on `messages` table; last 50 messages, optimistic send, auto-scroll; auth-guarded; Chat tab added to BottomNav (between Events and Club) with unread badge (`clubhouse_last_chat_visit`)
+- **GIN** (`/club`): gold "Guest in Need" banner at top of Club page; bottom sheet to post tee time + note to `gin_requests` table; active unfilled requests shown as cards with "I'll join" button (marks `is_filled=true`, records `filled_by`)
+- **Club config** (`lib/club-config.ts`): `getClubConfig(courseId?)` server helper + `ClubConfig` type; `club_config` table in Supabase; `app/layout.tsx` uses `generateMetadata()` to pull club name + brand color from DB
 
 ### GPS Notes
 `GREEN_COORDS` in `app/gps/page.tsx` holds approximate lat/lng for all 18 greens (front/center/back). Centered around 41.8387°N, 70.9762°W. To get real accuracy, walk each green with a phone and record `watchPosition` output, then update the constant.
@@ -155,7 +166,7 @@ LeBaron values: rating `73.4`, slope `136`
 - Course map on GPS (placeholder green background — no visual hole map yet)
 - Tournament "Today" tab = same as Overall (needs per-day round data)
 - Tee sheet doesn't prevent double-booking across multiple sessions (no server-side guard)
-- `COURSE_ID` fallback still hardcoded — fine until multi-club support is needed
+- Multi-club: `club_config` table + `getClubConfig()` helper are in place; pages still use hardcoded LeBaron values — future work is wiring each page to the config
 
 ### Known Issues
 - Dual-boot EFI issue on dev machine (unrelated to app)
@@ -164,9 +175,11 @@ LeBaron values: rating `73.4`, slope `136`
 
 ## Before Any Demo — Run These Migrations
 In Supabase dashboard → SQL Editor, run in order:
-1. `20260406_club_feed_tee_sheet.sql` — creates tables, seeds feed + tee sheet
-2. `20260406_tournaments.sql` — creates tournament tables, seeds Spring Member-Guest 2026
-3. **`20260406_demo_refresh.sql`** — run this EVERY TIME before demo: reseeds tee sheet with today's date, fixes tournament scores, adds O'Brien + Connelly entries
+1. `20260406_club_feed_tee_sheet.sql` — feed_posts + tee_sheet tables, seed
+2. `20260406_tournaments.sql` — tournament tables, seed Spring Member-Guest 2026
+3. `20260407_club_config.sql` — club_config table, seeded with LeBaron values
+4. `20260407_chat_gin.sql` — messages table (realtime) + gin_requests table
+5. **`20260406_demo_refresh.sql`** — run EVERY TIME before demo: reseeds tee sheet with today's date, fixes tournament scores, adds O'Brien + Connelly entries
 
 ---
 
@@ -174,7 +187,7 @@ In Supabase dashboard → SQL Editor, run in order:
 1. Refine `GREEN_COORDS` in `app/gps/page.tsx` with real on-course GPS coordinates
 2. Tournament "Today" tab with per-day scores
 3. Tee sheet double-booking guard (server-side check before update)
-4. Multi-club support — dynamic club selection instead of hardcoded LeBaron
+4. Wire remaining pages to `getClubConfig()` (replaces hardcoded LeBaron strings)
 
 ## Longer-Term
 - Beta test with bag room staff
