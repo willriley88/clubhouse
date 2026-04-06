@@ -100,6 +100,10 @@ export default function ScorecardPage() {
   const [saving,          setSaving]          = useState(false)
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const [roundActive,     setRoundActive]     = useState(false)
+  const [showShare,       setShowShare]       = useState(false)
+  const [shareGross,      setShareGross]      = useState(0)
+  const [shareDiff,       setShareDiff]       = useState(0)
+  const [copied,          setCopied]          = useState(false)
 
   // Load user + profile + course ID on mount
   useEffect(() => {
@@ -211,7 +215,9 @@ export default function ScorecardPage() {
     const diff = ((total0 - teeData.rating) * 113) / teeData.slope
     await supabase.from('rounds').update({ format: `stroke|diff:${diff.toFixed(1)}` }).eq('id', round.id)
     setSaving(false)
-    router.push('/')
+    setShareGross(total0)
+    setShareDiff(diff)
+    setShowShare(true)
   }
 
   async function saveProfile() {
@@ -567,6 +573,52 @@ export default function ScorecardPage() {
                 Log in to sync your profile →
               </button>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ── SHARE SHEET ── */}
+      {showShare && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center"
+          style={{ background: 'rgba(0,0,0,0.5)' }}>
+          <div className="bg-white rounded-t-3xl w-full max-w-lg p-6 pb-10">
+            <div className="w-10 h-1 rounded-full bg-gray-200 mx-auto mb-6" />
+            <h2 className="text-2xl font-bold text-center mb-1" style={{ color: '#152644' }}>Round Complete</h2>
+            <p className="text-center text-sm text-slate-400 mb-6">Nice round — here&apos;s your summary</p>
+            <div className="flex justify-center gap-8 mb-6">
+              <div className="text-center">
+                <div className="text-4xl font-bold" style={{ color: '#152644' }}>{shareGross}</div>
+                <div className="text-xs text-slate-400 mt-1 uppercase tracking-widest">Gross</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold" style={{ color: '#c9a84c' }}>
+                  {shareDiff >= 0 ? `+${shareDiff.toFixed(1)}` : shareDiff.toFixed(1)}
+                </div>
+                <div className="text-xs text-slate-400 mt-1 uppercase tracking-widest">Differential</div>
+              </div>
+            </div>
+            <button
+              onClick={async () => {
+                const vspar = shareGross - 72
+                const label = vspar === 0 ? 'E' : vspar > 0 ? `+${vspar}` : String(vspar)
+                const text = `Shot ${shareGross} (${label}) at LeBaron Hills CC today via Clubhouse \u26f3`
+                if (navigator.share) {
+                  try { await navigator.share({ text }) } catch {}
+                } else {
+                  await navigator.clipboard.writeText(text)
+                  setCopied(true)
+                  setTimeout(() => setCopied(false), 2000)
+                }
+              }}
+              className="w-full py-4 rounded-2xl text-white font-bold text-base mb-3"
+              style={{ background: '#152644' }}
+            >
+              {copied ? 'Copied!' : 'Share Score'}
+            </button>
+            <button onClick={() => { setShowShare(false); router.push('/') }}
+              className="w-full py-3 text-sm font-semibold text-center" style={{ color: '#152644' }}>
+              Done
+            </button>
           </div>
         </div>
       )}
