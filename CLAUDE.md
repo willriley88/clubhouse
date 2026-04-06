@@ -141,14 +141,15 @@ LeBaron values: rating `73.4`, slope `136`
 - **Profile** (`/profile`): handicap, round count, best gross, last 5 rounds; links from member card avatar
 - **Tournament** (`/tournament`): live leaderboard from Supabase; stroke + stableford tabs; proper WHS handicap calc
 - **Club** (`/club`): tee sheet with **Join button** (writes player name to Supabase, optimistic update); feed with **post submission** (members can post, inserts into feed_posts); COURSE_ID dynamic
-- **GPS** (`/gps`): real hole data from `holes`, prev/next nav, tee selector; **real GPS positioning** with `watchPosition`, Haversine formula, front/center/back yard distances; GPS status badge (green/yellow/red); `GREEN_COORDS` hardcoded (approx Lakeville MA — refine with on-course GPS walk)
+- **GPS** (`/gps`): real hole data from `holes`, prev/next nav, tee selector; **real GPS positioning** with `watchPosition`, Haversine formula, front/center/back yard distances; GPS status badge (green/yellow/red); `GREEN_COORDS` hardcoded (centered 41.8387°N, 70.9762°W — refine with on-course GPS walk)
 - **Auth enforcement**: middleware blocks `/club` + `/rounds` for unauthenticated users
 - **PWA**: manifest.json + apple-touch-icon — installable on iOS/Android home screen
 - **Score sharing**: after round saves, shows share bottom sheet with gross + differential; Web Share API with clipboard copy fallback; text: "Shot 78 (+6) at LeBaron Hills CC today via Clubhouse ⛳"
 - **Handicap sparkline**: profile page shows inline SVG gold trend line for last 5 rounds (oldest-left, newest-right); labels ↓ Improving / ↑ Rising / — Steady
+- **Club tab badge**: gold dot on Club icon in BottomNav when there are unread feed posts; tracks last visit via `clubhouse_last_club_visit` in localStorage; clears on /club visit
 
 ### GPS Notes
-`GREEN_COORDS` in `app/gps/page.tsx` holds approximate lat/lng for all 18 greens (front/center/back). These are estimated around 41.83°N, 70.96°W. To get real accuracy, walk each green with a phone and record `watchPosition` output, then update the constant.
+`GREEN_COORDS` in `app/gps/page.tsx` holds approximate lat/lng for all 18 greens (front/center/back). Centered around 41.8387°N, 70.9762°W. To get real accuracy, walk each green with a phone and record `watchPosition` output, then update the constant.
 
 ### What's Still Static / Not Integrated
 - Course map on GPS (placeholder green background — no visual hole map yet)
