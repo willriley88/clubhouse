@@ -4,12 +4,24 @@ import { useRouter } from 'next/navigation'
 import BottomNav from './components/BottomNav'
 import { supabase } from '@/lib/supabase'
 
-// Placeholder club feed posts
-const FEED_POSTS = [
-  { id: 1, initials: 'TR', name: 'Tom R.', text: 'Shot a 76 — best round of the season', time: '2h ago' },
-  { id: 2, initials: 'MK', name: 'Mike K.', text: 'Anyone up for a round Saturday morning? Need a 4th', time: '4h ago' },
-  { id: 3, initials: 'JS', name: 'Jack S.', text: 'Greens are rolling fast today, highly recommend', time: '6h ago' },
-]
+type FeedPost = {
+  id: string
+  author_initials: string
+  author_name: string
+  content: string
+  created_at: string
+}
+
+function relativeTime(ts: string): string {
+  const diff = Date.now() - new Date(ts).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 60) return `${mins}m ago`
+  const hours = Math.floor(mins / 60)
+  if (hours < 24) return `${hours}h ago`
+  const days = Math.floor(hours / 24)
+  if (days === 1) return 'Yesterday'
+  return `${days}d ago`
+}
 
 type Round = {
   id: string
@@ -24,6 +36,7 @@ export default function HomePage() {
   const [profile,      setProfile]      = useState<any>(null)
   const [lastRound,    setLastRound]    = useState<Round | null>(null)
   const [loadingRound, setLoadingRound] = useState(true)
+  const [feedPosts,    setFeedPosts]    = useState<FeedPost[]>([])
 
   // Edit name state
   const [editingName, setEditingName] = useState(false)
@@ -73,6 +86,14 @@ export default function HomePage() {
           setProfile({ full_name: g.name || 'Guest', handicap: g.handicap || null })
         } catch {}
       }
+      // Fetch 3 most recent club feed posts regardless of auth state
+      const { data: posts } = await supabase
+        .from('feed_posts')
+        .select('id, author_initials, author_name, content, created_at')
+        .order('created_at', { ascending: false })
+        .limit(3)
+      setFeedPosts(posts ?? [])
+
       setLoadingRound(false)
     })
   }, [])
@@ -320,17 +341,17 @@ export default function HomePage() {
         <div>
           <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-2">Club Feed</p>
           <div className="space-y-2">
-            {FEED_POSTS.map(post => (
+            {feedPosts.map(post => (
               <div key={post.id} className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-start gap-3">
                 <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
                   style={{ background: '#152644' }}>
-                  {post.initials}
+                  {post.author_initials}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-slate-700">
-                    <span className="font-semibold">{post.name}</span> {post.text}
+                    <span className="font-semibold">{post.author_name}</span> {post.content}
                   </p>
-                  <p className="text-xs text-slate-400 mt-0.5">{post.time}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">{relativeTime(post.created_at)}</p>
                 </div>
               </div>
             ))}
