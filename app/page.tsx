@@ -37,12 +37,14 @@ export default function HomePage() {
   const [lastRound,    setLastRound]    = useState<Round | null>(null)
   const [loadingRound, setLoadingRound] = useState(true)
   const [feedPosts,    setFeedPosts]    = useState<FeedPost[]>([])
+  const [mounted,      setMounted]      = useState(false)
 
   // Edit name state
   const [editingName, setEditingName] = useState(false)
   const [editName,    setEditName]    = useState('')
 
   useEffect(() => {
+    setMounted(true)
     supabase.auth.getUser().then(async ({ data }) => {
       if (data.user) {
         setUser(data.user)
@@ -349,39 +351,42 @@ export default function HomePage() {
         </div>
 
         {/* ── CLUB FEED ── */}
-        <div>
-          <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-2">Club Feed</p>
-          <div className="space-y-2">
-            {feedPosts.length === 0 ? (
-              <div className="bg-white rounded-2xl px-4 py-8 text-center shadow-sm">
-                <p className="text-sm font-semibold mb-1" style={{ color: '#152644' }}>Nothing posted yet</p>
-                <p className="text-xs mb-4" style={{ color: '#94a3b8' }}>
-                  Club updates and member posts will appear here
-                </p>
-                <button
-                  onClick={() => router.push('/club')}
-                  className="px-5 py-2 rounded-xl text-sm font-bold"
-                  style={{ background: '#152644', color: '#c9a84c' }}
-                >
-                  Go to Club →
-                </button>
-              </div>
-            ) : feedPosts.map(post => (
-              <div key={post.id} className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-                  style={{ background: '#152644' }}>
-                  {post.author_initials}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-slate-700">
-                    <span className="font-semibold">{post.author_name}</span> {post.content}
+        {/* mounted guard prevents SSR/client HTML mismatch on feedPosts.length check */}
+        {mounted && (
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-2">Club Feed</p>
+            <div className="space-y-2">
+              {feedPosts.length === 0 ? (
+                <div className="bg-white rounded-2xl px-4 py-8 text-center shadow-sm">
+                  <p className="text-sm font-semibold mb-1" style={{ color: '#152644' }}>Nothing posted yet</p>
+                  <p className="text-xs mb-4" style={{ color: '#94a3b8' }}>
+                    Club updates and member posts will appear here
                   </p>
-                  <p className="text-xs text-slate-400 mt-0.5">{relativeTime(post.created_at)}</p>
+                  <button
+                    onClick={() => router.push('/club')}
+                    className="px-5 py-2 rounded-xl text-sm font-bold"
+                    style={{ background: '#152644', color: '#c9a84c' }}
+                  >
+                    Go to Club →
+                  </button>
                 </div>
-              </div>
-            ))}
+              ) : feedPosts.map(post => (
+                <div key={post.id} className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+                    style={{ background: '#152644' }}>
+                    {post.author_initials}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-slate-700">
+                      <span className="font-semibold">{post.author_name}</span> {post.content}
+                    </p>
+                    <p className="text-xs text-slate-400 mt-0.5">{relativeTime(post.created_at)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     <BottomNav />
   </main>
