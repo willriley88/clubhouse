@@ -54,7 +54,7 @@ declare
 begin
 
   insert into tournaments (name, subtitle, status, course_par)
-  values ('Spring Member-Guest 2026', 'LeBaron Hills CC · June 14–16 · Day 2 of 3 · 38 Teams', 'live', 72)
+  values ('Spring Member-Guest 2026', 'LeBaron Hills CC · April 5–6, 2026 · Day 2 of 2 · 24 Players', 'live', 72)
   returning id into t_id;
 
   -- Player 1: Dave R.  HCP 4.2  — strong round, -9 net
@@ -84,12 +84,14 @@ begin
     (e3_id,10,5),(e3_id,11,3),(e3_id,12,4),(e3_id,13,3),(e3_id,14,4),
     (e3_id,15,5),(e3_id,16,4),(e3_id,17,4),(e3_id,18,4);
 
-  -- Player 4: Jack S.  HCP 8.4  — -2 net, only 9 holes (in progress)
+  -- Player 4: Jack S.  HCP 8.4 → phcp 7 → gross 73 → net 66 → net_vs_par -6
   insert into tournament_entries (tournament_id, player_name, player_initials, handicap_index)
   values (t_id, 'Jack S.', 'JS', 8.4) returning id into e4_id;
   insert into tournament_scores (entry_id, hole_number, strokes) values
-    (e4_id,1,4),(e4_id,2,4),(e4_id,3,4),(e4_id,4,3),(e4_id,5,4),
-    (e4_id,6,4),(e4_id,7,3),(e4_id,8,3),(e4_id,9,5);
+    (e4_id, 1,4),(e4_id, 2,4),(e4_id, 3,5),(e4_id, 4,3),(e4_id, 5,4),
+    (e4_id, 6,4),(e4_id, 7,4),(e4_id, 8,3),(e4_id, 9,5),
+    (e4_id,10,5),(e4_id,11,3),(e4_id,12,4),(e4_id,13,3),(e4_id,14,5),
+    (e4_id,15,5),(e4_id,16,4),(e4_id,17,4),(e4_id,18,4);
 
   -- Player 5: C. Rivera  HCP 7.5  — even par net
   insert into tournament_entries (tournament_id, player_name, player_initials, handicap_index)
