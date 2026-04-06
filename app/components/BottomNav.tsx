@@ -1,5 +1,9 @@
 'use client'
+import { useState, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
+
+const LS_KEY = 'clubhouse_last_club_visit'
 
 const NAV_ITEMS = [
   {
@@ -68,6 +72,34 @@ const NAV_ITEMS = [
 export default function BottomNav() {
   const pathname = usePathname()
   const router   = useRouter()
+  const [hasUnread, setHasUnread] = useState(false)
+
+  // On mount: compare latest feed post timestamp against last club visit
+  useEffect(() => {
+    async function checkUnread() {
+      const { data } = await supabase
+        .from('feed_posts')
+        .select('created_at')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single()
+
+      if (!data) return
+
+      const lastVisit = localStorage.getItem(LS_KEY)
+      // Show badge if there's a post newer than the last time the user visited /club
+      setHasUnread(!lastVisit || new Date(data.created_at) > new Date(lastVisit))
+    }
+    checkUnread()
+  }, [])
+
+  // When user navigates to /club, record the visit and clear the badge
+  useEffect(() => {
+    if (pathname === '/club') {
+      localStorage.setItem(LS_KEY, new Date().toISOString())
+      setHasUnread(false)
+    }
+  }, [pathname])
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 border-t"
@@ -75,13 +107,23 @@ export default function BottomNav() {
       <div className="flex items-stretch">
         {NAV_ITEMS.map(item => {
           const active = pathname === item.path || (item.path !== '/' && pathname.startsWith(item.path))
+          const showBadge = item.path === '/club' && hasUnread && !active
           return (
             <button
               key={item.path}
               onClick={() => router.push(item.path)}
               className="flex-1 flex flex-col items-center justify-center py-2 pb-5 gap-0.5"
             >
-              {item.icon(active)}
+              {/* Icon wrapper — position:relative so the gold dot can be absolutely placed */}
+              <span className="relative">
+                {item.icon(active)}
+                {showBadge && (
+                  <span
+                    className="absolute top-0 right-0 w-2 h-2 rounded-full"
+                    style={{ background: '#c9a84c', transform: 'translate(25%, -25%)' }}
+                  />
+                )}
+              </span>
               <span className="text-[10px] font-medium"
                 style={{ color: active ? '#c9a84c' : '#94a3b8' }}>
                 {item.label}

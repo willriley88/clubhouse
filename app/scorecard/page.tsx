@@ -601,7 +601,7 @@ export default function ScorecardPage() {
               onClick={async () => {
                 const vspar = shareGross - 72
                 const label = vspar === 0 ? 'E' : vspar > 0 ? `+${vspar}` : String(vspar)
-                const text = `Shot ${shareGross} (${label}) at LeBaron Hills CC today via Clubhouse \u26f3`
+                const text = `Shot ${shareGross} (${label}) at LeBaron Hills CC via Clubhouse \uD83C\uDFC7`
                 if (navigator.share) {
                   try { await navigator.share({ text }) } catch {}
                 } else {
