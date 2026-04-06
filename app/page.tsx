@@ -15,7 +15,7 @@ type Round = {
   id: string
   played_at: string
   format: string
-  scores: { strokes: number; holes: { par: number } }[]
+  scores: { strokes: number; holes: { par: number; hole_number: number }[] }[]
 }
 
 export default function HomePage() {
@@ -57,10 +57,13 @@ export default function HomePage() {
           const round = rounds[0]
           const { data: scores } = await supabase
             .from('scores')
-            .select('strokes, holes(par)')
+            .select('strokes, holes(par, hole_number)')
             .eq('round_id', round.id)
-            .order('holes(hole_number)')
-          setLastRound({ ...round, scores: (scores || []) as any })
+          // sort by hole_number so positional access is correct
+          const sorted = (scores || []).slice().sort(
+            (a: any, b: any) => (a.holes?.[0]?.hole_number ?? 0) - (b.holes?.[0]?.hole_number ?? 0)
+          )
+          setLastRound({ ...round, scores: sorted as any })
         }
       } else {
         // Guest
@@ -85,33 +88,19 @@ export default function HomePage() {
     }
   }
 
-  // Score color for last round bubbles
-  function scoreColor(strokes: number, par: number) {
-    const d = strokes - par
-    if (d <= -2) return '#f59e0b'  // eagle
-    if (d === -1) return '#ef4444' // birdie
-    if (d === 0)  return '#e2e8f0' // par
-    if (d === 1)  return '#334155' // bogey
-    return '#94a3b8'               // double+
-  }
-  function scoreTextColor(strokes: number, par: number) {
-    const d = strokes - par
-    if (d === 0) return '#475569'
-    return 'white'
-  }
 
   const displayName = profile?.full_name || editName || 'Guest'
   const handicap    = profile?.handicap
 
   // Last round total + net
   const lastGross = lastRound?.scores.reduce((a, s) => a + s.strokes, 0) ?? 0
-  const lastPar = lastRound?.scores.reduce((a, s) => a + ((s.holes as any)?.par || 0), 0) || 72
+  const lastPar = lastRound?.scores.reduce((a: number, s) => a + (s.holes?.[0]?.par ?? 0), 0) || 72
 
   return (
     <main className="min-h-screen pb-24" style={{ background: '#f1f5f9' }}>
 
       {/* ── HEADER ── */}
-      <div className="px-4 pt-12 pb-5" style={{ background: '#152644' }}>
+      <div className="px-4 pt-2 pb-5" style={{ background: '#152644' }}>
         <div className="flex justify-between items-center mb-4">
           {/* Hamburger */}
           <button className="flex flex-col gap-1.5">
@@ -121,11 +110,7 @@ export default function HomePage() {
           </button>
 
           {/* Club name — Playfair italic */}
-          <h1 className="text-lg font-semibold text-white" style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
-            LeBaron Hills
-          </h1>
-
-          {/* Avatar */}
+          <img src="/lebaron-logo-transparent-gold.png" alt="LeBaron Hills" className="h-40 object-contain" />          {/* Avatar */}
           <button
             onClick={() => user ? router.push('/profile') : router.push('/login')}
             className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2"
@@ -198,38 +183,114 @@ export default function HomePage() {
 
       <div className="px-4 pt-4 space-y-4">
 
-        {/* ── LAST ROUND ── only show if user has rounds */}
-        {!loadingRound && lastRound && lastRound.scores.length > 0 && (
-          <div>
-            <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-2">Last Round</p>
-            <div className="bg-white rounded-2xl p-4 shadow-sm">
-              <p className="text-sm font-semibold text-slate-700 mb-3">
-                LeBaron Hills CC · {new Date(lastRound.played_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · {
-                  lastRound.scores.length <= 9 ? 'Front 9' : 'Full 18'
-                }
-              </p>
+       {/* ── SCORECARD CARD ── */}
+        <div>
+          <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-2">
+            {lastRound ? 'Last Round' : 'Scorecard'}
+          </p>
+          <button
+            onClick={() => router.push(lastRound ? '/rounds' : '/scorecard')}
+            className="w-full bg-white rounded-2xl shadow-sm overflow-hidden text-left">
 
-              {/* Score bubbles */}
-              <div className="flex gap-1.5 flex-wrap mb-2">
-                {lastRound.scores.map((s, i) => (
-                  <div key={i}
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
-                    style={{ background: scoreColor(s.strokes, (s.holes as any)?.par ?? 4), color: scoreTextColor(s.strokes, (s.holes as any)?.par ?? 4) }}>
-                    {s.strokes}
-                  </div>
-                ))}
+            {/* Card header */}
+            <div className="px-4 py-3 border-b border-slate-100 flex justify-between items-center">
+              <div>
+                <p className="text-sm font-bold text-slate-700">LeBaron Hills CC</p>
+                <p className="text-xs text-slate-400">
+                  {lastRound
+                    ? new Date(lastRound.played_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                    : 'Blue Tees · Par 72'}
+                </p>
               </div>
-
-              <div className="flex justify-between items-center">
-                <p className="text-xs text-slate-400">{lastGross} gross</p>
-                <button onClick={() => router.push('/rounds')}
-                  className="text-xs font-semibold" style={{ color: '#c9a84c' }}>
-                  View History →
-                </button>
-              </div>
+              {lastRound && (
+                <div className="text-right">
+                  <div className="text-lg font-bold" style={{ color: '#152644' }}>{lastGross}</div>
+                  <div className="text-xs text-slate-400">Gross</div>
+                </div>
+              )}
             </div>
-          </div>
-        )}
+
+            {/* Column headers */}
+            <div className="grid border-b border-slate-100" style={{ gridTemplateColumns: '28px repeat(9, 1fr) 28px repeat(9, 1fr) 36px' }}>
+              <div className="py-1.5 text-[9px] font-bold text-slate-400 text-center" />
+              {Array.from({ length: 9 }, (_, i) => (
+                <div key={i} className="py-1.5 text-[9px] font-bold text-center" style={{ color: '#152644' }}>{i + 1}</div>
+              ))}
+              <div className="py-1.5 text-[9px] font-bold text-center bg-slate-50" style={{ color: '#152644' }}>Out</div>
+              {Array.from({ length: 9 }, (_, i) => (
+                <div key={i + 9} className="py-1.5 text-[9px] font-bold text-center" style={{ color: '#152644' }}>{i + 10}</div>
+              ))}
+              <div className="py-1.5 text-[9px] font-bold text-center bg-slate-50" style={{ color: '#152644' }}>Tot</div>
+            </div>
+
+            {/* Par row */}
+            {(() => {
+              const pars = [4,4,5,3,4,4,4,3,5,5,3,4,3,4,5,4,4,4]
+              const front = pars.slice(0,9).reduce((a,v)=>a+v,0)
+              const total = pars.reduce((a,v)=>a+v,0)
+              return (
+                <div className="grid border-b border-slate-100" style={{ gridTemplateColumns: '28px repeat(9, 1fr) 28px repeat(9, 1fr) 36px' }}>
+                  <div className="py-1.5 text-[9px] text-slate-400 text-center">Par</div>
+                  {pars.slice(0,9).map((p, i) => (
+                    <div key={i} className="py-1.5 text-[9px] text-center text-slate-500">{p}</div>
+                  ))}
+                  <div className="py-1.5 text-[9px] text-center font-bold bg-slate-50 text-slate-600">{front}</div>
+                  {pars.slice(9).map((p, i) => (
+                    <div key={i+9} className="py-1.5 text-[9px] text-center text-slate-500">{p}</div>
+                  ))}
+                  <div className="py-1.5 text-[9px] text-center font-bold bg-slate-50 text-slate-600">{total}</div>
+                </div>
+              )
+            })()}
+
+            {/* Score row */}
+            {(() => {
+              const pars = [4,4,5,3,4,4,4,3,5,5,3,4,3,4,5,4,4,4]
+              const allScores = Array.from({ length: 18 }, (_, i) => lastRound?.scores[i]?.strokes ?? null)
+              const frontTotal = allScores.slice(0,9).reduce((a: number,v)=>a+(v??0),0)
+              const grandTotal = allScores.reduce((a: number,v)=>a+(v??0),0)
+              const anyFront = allScores.slice(0,9).some(v=>v!==null)
+              const anyAll   = allScores.some(v=>v!==null)
+
+              function ScoreCell({ strokes, par }: { strokes: number|null, par: number }) {
+                if (strokes === null) return <span className="text-[9px] text-slate-300">—</span>
+                const diff = strokes - par
+                return (
+                  <span className={`w-5 h-5 flex items-center justify-center text-[9px] font-bold
+                    ${diff <= -1 ? 'rounded-full border border-slate-800' :
+                      diff === 1  ? 'rounded-sm border border-slate-800' :
+                      diff >= 2   ? 'rounded-sm border-2 border-double border-slate-800' : ''}`}
+                    style={{ color: '#152644' }}>
+                    {strokes}
+                  </span>
+                )
+              }
+
+              return (
+                  <div className="grid" style={{ gridTemplateColumns: '28px repeat(9, 1fr) 28px repeat(9, 1fr) 36px' }}>
+                    <div className="py-2 text-[9px] text-slate-400 text-center">Scr</div>
+                    {allScores.slice(0,9).map((s, i) => (
+                      <div key={i} className="py-2 flex items-center justify-center">
+                        <ScoreCell strokes={s} par={pars[i]} />
+                      </div>
+                    ))}
+                    <div className="py-2 text-[9px] font-bold text-center bg-slate-50" style={{ color: '#152644' }}>
+                      {anyFront ? frontTotal : '—'}
+                    </div>
+                    {allScores.slice(9).map((s, i) => (
+                      <div key={i+9} className="py-2 flex items-center justify-center">
+                        <ScoreCell strokes={s} par={pars[i+9]} />
+                      </div>
+                    ))}
+                    <div className="py-2 text-[9px] font-bold text-center bg-slate-50" style={{ color: '#152644' }}>
+                      {anyAll ? grandTotal : '—'}
+                    </div>
+                  </div>
+                )
+              })()}
+
+          </button>
+        </div>
 
         {/* ── EVENTS ── placeholder card */}
         <div>
@@ -275,10 +336,8 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-
       </div>
-
-      <BottomNav />
-    </main>
+    <BottomNav />
+  </main>
   )
 }
