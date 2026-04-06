@@ -177,7 +177,7 @@ export default function HomePage() {
           </p>
 
           {/* Stats row */}
-          <div className="flex gap-6">
+          <div className="flex items-end gap-6">
             <div>
               <div className="text-2xl font-bold" style={{ color: '#c9a84c', fontFamily: 'Georgia, serif' }}>
                 {handicap !== null && handicap !== undefined ? handicap : '—'}
@@ -198,6 +198,17 @@ export default function HomePage() {
               </div>
               <div className="text-[10px] uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>Last</div>
             </div>
+            {user && (
+              <div className="flex-1 text-right">
+                <button
+                  onClick={() => router.push('/profile')}
+                  className="text-[10px] uppercase tracking-widest"
+                  style={{ color: 'rgba(255,255,255,0.35)' }}
+                >
+                  Profile →
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
