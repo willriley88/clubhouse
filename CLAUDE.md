@@ -208,7 +208,6 @@ points = max(0, 2 + par - (gross_strokes - extra_strokes))
 
 ### Known Issues
 - `COURSE_ID` is hardcoded as a constant — should be dynamic
-- Client-side `lib/supabase.ts` uses standard `createClient` (localStorage sessions); session refresh won't update the middleware cookie automatically. Full fix: migrate to `createBrowserClient` from `@supabase/ssr`
 - Dual-boot EFI issue on dev machine (unrelated to app)
 
 ---
