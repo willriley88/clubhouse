@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import BottomNav from '../components/BottomNav'
 
+const COURSE_ID_FALLBACK = 'b0000000-0000-0000-0000-000000000001'
+
 type FeedPost = {
   id: string
   author_name: string
@@ -22,6 +24,17 @@ type TeeSlot = {
   max_players: number
 }
 
+type GinRequest = {
+  id: string
+  profile_id: string
+  tee_time: string
+  note: string
+  author_name: string
+  is_filled: boolean
+  filled_by: string | null
+  created_at: string
+}
+
 function relativeTime(ts: string): string {
   const diff = Date.now() - new Date(ts).getTime()
   const mins = Math.floor(diff / 60000)
@@ -33,7 +46,6 @@ function relativeTime(ts: string): string {
   return `${days}d ago`
 }
 
-// Deterministic avatar color from initials — admin gets brand colors
 function avatarStyle(postType: string, initials: string): { bg: string; color: string } {
   if (postType === 'admin') return { bg: '#152644', color: '#c9a84c' }
   const palette = [
@@ -46,94 +58,99 @@ function avatarStyle(postType: string, initials: string): { bg: string; color: s
   return palette[idx]
 }
 
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/)
+  if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+  return name.slice(0, 2).toUpperCase()
+}
+
 export default function Club() {
   const router = useRouter()
-  const [feed, setFeed]           = useState<FeedPost[]>([])
-  const [teeSheet, setTeeSheet]   = useState<TeeSlot[]>([])
-  const [user, setUser]           = useState<any>(null)
-  const [joiningId, setJoiningId] = useState<string | null>(null) // slot being joined
-  const [postText, setPostText]   = useState('')
-  const [submitting, setSubmitting] = useState(false)
+  const [feed,        setFeed]        = useState<FeedPost[]>([])
+  const [teeSheet,    setTeeSheet]    = useState<TeeSlot[]>([])
+  const [ginRequests, setGinRequests] = useState<GinRequest[]>([])
+  const [user,        setUser]        = useState<any>(null)
+  const [clubId,      setClubId]      = useState(COURSE_ID_FALLBACK)
+  const [joiningId,   setJoiningId]   = useState<string | null>(null)
+  const [postText,    setPostText]    = useState('')
+  const [submitting,  setSubmitting]  = useState(false)
+
+  // GIN sheet state
+  const [ginSheetOpen, setGinSheetOpen] = useState(false)
+  const [ginTeeTime,   setGinTeeTime]   = useState('')
+  const [ginNote,      setGinNote]      = useState('')
+  const [ginPosting,   setGinPosting]   = useState(false)
+  const [fillingId,    setFillingId]    = useState<string | null>(null)
 
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0]
 
-    // Fetch data and current user in parallel
-    Promise.all([
-      supabase
-        .from('feed_posts')
-        .select('id, author_name, author_initials, post_type, content, created_at')
-        .order('created_at', { ascending: false })
-        .limit(20),
-      supabase
-        .from('tee_sheet')
-        .select('id, tee_date, tee_time, tee_order, players, max_players')
-        .eq('tee_date', today)
-        .order('tee_order'),
-      supabase.auth.getUser(),
-    ]).then(([{ data: postRows }, { data: slotRows }, { data: authData }]) => {
+    async function load() {
+      // Resolve club ID dynamically
+      const { data: course } = await supabase
+        .from('courses').select('id').eq('name', 'LeBaron Hills CC').single()
+      const cId = course?.id ?? COURSE_ID_FALLBACK
+      setClubId(cId)
+
+      // Fetch all data + auth in parallel
+      const [{ data: postRows }, { data: slotRows }, { data: authData }, { data: ginRows }] =
+        await Promise.all([
+          supabase
+            .from('feed_posts')
+            .select('id, author_name, author_initials, post_type, content, created_at')
+            .order('created_at', { ascending: false })
+            .limit(20),
+          supabase
+            .from('tee_sheet')
+            .select('id, tee_date, tee_time, tee_order, players, max_players')
+            .eq('tee_date', today)
+            .order('tee_order'),
+          supabase.auth.getUser(),
+          supabase
+            .from('gin_requests')
+            .select('id, profile_id, tee_time, note, author_name, is_filled, filled_by, created_at')
+            .eq('club_id', cId)
+            .eq('is_filled', false)              // only show unfilled requests
+            .order('created_at', { ascending: false })
+            .limit(10),
+        ])
+
       setFeed(postRows ?? [])
       setTeeSheet(slotRows ?? [])
       setUser(authData.user)
-    })
+      setGinRequests((ginRows ?? []) as GinRequest[])
+    }
+    load()
   }, [])
 
   async function handleJoin(slot: TeeSlot) {
-    if (!user) {
-      router.push('/login')
-      return
-    }
+    if (!user) { router.push('/login'); return }
 
-    // Prevent double-joining the same slot
     const playerList = slot.players ? slot.players.split(',').map(p => p.trim()).filter(Boolean) : []
-    const openSpots  = slot.max_players - playerList.length
-    if (openSpots <= 0) return
+    if (slot.max_players - playerList.length <= 0) return
 
     setJoiningId(slot.id)
-
-    // Get display name from profile
     const { data: profile } = await supabase
-      .from('profiles')
-      .select('full_name')
-      .eq('id', user.id)
-      .single()
-
+      .from('profiles').select('full_name').eq('id', user.id).single()
     const name = profile?.full_name || user.email?.split('@')[0] || 'Member'
 
-    // Guard: don't add if already in this slot
     if (playerList.some(p => p.toLowerCase() === name.toLowerCase())) {
       setJoiningId(null)
       return
     }
 
     const newPlayers = playerList.length > 0 ? `${slot.players}, ${name}` : name
-
     const { error } = await supabase
-      .from('tee_sheet')
-      .update({ players: newPlayers })
-      .eq('id', slot.id)
-
+      .from('tee_sheet').update({ players: newPlayers }).eq('id', slot.id)
     if (!error) {
-      // Optimistic update
-      setTeeSheet(prev =>
-        prev.map(s => s.id === slot.id ? { ...s, players: newPlayers } : s)
-      )
+      setTeeSheet(prev => prev.map(s => s.id === slot.id ? { ...s, players: newPlayers } : s))
     }
-
     setJoiningId(null)
-  }
-
-  function getInitials(name: string): string {
-    const parts = name.trim().split(/\s+/)
-    if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-    return name.slice(0, 2).toUpperCase()
   }
 
   async function handlePost() {
     if (!postText.trim() || submitting || !user) return
     setSubmitting(true)
-
-    // Get display name from profile for the post author fields
     const { data: profile } = await supabase
       .from('profiles').select('full_name').eq('id', user.id).single()
     const name     = profile?.full_name || user.email?.split('@')[0] || 'Member'
@@ -144,12 +161,58 @@ export default function Club() {
       .insert({ author_name: name, author_initials: initials, post_type: 'member', content: postText.trim() })
       .select('id, author_name, author_initials, post_type, content, created_at')
       .single()
-
     if (!error && data) {
-      setFeed(prev => [data as FeedPost, ...prev]) // optimistic prepend
+      setFeed(prev => [data as FeedPost, ...prev])
       setPostText('')
     }
     setSubmitting(false)
+  }
+
+  async function handleGinPost() {
+    if (!ginTeeTime.trim() || ginPosting || !user) return
+    setGinPosting(true)
+    const { data: profile } = await supabase
+      .from('profiles').select('full_name').eq('id', user.id).single()
+    const name = profile?.full_name || user.email?.split('@')[0] || 'Member'
+
+    const { data, error } = await supabase
+      .from('gin_requests')
+      .insert({
+        profile_id:  user.id,
+        club_id:     clubId,
+        tee_time:    ginTeeTime.trim(),
+        note:        ginNote.trim(),
+        author_name: name,
+      })
+      .select('id, profile_id, tee_time, note, author_name, is_filled, filled_by, created_at')
+      .single()
+
+    if (!error && data) {
+      setGinRequests(prev => [data as GinRequest, ...prev])
+      setGinTeeTime('')
+      setGinNote('')
+      setGinSheetOpen(false)
+    }
+    setGinPosting(false)
+  }
+
+  async function handleFillGin(req: GinRequest) {
+    if (!user || fillingId) return
+    setFillingId(req.id)
+    const { data: profile } = await supabase
+      .from('profiles').select('full_name').eq('id', user.id).single()
+    const name = profile?.full_name || user.email?.split('@')[0] || 'Member'
+
+    const { error } = await supabase
+      .from('gin_requests')
+      .update({ is_filled: true, filled_by: name })
+      .eq('id', req.id)
+
+    if (!error) {
+      // Remove from list — is_filled=true requests are not shown
+      setGinRequests(prev => prev.filter(r => r.id !== req.id))
+    }
+    setFillingId(null)
   }
 
   return (
@@ -161,12 +224,70 @@ export default function Club() {
       </div>
 
       <div className="px-4 mt-4 space-y-4">
+
+        {/* ── GIN BANNER ── */}
+        <button
+          onClick={() => user ? setGinSheetOpen(true) : router.push('/login')}
+          className="w-full rounded-2xl px-4 py-3.5 flex items-center gap-3 text-left"
+          style={{ background: '#c9a84c' }}
+        >
+          <span className="text-2xl">🤝</span>
+          <div>
+            <p className="text-sm font-bold" style={{ color: '#152644' }}>Need a playing partner?</p>
+            <p className="text-xs mt-0.5" style={{ color: 'rgba(21,38,68,0.65)' }}>Post a GIN — Guest in Need</p>
+          </div>
+          <svg className="ml-auto" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="#152644" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
+
+        {/* ── ACTIVE GIN REQUESTS ── */}
+        {ginRequests.length > 0 && (
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Open Requests</p>
+            <div className="space-y-2">
+              {ginRequests.map(req => (
+                <div key={req.id} className="bg-white rounded-2xl px-4 py-3 flex items-center gap-3">
+                  <div
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                    style={{ background: '#152644', color: '#c9a84c' }}
+                  >
+                    {getInitials(req.author_name)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-[#152644]">{req.author_name}</p>
+                    <p className="text-xs text-gray-500">
+                      {req.tee_time}{req.note ? ` · ${req.note}` : ''}
+                    </p>
+                    <p className="text-[10px] text-gray-400 mt-0.5">{relativeTime(req.created_at)}</p>
+                  </div>
+                  {/* Don't show "I'll join" to the original poster */}
+                  {user && req.profile_id !== user.id && (
+                    <button
+                      onClick={() => handleFillGin(req)}
+                      disabled={fillingId === req.id}
+                      className="text-xs font-bold px-3 py-1.5 rounded-xl flex-shrink-0"
+                      style={{
+                        background: fillingId === req.id ? '#e2e8f0' : '#c9a84c',
+                        color:      fillingId === req.id ? '#94a3b8' : '#152644',
+                      }}
+                    >
+                      {fillingId === req.id ? '…' : "I'll join"}
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-2 gap-3">
           {[
-            { label: 'Tee Times', icon: '🕐', sub: 'Book online' },
-            { label: 'Online Ordering', icon: '🍽️', sub: 'Sunset Grille' },
-            { label: 'Member Statements', icon: '📄', sub: 'View billing' },
-            { label: 'Staff Info', icon: '👤', sub: 'Contact staff' },
+            { label: 'Tee Times',         icon: '🕐', sub: 'Book online'    },
+            { label: 'Online Ordering',   icon: '🍽️', sub: 'Sunset Grille'  },
+            { label: 'Member Statements', icon: '📄', sub: 'View billing'    },
+            { label: 'Staff Info',        icon: '👤', sub: 'Contact staff'   },
           ].map(item => (
             <button key={item.label} className="bg-white rounded-2xl p-4 text-left">
               <div className="text-2xl mb-2">{item.icon}</div>
@@ -222,7 +343,6 @@ export default function Club() {
         <div>
           <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Club Feed</p>
 
-          {/* Compose box — shown when authenticated, /club is middleware-protected */}
           {user ? (
             <div className="bg-white rounded-2xl px-4 py-3 flex items-center gap-3 mb-2">
               <div
@@ -283,6 +403,69 @@ export default function Club() {
           </div>
         </div>
       </div>
+
+      {/* ── GIN POST SHEET ── */}
+      {ginSheetOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center"
+          style={{ background: 'rgba(0,0,0,0.5)' }}
+          onClick={e => { if (e.target === e.currentTarget) setGinSheetOpen(false) }}
+        >
+          <div className="bg-white rounded-t-3xl w-full max-w-lg p-6 pb-10">
+            <div className="w-10 h-1 rounded-full bg-gray-200 mx-auto mb-5" />
+            <h2 className="text-xl font-bold mb-1" style={{ color: '#152644' }}>Post a GIN</h2>
+            <p className="text-xs mb-5" style={{ color: '#94a3b8' }}>
+              Let members know you need a playing partner
+            </p>
+
+            <label className="block text-xs font-semibold uppercase tracking-widest mb-1.5"
+              style={{ color: '#475569' }}>
+              Tee Time *
+            </label>
+            <input
+              value={ginTeeTime}
+              onChange={e => setGinTeeTime(e.target.value)}
+              placeholder="e.g. 7:30 AM Saturday"
+              maxLength={50}
+              className="w-full text-sm px-4 py-3 rounded-xl mb-4 outline-none"
+              style={{ background: '#f1f5f9', color: '#1e293b' }}
+            />
+
+            <label className="block text-xs font-semibold uppercase tracking-widest mb-1.5"
+              style={{ color: '#475569' }}>
+              Note (optional)
+            </label>
+            <input
+              value={ginNote}
+              onChange={e => setGinNote(e.target.value)}
+              placeholder="e.g. Casual round, any handicap"
+              maxLength={120}
+              className="w-full text-sm px-4 py-3 rounded-xl mb-5 outline-none"
+              style={{ background: '#f1f5f9', color: '#1e293b' }}
+            />
+
+            <button
+              onClick={handleGinPost}
+              disabled={!ginTeeTime.trim() || ginPosting}
+              className="w-full py-4 rounded-2xl text-sm font-bold mb-3"
+              style={{
+                background: ginTeeTime.trim() && !ginPosting ? '#c9a84c' : '#e2e8f0',
+                color:      ginTeeTime.trim() && !ginPosting ? '#152644' : '#94a3b8',
+              }}
+            >
+              {ginPosting ? 'Posting…' : 'Post Request'}
+            </button>
+            <button
+              onClick={() => setGinSheetOpen(false)}
+              className="w-full py-2.5 text-sm text-center"
+              style={{ color: '#94a3b8' }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       <BottomNav />
     </main>
   )
