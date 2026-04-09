@@ -2,8 +2,14 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
-// Exchange the one-time magic-link code for a real session and persist it in cookies
-// so middleware can see it on subsequent requests.
+// NOTE: The OTP flow (signInWithOtp + verifyOtp) completes entirely client-side
+// and does NOT redirect through this callback. After verifyOtp() the session is
+// written directly to cookies by createBrowserClient in lib/supabase.ts, and the
+// login page redirects to / itself.
+//
+// This route is kept for backwards compatibility only — any magic-link emails that
+// were sent before the OTP migration will still land here and exchange their code
+// for a session. It can be removed once those links have expired (1 hour TTL).
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
