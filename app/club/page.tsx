@@ -4,8 +4,6 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import BottomNav from '../components/BottomNav'
 
-const COURSE_ID_FALLBACK = 'b0000000-0000-0000-0000-000000000001'
-
 type FeedPost = {
   id: string
   author_name: string
@@ -31,7 +29,6 @@ type GinRequest = {
   note: string
   author_name: string
   is_filled: boolean
-  filled_by: string | null
   created_at: string
 }
 
@@ -70,7 +67,6 @@ export default function Club() {
   const [teeSheet,    setTeeSheet]    = useState<TeeSlot[]>([])
   const [ginRequests, setGinRequests] = useState<GinRequest[]>([])
   const [user,        setUser]        = useState<any>(null)
-  const [clubId,      setClubId]      = useState(COURSE_ID_FALLBACK)
   const [joiningId,   setJoiningId]   = useState<string | null>(null)
   const [postText,    setPostText]    = useState('')
   const [submitting,  setSubmitting]  = useState(false)
@@ -86,12 +82,6 @@ export default function Club() {
     const today = new Date().toISOString().split('T')[0]
 
     async function load() {
-      // Resolve club ID dynamically
-      const { data: course } = await supabase
-        .from('courses').select('id').eq('name', 'LeBaron Hills CC').single()
-      const cId = course?.id ?? COURSE_ID_FALLBACK
-      setClubId(cId)
-
       // Fetch all data + auth in parallel
       const [{ data: postRows }, { data: slotRows }, { data: authData }, { data: ginRows }] =
         await Promise.all([
@@ -108,8 +98,7 @@ export default function Club() {
           supabase.auth.getUser(),
           supabase
             .from('gin_requests')
-            .select('id, profile_id, tee_time, note, author_name, is_filled, filled_by, created_at')
-            .eq('club_id', cId)
+            .select('id, profile_id, tee_time, note, author_name, is_filled, created_at')
             .eq('is_filled', false)              // only show unfilled requests
             .order('created_at', { ascending: false })
             .limit(10),
@@ -179,12 +168,11 @@ export default function Club() {
       .from('gin_requests')
       .insert({
         profile_id:  user.id,
-        club_id:     clubId,
         tee_time:    ginTeeTime.trim(),
         note:        ginNote.trim(),
         author_name: name,
       })
-      .select('id, profile_id, tee_time, note, author_name, is_filled, filled_by, created_at')
+      .select('id, profile_id, tee_time, note, author_name, is_filled, created_at')
       .single()
 
     if (!error && data) {
@@ -199,13 +187,10 @@ export default function Club() {
   async function handleFillGin(req: GinRequest) {
     if (!user || fillingId) return
     setFillingId(req.id)
-    const { data: profile } = await supabase
-      .from('profiles').select('full_name').eq('id', user.id).single()
-    const name = profile?.full_name || user.email?.split('@')[0] || 'Member'
 
     const { error } = await supabase
       .from('gin_requests')
-      .update({ is_filled: true, filled_by: name })
+      .update({ is_filled: true })
       .eq('id', req.id)
 
     if (!error) {
