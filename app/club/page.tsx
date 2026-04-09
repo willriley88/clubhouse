@@ -24,10 +24,10 @@ type Message = {
 }
 
 const CHANNEL_TABS = [
-  { label: 'Announcements',  slug: 'announcements',     adminOnly: true  },
-  { label: "Men's League",   slug: 'mens-league',        adminOnly: false },
-  { label: "Women's League", slug: 'womens-league',      adminOnly: false },
-  { label: 'Tournament',     slug: 'member-guest-2026',  adminOnly: false },
+  { label: 'Announcements',  slug: 'announcements'     },
+  { label: "Men's League",   slug: 'mens-league'       },
+  { label: "Women's League", slug: 'womens-league'     },
+  { label: 'Tournament',     slug: 'member-guest-2026' },
 ]
 
 function relativeTime(ts: string): string {
@@ -181,8 +181,6 @@ export default function Club() {
     setSending(false)
   }
 
-  const activeTab = CHANNEL_TABS.find(t => t.slug === activeChannel)!
-  const readOnly  = activeTab.adminOnly
 
   return (
     <main className="min-h-screen bg-gray-100 pb-24">
@@ -337,12 +335,8 @@ export default function Club() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input — hidden for read-only channels */}
-            {readOnly ? (
-              <div className="border-t border-gray-100 px-4 py-3">
-                <p className="text-xs text-center text-gray-400">Admin only · read-only channel</p>
-              </div>
-            ) : user ? (
+            {/* Post input — all channels open to authenticated members */}
+            {user ? (
               <div className="border-t border-gray-100 px-4 py-3 flex items-center gap-3">
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
