@@ -3,7 +3,7 @@ import { createSupabaseServerClient } from './supabase-server'
 const COURSE_ID_FALLBACK = 'b0000000-0000-0000-0000-000000000001'
 
 export type ClubConfig = {
-  club_id: string
+  course_id: string
   club_name: string
   primary_color: string
   secondary_color: string
@@ -13,7 +13,7 @@ export type ClubConfig = {
 
 // Hard-coded fallback so pages work before the migration runs or if DB is unreachable
 export const DEFAULT_CONFIG: ClubConfig = {
-  club_id:         COURSE_ID_FALLBACK,
+  course_id:       COURSE_ID_FALLBACK,
   club_name:       'LeBaron Hills CC',
   primary_color:   '#152644',
   secondary_color: '#c9a84c',
@@ -28,8 +28,8 @@ export async function getClubConfig(courseId?: string): Promise<ClubConfig> {
     const supabase = createSupabaseServerClient()
     const { data } = await supabase
       .from('club_config')
-      .select('club_id, club_name, primary_color, secondary_color, logo_path, location')
-      .eq('club_id', courseId ?? COURSE_ID_FALLBACK)
+      .select('course_id, club_name, primary_color, secondary_color, logo_path, location')
+      .eq('course_id', courseId ?? COURSE_ID_FALLBACK)
       .single()
     return data ?? DEFAULT_CONFIG
   } catch {
