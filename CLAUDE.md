@@ -3,7 +3,7 @@
 ## What This App Is
 A golf PWA called **Clubhouse** with a two-tier product model:
 - **General tier**: 18Birdies-style app — GPS, scorecard, handicap tracking, public courses
-- **Club tier**: B2B PWA sold to private country clubs as yearly licenses — member login, tee sheet, social feed, tournaments, chat, GIN (Guest in Need)
+- **Club tier**: B2B PWA sold to private country clubs as yearly licenses — member login, tee sheet, social feed, tournaments, channels/chat
 
 **Pilot club**: LeBaron Hills CC, Lakeville MA  
 **Key stakeholder**: Tom Rooney (head pro)  
@@ -38,9 +38,9 @@ app/
   layout.tsx            # Root layout (NO BottomNav — splash screen bug); PWA metadata
   scorecard/page.tsx    # Full 18-hole scorecard with live scoring
   tournament/page.tsx   # Tournament leaderboard — stroke + stableford tabs
-  club/page.tsx         # Club tab — tee sheet (Join button), feed (post submission)
+  club/page.tsx         # Club tab — quick links, tee sheet (Join), channels list, feed
+  club/channel/[slug]/page.tsx  # Per-channel real-time chat (auth-gated, admin-only for announcements)
   gps/page.tsx          # GPS tab — real hole data, prev/next nav, tee selector
-  chat/page.tsx         # Member chat — real-time Supabase Realtime, auth-gated
   rounds/page.tsx       # Round history — all saved rounds for logged-in user
   profile/page.tsx      # Member profile — handicap, round count, last 5 rounds
   login/page.tsx        # Magic link login page
@@ -62,6 +62,9 @@ supabase/migrations/
   20260406_tournaments.sql           # tournaments + entries + scores, seed
   20260406_demo_refresh.sql          # Run before demo: reseeds tee sheet to today,
                                      # fixes tournament scores + adds players
+  20260409_club_config.sql           # club_config table (course_id FK), LeBaron seed
+  20260409_chat.sql                  # messages table (realtime, authenticated-only)
+  20260409_channels.sql              # adds channel column to messages table
 
 middleware.ts           # Auth: /club and /rounds redirect to /login if unauthenticated
 ```
@@ -122,9 +125,7 @@ The splash screen only shows on first visit (sessionStorage). If BottomNav is in
 
 **club_config** — `id`, `course_id` uuid (FK→courses, unique), `club_name` text, `primary_color`, `secondary_color`, `logo_path`, `location`
 
-**messages** — `id`, `profile_id` uuid (FK→auth.users), `author_name`, `author_initials`, `message` text, `created_at`; realtime-enabled; authenticated read/insert
-
-**gin_requests** — `id`, `profile_id` uuid (FK→auth.users), `author_name`, `tee_time` text, `note` text, `created_at`, `is_filled` boolean default false
+**messages** — `id`, `profile_id` uuid (FK→auth.users), `author_name`, `author_initials`, `message` text, `channel` text (default `'general'`), `created_at`; realtime-enabled; authenticated read/insert; indexed on `channel`
 
 ### Constants
 - `COURSE_ID_FALLBACK = 'b0000000-0000-0000-0000-000000000001'` — used as fallback in scorecard and GPS if Supabase lookup fails; actual ID is fetched dynamically from `courses` where `name = 'LeBaron Hills CC'`
@@ -148,15 +149,14 @@ LeBaron values: rating `73.4`, slope `136`
 - **Round history** (`/rounds`): all rounds for logged-in user, gross + score vs par
 - **Profile** (`/profile`): handicap, round count, best gross, last 5 rounds; links from member card avatar
 - **Tournament** (`/tournament`): live leaderboard from Supabase; stroke + stableford tabs; proper WHS handicap calc
-- **Club** (`/club`): tee sheet with **Join button** (writes player name to Supabase, optimistic update); feed with **post submission** (members can post, inserts into feed_posts); COURSE_ID dynamic
+- **Club** (`/club`): 2×2 quick links (Tee Times → CPS Golf booking, Menu → `/lebaron-menu.pdf` + phone button `tel:5089235712`, Member Statements → Prophet billing, Staff Info → lebaronhills.com/about-us); tee sheet with **Join button** (writes player name to Supabase, optimistic update); **Channels section** (4 predefined channels with unread dots); feed with **post submission** (admin posts gold-bordered and sorted to top, then member posts by date desc)
+- **Channels** (`/club/channel/[slug]`): real-time per-channel chat using Supabase Realtime filtered by `channel` column; last 50 messages; optimistic send with dedup; writes `clubhouse_channel_${slug}` to localStorage on mount; `announcements` channel is read-only (input disabled, "Admin only" placeholder); 4 channels: `announcements`, `mens-league`, `womens-league`, `member-guest-2026`
 - **GPS** (`/gps`): real hole data from `holes`, prev/next nav, tee selector; **real GPS positioning** with `watchPosition`, Haversine formula, front/center/back yard distances; GPS status badge (green/yellow/red); `GREEN_COORDS` hardcoded (centered 41.8387°N, 70.9762°W — refine with on-course GPS walk)
 - **Auth enforcement**: middleware blocks `/club` + `/rounds` for unauthenticated users
 - **PWA**: manifest.json + apple-touch-icon — installable on iOS/Android home screen
-- **Score sharing**: after round saves, shows share bottom sheet with gross + differential; Web Share API with clipboard copy fallback; text: "Shot 78 (+6) at LeBaron Hills CC today via Clubhouse ⛳"
+- **Score sharing**: after round saves, shows share bottom sheet with gross + differential; Web Share API with clipboard copy fallback; text: "Shot 78 (+6) at LeBaron Hills CC via Clubhouse 🏌️"
 - **Handicap sparkline**: profile page shows inline SVG gold trend line for last 5 rounds (oldest-left, newest-right); labels ↓ Improving / ↑ Rising / — Steady
 - **Club tab badge**: gold dot on Club icon in BottomNav when there are unread feed posts; tracks last visit via `clubhouse_last_club_visit` in localStorage; clears on /club visit
-- **Chat** (`/chat`): real-time member chat via Supabase Realtime subscription on `messages` table; last 50 messages, optimistic send, auto-scroll; auth-guarded; Chat tab added to BottomNav (between Events and Club) with unread badge (`clubhouse_last_chat_visit`)
-- **GIN** (`/club`): gold "Guest in Need" banner at top of Club page; bottom sheet to post tee time + note to `gin_requests` table; active unfilled requests shown as cards with "I'll join" button (marks `is_filled=true`, records `filled_by`)
 - **Club config** (`lib/club-config.ts`): `getClubConfig(courseId?)` server helper + `ClubConfig` type; `club_config` table uses `course_id` FK; `app/layout.tsx` uses `generateMetadata()` to pull club name + brand color from DB
 
 ### GPS Notes
@@ -179,10 +179,10 @@ In Supabase dashboard → SQL Editor, run in order:
 2. `20260406_tournaments.sql` — tournament tables, seed Spring Member-Guest 2026
 3. `20260409_club_config.sql` — club_config table (course_id FK), seeded with LeBaron values
 4. `20260409_chat.sql` — messages table (realtime, authenticated-only)
-5. `20260409_gin.sql` — gin_requests table
+5. `20260409_channels.sql` — adds `channel` column + index to messages
 6. **`20260406_demo_refresh.sql`** — run EVERY TIME before demo: reseeds tee sheet with today's date, fixes tournament scores, adds O'Brien + Connelly entries
 
-> Note: `20260407_club_config.sql` and `20260407_chat_gin.sql` are superseded by the 20260409 files above — skip them.
+> Note: `20260407_club_config.sql` and `20260407_chat_gin.sql` are superseded by the 20260409 files — skip them.
 
 ---
 
@@ -191,6 +191,7 @@ In Supabase dashboard → SQL Editor, run in order:
 2. Tournament "Today" tab with per-day scores
 3. Tee sheet double-booking guard (server-side check before update)
 4. Wire remaining pages to `getClubConfig()` (replaces hardcoded LeBaron strings)
+5. Copy `~/lebaron-menu-4/9.pdf` → `public/lebaron-menu.pdf` so Menu quick link works
 
 ## Longer-Term
 - Beta test with bag room staff
