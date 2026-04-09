@@ -38,8 +38,7 @@ app/
   layout.tsx            # Root layout (NO BottomNav — splash screen bug); PWA metadata
   scorecard/page.tsx    # Full 18-hole scorecard with live scoring
   tournament/page.tsx   # Tournament leaderboard — stroke + stableford tabs
-  club/page.tsx         # Club tab — quick links, tee sheet (Join), channels list, feed
-  club/channel/[slug]/page.tsx  # Per-channel real-time chat (auth-gated, admin-only for announcements)
+  club/page.tsx         # Club tab — quick links, tee sheet (Join), unified channel feed with pill switcher
   gps/page.tsx          # GPS tab — real hole data, prev/next nav, tee selector
   rounds/page.tsx       # Round history — all saved rounds for logged-in user
   profile/page.tsx      # Member profile — handicap, round count, last 5 rounds
@@ -149,8 +148,7 @@ LeBaron values: rating `73.4`, slope `136`
 - **Round history** (`/rounds`): all rounds for logged-in user, gross + score vs par
 - **Profile** (`/profile`): handicap, round count, best gross, last 5 rounds; links from member card avatar
 - **Tournament** (`/tournament`): live leaderboard from Supabase; stroke + stableford tabs; proper WHS handicap calc
-- **Club** (`/club`): 2×2 quick links (Tee Times → CPS Golf booking, Menu → `/lebaron-menu.pdf` + phone button `tel:5089235712`, Member Statements → Prophet billing, Staff Info → lebaronhills.com/about-us); tee sheet with **Join button** (writes player name to Supabase, optimistic update); **Channels section** (4 predefined channels with unread dots); feed with **post submission** (admin posts gold-bordered and sorted to top, then member posts by date desc)
-- **Channels** (`/club/channel/[slug]`): real-time per-channel chat using Supabase Realtime filtered by `channel` column; last 50 messages; optimistic send with dedup; writes `clubhouse_channel_${slug}` to localStorage on mount; `announcements` channel is read-only (input disabled, "Admin only" placeholder); 4 channels: `announcements`, `mens-league`, `womens-league`, `member-guest-2026`
+- **Club** (`/club`): 2×2 quick links (Tee Times → CPS Golf booking, Menu → `/lebaron-menu.pdf` + phone button `tel:5089235712`, Member Statements → Prophet billing, Staff Info → lebaronhills.com/about-us); tee sheet with **Join button** (writes player name to Supabase, optimistic update); **unified channel feed** with horizontal pill switcher (Announcements / Men's League / Women's League / Tournament); active pill navy+gold, inactive gray; messages from `messages` table filtered by channel slug; Supabase Realtime subscription per active tab; optimistic send with dedup; Announcements tab is read-only ("Admin only"); post input shown for all other tabs when authenticated
 - **GPS** (`/gps`): real hole data from `holes`, prev/next nav, tee selector; **real GPS positioning** with `watchPosition`, Haversine formula, front/center/back yard distances; GPS status badge (green/yellow/red); `GREEN_COORDS` hardcoded (centered 41.8387°N, 70.9762°W — refine with on-course GPS walk)
 - **Auth enforcement**: middleware blocks `/club` + `/rounds` for unauthenticated users
 - **PWA**: manifest.json + apple-touch-icon — installable on iOS/Android home screen
