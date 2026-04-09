@@ -14,7 +14,7 @@ A golf PWA called **Clubhouse** with a two-tier product model:
 
 ## Stack
 - **Framework**: Next.js 16 (App Router) with React 19
-- **Database + Auth**: Supabase (magic link auth only, no passwords)
+- **Database + Auth**: Supabase (OTP email code auth — no passwords, no magic links)
 - **Auth SSR**: `@supabase/ssr` — `createBrowserClient` in `lib/supabase.ts`, `createServerClient` in middleware + auth callback
 - **Styling**: Tailwind CSS v4
 - **Deployment**: Vercel (auto-deploy from GitHub `willriley88/clubhouse`)
@@ -42,8 +42,8 @@ app/
   gps/page.tsx          # GPS tab — real hole data, prev/next nav, tee selector
   rounds/page.tsx       # Round history — all saved rounds for logged-in user
   profile/page.tsx      # Member profile — handicap, round count, last 5 rounds
-  login/page.tsx        # Magic link login page
-  auth/callback/route.ts # Supabase auth callback — sets cookie-based session
+  login/page.tsx        # OTP login — step 1: email + Send Code; step 2: 6-digit code + Verify
+  auth/callback/route.ts # Legacy magic-link callback (kept for backwards compat, not used by OTP flow)
   components/
     BottomNav.tsx       # 5-tab nav — must be imported per-page, NOT in layout.tsx
 
@@ -87,7 +87,8 @@ The splash screen only shows on first visit (sessionStorage). If BottomNav is in
 - `lib/supabase.ts` uses `createBrowserClient` — client components (`'use client'`) only
 - `lib/supabase-server.ts` uses plain `createClient` — server components only
 - Middleware and auth callback use `createServerClient` from `@supabase/ssr` with cookies adapter
-- Auth uses magic links only — no password flow
+- Auth uses OTP email codes — `signInWithOtp({ email, options: { shouldCreateUser: true } })` sends 6-digit code; `verifyOtp({ email, token, type: 'email' })` completes login client-side; no callback redirect needed
+- Session persistence is automatic via `createBrowserClient` cookie sync — users stay logged in across page loads
 - RLS required on all new tables
 - Guest users: localStorage persistence via `clubhouse_guest` key
 - Migrations in `supabase/migrations/` — run manually in Supabase SQL editor
