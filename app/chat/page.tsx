@@ -4,8 +4,6 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import BottomNav from '../components/BottomNav'
 
-const COURSE_ID_FALLBACK = 'b0000000-0000-0000-0000-000000000001'
-
 type Message = {
   id: string
   profile_id: string
@@ -36,7 +34,6 @@ function formatTime(ts: string): string {
 export default function Chat() {
   const router = useRouter()
   const [user,        setUser]        = useState<any>(null)
-  const [clubId,      setClubId]      = useState(COURSE_ID_FALLBACK)
   const [messages,    setMessages]    = useState<Message[]>([])
   const [input,       setInput]       = useState('')
   const [sending,     setSending]     = useState(false)
@@ -50,28 +47,21 @@ export default function Chat() {
       if (!u) { router.push('/login'); return }
       setUser(u)
 
-      // Resolve club ID
-      const { data: course } = await supabase
-        .from('courses').select('id').eq('name', 'LeBaron Hills CC').single()
-      const cId = course?.id ?? COURSE_ID_FALLBACK
-      setClubId(cId)
-
       // Load last 50 messages
       const { data } = await supabase
         .from('messages')
         .select('id, profile_id, message, author_name, author_initials, created_at')
-        .eq('club_id', cId)
         .order('created_at', { ascending: true })
         .limit(50)
       setMessages((data ?? []) as Message[])
       setLoading(false)
 
-      // Realtime subscription for new messages
+      // Realtime subscription — no club_id filter, single-club for now
       const channel = supabase
         .channel('club-chat')
         .on(
           'postgres_changes',
-          { event: 'INSERT', schema: 'public', table: 'messages', filter: `club_id=eq.${cId}` },
+          { event: 'INSERT', schema: 'public', table: 'messages' },
           payload => {
             setMessages(prev => {
               // Deduplicate — optimistic insert may already have this id
@@ -115,7 +105,7 @@ export default function Chat() {
 
     const { data: inserted } = await supabase
       .from('messages')
-      .insert({ profile_id: user.id, club_id: clubId, message: text, author_name: name, author_initials: initials })
+      .insert({ profile_id: user.id, message: text, author_name: name, author_initials: initials })
       .select('id, profile_id, message, author_name, author_initials, created_at')
       .single()
 
