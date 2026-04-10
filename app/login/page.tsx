@@ -15,8 +15,12 @@ export default function LoginPage() {
     if (!email.trim()) return
     setLoading(true)
     setError(null)
+    // Normalize email before sending — write trimmed value back to state so
+    // verifyOtp uses the exact same string (mobile autocomplete can append spaces)
+    const trimmedEmail = email.trim()
+    setEmail(trimmedEmail)
     const { error } = await supabase.auth.signInWithOtp({
-      email: email.trim(),
+      email: trimmedEmail,
       options: {
         shouldCreateUser: true,
         // emailRedirectTo must be undefined to send a 6-digit OTP code;
@@ -36,13 +40,16 @@ export default function LoginPage() {
     if (code.length !== 6) return
     setLoading(true)
     setError(null)
+    // Log exactly what's being sent so we can diagnose any mismatch server-side
+    console.log('verifyOtp attempt:', { email, token: code.trim() })
     const { error } = await supabase.auth.verifyOtp({
-      email: email.trim(),
-      token: code,
+      email,
+      token: code.trim(),
       type: 'email',
     })
     if (error) {
-      setError('Invalid code, try again')
+      // Show the exact Supabase error message for diagnostics
+      setError(error.message)
       setLoading(false)
     } else {
       // Session is now written to cookies by createBrowserClient; redirect home
