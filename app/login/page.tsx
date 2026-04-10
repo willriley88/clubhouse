@@ -100,8 +100,8 @@ export default function LoginPage() {
               value={email}
               onChange={e => setEmail(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') handleSendCode() }}
-              className="w-full border rounded-lg px-4 py-3 mb-4 text-sm outline-none"
-              style={{ borderColor: '#152644', color: '#152644' }}
+              className="w-full border rounded-lg px-4 py-3 mb-4 text-sm outline-none placeholder:opacity-50"
+              style={{ borderColor: '#152644', color: '#152644', backgroundColor: 'white' }}
             />
 
             {error && <p className="text-red-500 text-xs mb-3">{error}</p>}
@@ -132,8 +132,8 @@ export default function LoginPage() {
               value={code}
               onChange={e => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
               onKeyDown={e => { if (e.key === 'Enter') handleVerify() }}
-              className="w-full border rounded-lg px-4 py-3 mb-4 text-sm outline-none text-center font-mono tracking-widest"
-              style={{ borderColor: '#152644' }}
+              className="w-full border rounded-lg px-4 py-3 mb-4 text-sm outline-none text-center font-mono tracking-widest placeholder:opacity-50"
+              style={{ borderColor: '#152644', color: '#152644', backgroundColor: 'white' }}
               autoFocus
             />
 
