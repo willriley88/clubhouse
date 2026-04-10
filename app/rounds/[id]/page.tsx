@@ -44,6 +44,10 @@ export default function RoundDetailPage() {
 
   useEffect(() => {
     async function load() {
+      // Confirm session is active before querying RLS-protected tables
+      const { data: { session } } = await supabase.auth.getSession()
+      console.log('round detail session:', session?.user?.id ?? 'NO SESSION')
+
       // Fetch round metadata
       const { data: round } = await supabase
         .from('rounds')
@@ -57,6 +61,8 @@ export default function RoundDetailPage() {
         if (c?.[0]?.name) setCourseName(c[0].name)
       }
 
+      // supabase is the authenticated browser client from lib/supabase.ts
+      // (createBrowserClient) — it reads the session cookie set by verifyOtp
       const { data: scoreRows, error } = await supabase
         .from('scores')
         .select(`
@@ -88,7 +94,7 @@ export default function RoundDetailPage() {
           .filter((s: ScoreDetail) => s.hole_number > 0)
         setScores(details)
       } else {
-        console.log('scoreRows empty or null — roundId:', roundId, 'error:', error)
+        console.log('scoreRows empty or null — session:', session?.user?.id, 'roundId:', roundId, 'error:', error)
       }
 
       setLoading(false)
