@@ -61,40 +61,33 @@ export default function RoundDetailPage() {
         if (c?.[0]?.name) setCourseName(c[0].name)
       }
 
-      // supabase is the authenticated browser client from lib/supabase.ts
-      // (createBrowserClient) — it reads the session cookie set by verifyOtp
+      // scores.hole_id → holes is many-to-one; PostgREST returns holes as an
+      // object, not array. Handle both shapes for safety.
       const { data: scoreRows, error } = await supabase
         .from('scores')
-        .select(`
-          strokes,
-          putts,
-          hole_id,
-          holes (
-            hole_number,
-            par,
-            hcp_index,
-            yardage_blue
-          )
-        `)
+        .select(`strokes, putts, holes(hole_number, par, hcp_index, yardage_blue)`)
         .eq('round_id', roundId)
 
-      console.log('scoreRows:', scoreRows, 'error:', error)
-
       if (scoreRows && scoreRows.length > 0) {
-        scoreRows.sort((a: any, b: any) =>
-          (a.holes?.[0]?.hole_number ?? 0) - (b.holes?.[0]?.hole_number ?? 0)
-        )
+        scoreRows.sort((a: any, b: any) => {
+          const aH = Array.isArray(a.holes) ? a.holes[0] : a.holes
+          const bH = Array.isArray(b.holes) ? b.holes[0] : b.holes
+          return (aH?.hole_number ?? 0) - (bH?.hole_number ?? 0)
+        })
         const details: ScoreDetail[] = scoreRows
-          .map((s: any) => ({
-            hole_number: s.holes?.[0]?.hole_number ?? 0,
-            par:         s.holes?.[0]?.par ?? 4,
-            strokes:     s.strokes,
-            putts:       s.putts ?? null,
-          }))
+          .map((s: any) => {
+            const h = Array.isArray(s.holes) ? s.holes[0] : s.holes
+            return {
+              hole_number: h?.hole_number ?? 0,
+              par:         h?.par ?? 4,
+              strokes:     s.strokes,
+              putts:       s.putts ?? null,
+            }
+          })
           .filter((s: ScoreDetail) => s.hole_number > 0)
         setScores(details)
-      } else {
-        console.log('scoreRows empty or null — session:', session?.user?.id, 'roundId:', roundId, 'error:', error)
+      } else if (error) {
+        console.error('scores fetch error:', error)
       }
 
       setLoading(false)
