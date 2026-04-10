@@ -57,16 +57,20 @@ export default function RoundDetailPage() {
         if (c?.[0]?.name) setCourseName(c[0].name)
       }
 
-      // Fetch scores joined with hole data
-      const { data: scoreData } = await supabase
+      // Fetch scores joined with hole data — include hole_id so we can sort
+      // even if holes(hole_number) ordering isn't supported by this Supabase version
+      const { data: scoreData, error: scoreError } = await supabase
         .from('scores')
-        .select('strokes, putts, holes(hole_number, par)')
+        .select('strokes, putts, hole_id, holes(hole_number, par, hcp_index, yardage_blue)')
         .eq('round_id', roundId)
-        .order('holes(hole_number)')
 
-      if (scoreData) {
+      // Log raw response for diagnosis if something is wrong
+      console.log('round detail scores response:', { scoreData, scoreError, roundId })
+
+      if (scoreData && scoreData.length > 0) {
         const details: ScoreDetail[] = scoreData
           .map((s: any) => ({
+            // Supabase FK joins return arrays — access with [0]
             hole_number: s.holes?.[0]?.hole_number ?? 0,
             par:         s.holes?.[0]?.par ?? 4,
             strokes:     s.strokes,
@@ -291,7 +295,16 @@ export default function RoundDetailPage() {
 
       {!loading && scores.length === 0 && (
         <div className="mx-4 mt-8 bg-white rounded-2xl p-8 text-center shadow-sm">
-          <p className="text-sm font-semibold" style={{ color: '#152644' }}>No scores found for this round</p>
+          <p className="text-sm font-semibold mb-2" style={{ color: '#152644' }}>No hole data recorded</p>
+          <p className="text-xs mb-5" style={{ color: '#94a3b8' }}>
+            Score data could not be loaded for this round.
+          </p>
+          <button
+            onClick={() => router.push('/rounds')}
+            className="px-5 py-2 rounded-xl text-sm font-bold"
+            style={{ background: '#152644', color: '#c9a84c' }}>
+            ← Back to History
+          </button>
         </div>
       )}
 
