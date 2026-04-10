@@ -35,6 +35,7 @@ export default function HomePage() {
   const [user,         setUser]         = useState<any>(null)
   const [profile,      setProfile]      = useState<any>(null)
   const [lastRound,    setLastRound]    = useState<Round | null>(null)
+  const [roundCount,   setRoundCount]   = useState<number | null>(null)
   const [loadingRound, setLoadingRound] = useState(true)
   const [feedPosts,    setFeedPosts]    = useState<FeedPost[]>([])
   const [mounted,      setMounted]      = useState(false)
@@ -60,13 +61,20 @@ export default function HomePage() {
           setEditName(p.full_name || data.user.email?.split('@')[0] || 'Member')
         }
 
-        // Load last round with scores
-        const { data: rounds } = await supabase
-          .from('rounds')
-          .select('id, played_at, format')
-          .eq('profile_id', data.user.id)
-          .order('played_at', { ascending: false })
-          .limit(1)
+        // Load last round + total round count in parallel
+        const [{ data: rounds }, { count: rCount }] = await Promise.all([
+          supabase
+            .from('rounds')
+            .select('id, played_at, format')
+            .eq('profile_id', data.user.id)
+            .order('played_at', { ascending: false })
+            .limit(1),
+          supabase
+            .from('rounds')
+            .select('*', { count: 'exact', head: true })
+            .eq('profile_id', data.user.id),
+        ])
+        setRoundCount(rCount ?? 0)
 
         if (rounds && rounds.length > 0) {
           const round = rounds[0]
@@ -190,7 +198,7 @@ export default function HomePage() {
             </div>
             <div className="text-center">
               <div className="text-lg font-bold text-white">
-                {lastRound ? lastRound.scores.length : '—'}
+                {roundCount !== null ? roundCount : '—'}
               </div>
               <div className="text-[10px] uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>Rounds</div>
             </div>

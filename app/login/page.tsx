@@ -57,9 +57,31 @@ export default function LoginPage() {
     }
   }
 
+  function handleBack() {
+    // Fall back to home if there's no browser history to go back to
+    if (window.history.length > 1) {
+      router.back()
+    } else {
+      router.push('/')
+    }
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center"
+    <div className="min-h-screen flex items-center justify-center relative"
       style={{ backgroundColor: '#152644' }}>
+
+      {/* Back arrow — shown when redirected here from a protected route */}
+      <button
+        onClick={handleBack}
+        className="absolute top-6 left-4 flex items-center gap-1.5"
+        aria-label="Go back"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+
       <div className="bg-white rounded-2xl p-8 w-80 shadow-xl">
 
         {/* Branding */}
@@ -79,7 +101,7 @@ export default function LoginPage() {
               onChange={e => setEmail(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') handleSendCode() }}
               className="w-full border rounded-lg px-4 py-3 mb-4 text-sm outline-none"
-              style={{ borderColor: '#152644' }}
+              style={{ borderColor: '#152644', color: '#152644' }}
             />
 
             {error && <p className="text-red-500 text-xs mb-3">{error}</p>}
