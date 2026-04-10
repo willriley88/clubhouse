@@ -18,7 +18,15 @@ type ClubEvent = {
   created_at: string
 }
 
-type Tab = 'calendar' | 'events' | 'tournaments'
+type Tab = 'calendar' | 'events' | 'tournaments' | 'leaderboard'
+
+type LeaderboardEntry = {
+  rank: number
+  playerName: string
+  gross: number
+  toPar: number
+  playedAt: string
+}
 
 const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 const MONTHS_LONG  = ['January','February','March','April','May','June','July','August','September','October','November','December']
@@ -97,6 +105,8 @@ export default function Events() {
   const [events,      setEvents]      = useState<ClubEvent[]>([])
   const [loading,     setLoading]     = useState(true)
   const [expandedId,  setExpandedId]  = useState<string | null>(null)
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
+  const [loadingLb,   setLoadingLb]   = useState(false)
 
   // Calendar: current view month/year
   const now = new Date()
@@ -117,6 +127,43 @@ export default function Events() {
       })
   }, [])
 
+  // Fetch leaderboard when that tab is first opened
+  async function loadLeaderboard() {
+    if (leaderboard.length > 0) return // already loaded
+    setLoadingLb(true)
+    // Fetch 2026 rounds with profile name and scores
+    const { data: rounds } = await supabase
+      .from('rounds')
+      .select('id, played_at, profiles(full_name), scores(strokes, holes(par))')
+      .gte('played_at', '2026-01-01')
+      .lte('played_at', '2026-12-31')
+      .order('played_at', { ascending: false })
+      .limit(200)
+
+    if (!rounds) { setLoadingLb(false); return }
+
+    const entries: LeaderboardEntry[] = rounds
+      .map((r: any) => {
+        const name: string = r.profiles?.full_name || r.profiles?.[0]?.full_name || 'Member'
+        const scoreRows: any[] = r.scores ?? []
+        const gross = scoreRows.reduce((a: number, s: any) => a + (s.strokes ?? 0), 0)
+        // sum par — holes is many-to-one object per score row
+        const parTotal = scoreRows.reduce((a: number, s: any) => {
+          const h = Array.isArray(s.holes) ? s.holes[0] : s.holes
+          return a + (h?.par ?? 4)
+        }, 0)
+        return { playerName: name, gross, toPar: gross - parTotal, playedAt: r.played_at }
+      })
+      .filter(e => e.gross > 0)
+      // rank by lowest gross
+      .sort((a, b) => a.gross - b.gross)
+      .slice(0, 20)
+      .map((e, i) => ({ ...e, rank: i + 1 }))
+
+    setLeaderboard(entries)
+    setLoadingLb(false)
+  }
+
   // Reset selected date when month changes
   function goToPrevMonth() {
     setSelectedDate(null)
@@ -129,10 +176,11 @@ export default function Events() {
     else setViewMonth(m => m + 1)
   }
 
-  // Clear expanded item when switching tabs
+  // Clear expanded item when switching tabs; trigger leaderboard load on demand
   function switchTab(t: Tab) {
     setTab(t)
     setExpandedId(null)
+    if (t === 'leaderboard') loadLeaderboard()
   }
 
   const today = new Date().toISOString().split('T')[0]
@@ -162,16 +210,17 @@ export default function Events() {
       <div className="px-4 mt-4 space-y-4">
 
         {/* ── PILL SWITCHER ── */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
           {([
             ['calendar',    'Calendar'],
             ['events',      'Club Events'],
             ['tournaments', 'Tournaments'],
+            ['leaderboard', 'Leaderboard'],
           ] as [Tab, string][]).map(([t, label]) => (
             <button
               key={t}
               onClick={() => switchTab(t)}
-              className="flex-1 py-2 rounded-full text-xs font-semibold"
+              className="flex-shrink-0 py-2 px-3 rounded-full text-xs font-semibold"
               style={{
                 background: tab === t ? '#152644' : '#f1f5f9',
                 color:      tab === t ? '#c9a84c' : '#64748b',
@@ -426,6 +475,55 @@ export default function Events() {
                 )
               })
             )}
+          </div>
+        )}
+
+        {/* ── LEADERBOARD TAB ── */}
+        {tab === 'leaderboard' && (
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#94a3b8' }}>
+              Season Leaderboard · LeBaron Hills CC
+            </p>
+            <div className="bg-white rounded-2xl overflow-hidden">
+              {loadingLb ? (
+                <div className="px-4 py-8 text-center text-sm text-gray-400">Loading…</div>
+              ) : leaderboard.length === 0 ? (
+                <div className="px-4 py-8 text-center text-sm text-gray-400">No rounds recorded for 2026 yet</div>
+              ) : (
+                <>
+                  {/* Column header */}
+                  <div className="grid px-4 py-2 border-b border-gray-100"
+                    style={{ gridTemplateColumns: '32px 1fr 48px 48px 56px' }}>
+                    <span className="text-[10px] font-bold uppercase text-gray-400">#</span>
+                    <span className="text-[10px] font-bold uppercase text-gray-400">Player</span>
+                    <span className="text-[10px] font-bold uppercase text-gray-400 text-center">Gross</span>
+                    <span className="text-[10px] font-bold uppercase text-gray-400 text-center">+/−</span>
+                    <span className="text-[10px] font-bold uppercase text-gray-400 text-right">Date</span>
+                  </div>
+
+                  {leaderboard.map((entry, i) => {
+                    const toParStr = entry.toPar === 0 ? 'E' : entry.toPar > 0 ? `+${entry.toPar}` : String(entry.toPar)
+                    // gold = under par, green = even, slate = over
+                    const toParColor = entry.toPar < 0 ? '#c9a84c' : entry.toPar === 0 ? '#15803d' : '#64748b'
+                    const { month, day } = parseDateParts(entry.playedAt)
+                    const dateStr = `${MONTHS_SHORT[month - 1]} ${day}`
+                    const isLast = i === leaderboard.length - 1
+
+                    return (
+                      <div key={i}
+                        className={`grid items-center px-4 py-3 ${!isLast ? 'border-b border-gray-100' : ''}`}
+                        style={{ gridTemplateColumns: '32px 1fr 48px 48px 56px' }}>
+                        <span className="text-sm font-bold" style={{ color: i === 0 ? '#c9a84c' : '#94a3b8' }}>{entry.rank}</span>
+                        <span className="text-sm font-semibold truncate" style={{ color: '#152644' }}>{entry.playerName}</span>
+                        <span className="text-sm font-bold text-center" style={{ color: '#152644' }}>{entry.gross}</span>
+                        <span className="text-sm font-bold text-center" style={{ color: toParColor }}>{toParStr}</span>
+                        <span className="text-xs text-right" style={{ color: '#94a3b8' }}>{dateStr}</span>
+                      </div>
+                    )
+                  })}
+                </>
+              )}
+            </div>
           </div>
         )}
 
