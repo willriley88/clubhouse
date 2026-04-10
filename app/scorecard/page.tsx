@@ -231,7 +231,14 @@ export default function ScorecardPage() {
       )
     }
     const diff = ((total0 - teeData.rating) * 113) / teeData.slope
-    await supabase.from('rounds').update({ format: `stroke|diff:${diff.toFixed(1)}` }).eq('id', round.id)
+    // Use new dedicated columns (score_format + differential) introduced in
+    // 20260410_schema_cleanup.sql. Keep the legacy format string for backwards
+    // compat with any code that still reads it.
+    await supabase.from('rounds').update({
+      score_format: 'stroke',
+      differential: parseFloat(diff.toFixed(1)),
+      format: `stroke|diff:${diff.toFixed(1)}`,
+    }).eq('id', round.id)
     setSaving(false)
     setShareGross(total0)
     setShareDiff(diff)
