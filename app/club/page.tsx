@@ -68,6 +68,7 @@ export default function Club() {
   const [messageText,   setMessageText]   = useState('')
   const [sending,       setSending]       = useState(false)
   const [loadingMsgs,   setLoadingMsgs]   = useState(true)
+  const [menuToast,     setMenuToast]     = useState(false)
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -146,6 +147,22 @@ export default function Club() {
     setJoiningId(null)
   }
 
+  async function openMenu() {
+    // HEAD check first — if PDF is missing, show a toast instead of a blank tab
+    try {
+      const res = await fetch('/lebaron-menu.pdf', { method: 'HEAD' })
+      if (res.ok) {
+        window.open('/lebaron-menu.pdf', '_blank')
+      } else {
+        setMenuToast(true)
+        setTimeout(() => setMenuToast(false), 3000)
+      }
+    } catch {
+      setMenuToast(true)
+      setTimeout(() => setMenuToast(false), 3000)
+    }
+  }
+
   async function handleSend() {
     if (!messageText.trim() || sending || !user) return
     setSending(true)
@@ -206,10 +223,10 @@ export default function Club() {
             <div className="text-xs text-gray-400 mt-0.5">Book online</div>
           </button>
 
-          {/* Menu — main area opens PDF, phone icon calls the club */}
+          {/* Menu — HEAD-checks PDF first, shows toast if missing */}
           <div className="bg-white rounded-2xl p-4 relative">
             <button
-              onClick={() => window.open('/lebaron-menu.pdf', '_blank')}
+              onClick={openMenu}
               className="w-full text-left"
             >
               <div className="text-2xl mb-2">🍽️</div>
@@ -379,6 +396,14 @@ export default function Club() {
         </div>
 
       </div>
+      {/* Menu unavailable toast */}
+      {menuToast && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl text-sm font-semibold shadow-lg"
+          style={{ background: '#152644', color: '#c9a84c' }}>
+          Menu unavailable
+        </div>
+      )}
+
       <BottomNav />
     </main>
   )
