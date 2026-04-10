@@ -60,50 +60,48 @@ export default function RoundDetailPage() {
         if (c?.[0]?.name) setCourseName(c[0].name)
       }
 
-      // Confirmed-working query: include hole_id in select + order by hole_id
-      // so the join is unambiguous and rows arrive pre-sorted for a secondary
-      // hole_number sort below.
-      const { data: scoreRows, error } = await supabase
+      // Split into two queries — inline holes join triggers RLS on the holes
+      // table even though direct queries work fine (PostgREST nested selects
+      // run under the requesting user's policy context, not public read).
+
+      // Step 1: fetch scores for this round
+      const { data: scoreRows, error: scoresError } = await supabase
         .from('scores')
-        .select('strokes, putts, hole_id, holes(hole_number, par, hcp_index)')
+        .select('strokes, putts, hole_id')
         .eq('round_id', roundId)
-        .order('hole_id')
 
-      console.log('raw scoreRows:', JSON.stringify(scoreRows))
+      console.log('scores:', scoreRows, scoresError)
 
-      if (scoreRows && scoreRows.length > 0) {
-        // Secondary sort by hole_number from the join (hole_id order may not
-        // match hole_number order if IDs were inserted out of sequence)
-        scoreRows.sort((a: any, b: any) => {
-          const aH = Array.isArray(a.holes) ? a.holes[0] : a.holes
-          const bH = Array.isArray(b.holes) ? b.holes[0] : b.holes
-          return (aH?.hole_number ?? 0) - (bH?.hole_number ?? 0)
-        })
-
-        const details: ScoreDetail[] = scoreRows
-          .map((s: any) => {
-            // holes is many-to-one so PostgREST may return object or array —
-            // handle both shapes
-            const h = Array.isArray(s.holes) ? s.holes[0] : s.holes
-            return {
-              hole_number: h?.hole_number ?? 0,
-              par:         h?.par ?? 4,
-              strokes:     s.strokes,
-              putts:       s.putts ?? null,
-            }
-          })
-          .filter((s: ScoreDetail) => s.hole_number > 0)
-
-        // Guard: if we got rows but mapping produced nothing, log the raw
-        // shape so we can see what PostgREST actually returned
-        if (details.length === 0) {
-          console.warn('scoreRows mapped to empty — raw first row:', JSON.stringify(scoreRows[0]))
-        }
-
-        setScores(details)
-      } else if (error) {
-        console.error('scores fetch error:', error)
+      if (!scoreRows || scoreRows.length === 0) {
+        setLoading(false)
+        return
       }
+
+      // Step 2: fetch hole data for those hole_ids separately
+      const holeIds = scoreRows.map((s: any) => s.hole_id)
+      const { data: holeRows, error: holesError } = await supabase
+        .from('holes')
+        .select('id, hole_number, par, hcp_index')
+        .in('id', holeIds)
+
+      console.log('holes:', holeRows, holesError)
+
+      // Step 3: join in JS using a Map for O(1) lookup
+      const holeMap = new Map(holeRows?.map((h: any) => [h.id, h]) ?? [])
+      const details: ScoreDetail[] = scoreRows
+        .map((s: any) => {
+          const h = holeMap.get(s.hole_id)
+          return {
+            hole_number: h?.hole_number ?? 0,
+            par:         h?.par ?? 4,
+            strokes:     s.strokes,
+            putts:       s.putts ?? null,
+          }
+        })
+        .filter((s: ScoreDetail) => s.hole_number > 0)
+        .sort((a: ScoreDetail, b: ScoreDetail) => a.hole_number - b.hole_number)
+
+      setScores(details)
 
       setLoading(false)
     }
