@@ -81,7 +81,7 @@ The splash screen only shows on first visit (sessionStorage). If BottomNav is in
 - Always type `reduce` accumulators explicitly: `reduce((a: number, v) => ...)`
 - React Fragment keys: `<React.Fragment key={...}>` not `<> </>`
 - Avoid `any` where possible — use proper types
-- Supabase FK joins return **arrays**: `holes: { par: number }[]`. Access with `holes?.[0]?.par`
+- **FK join direction matters**: one-to-many (e.g. `rounds` → `scores`) returns arrays — use `?.[0]?.field`. Many-to-one (e.g. `scores.hole_id → holes`) returns a single object — use `const h = Array.isArray(s.holes) ? s.holes[0] : s.holes` to handle both safely
 
 ### Supabase
 - `lib/supabase.ts` uses `createBrowserClient` — client components (`'use client'`) only
@@ -98,23 +98,26 @@ The splash screen only shows on first visit (sessionStorage). If BottomNav is in
 - Tailwind for layout, spacing, and generic utilities
 - Rounded cards: `rounded-2xl`, consistent `px-4` gutters
 
+### Next.js Viewport
+- `themeColor` must be in a `viewport` export (`export const viewport = { themeColor: '...' }`) not inside `metadata` — Next.js 15+ warns and ignores it in metadata
+
 ---
 
 ## Supabase Schema
 
 ### Tables (current)
 
-**profiles** — `id` uuid (→ auth.users), `full_name` text, `handicap` numeric, `created_at`
+**profiles** — `id` uuid (→ auth.users), `full_name` text, `handicap` numeric, `created_at`, `updated_at`, `club_id` uuid (FK→courses, nullable — future multi-tenant)
 
 **courses** — `id` uuid, `name` text, `city`, `state`, `slope` integer (136), `rating` numeric (73.4)
 
 **holes** — `id`, `course_id`, `hole_number` 1–18, `par`, `hcp_index`, `yardage_blue/white/green/gold`
 
-**rounds** — `id`, `profile_id`, `course_id`, `played_at`, `format` (`'stroke'` or `'stroke|diff:2.3'`)
+**rounds** — `id`, `profile_id`, `course_id`, `played_at`, `updated_at`, `format` (legacy — `'stroke'` or `'stroke|diff:2.3'`), `score_format` text (`'stroke'`), `differential` numeric (WHS diff)
 
 **scores** — `id`, `round_id`, `hole_id` (FK→holes), `strokes`, `putts` (nullable)
 
-**feed_posts** — `id`, `author_name`, `author_initials`, `post_type` (`'admin'`|`'member'`), `content`, `created_at`
+**feed_posts** — `id`, `author_name`, `author_initials`, `post_type` (`'admin'`|`'member'`), `content`, `created_at`, `deleted_at` (nullable — soft delete)
 
 **tee_sheet** — `id`, `tee_date` date, `tee_time` text, `tee_order` integer, `players` text (comma-sep), `max_players` integer
 
@@ -147,12 +150,12 @@ LeBaron values: rating `73.4`, slope `136`
 ## Current State (as of April 2026 — demo-ready)
 
 ### What's Built & Real (Supabase-backed)
-- **Home** (`/`): member card (editable name/handicap), real last round mini scorecard, real club feed from `feed_posts`
+- **Home** (`/`): member card (editable name/handicap), real last round mini scorecard, real club feed from `feed_posts`; hamburger ☰ opens slide-in drawer — Membership Login (guest) / Sign Out (member), external club links, Profile + Round History when logged in
 - **Scorecard** (`/scorecard`): 18-hole entry, no-scroll bottom sheet with Eagle/Birdie/Par/Bogey/Double/Triple buttons (par-relative), back arrow for prev hole, Finish Hole button, Putts + FIR/GIR row; multi-player; saves to Supabase
 - **Round history** (`/rounds`): all rounds for logged-in user, gross + score vs par; cards are tappable → `/rounds/[id]`
 - **Round detail** (`/rounds/[id]`): horizontally scrollable 18-hole table with Par / Score / color-coded ±par rows (gold=birdie+, green=par, red=bogey, dark red=double+); Out/In subtotals; summary stats (birdies, pars, bogeys, doubles+, putts)
 - **Profile** (`/profile`): tiered handicap card — <3 rounds: manual entry input saved to DB; 3–5 rounds: shows entered value + "X rounds to go"; ≥6 rounds: WHS auto-calc (lowest 6 differentials × 0.96) with Recalculate button; sparkline for ≥2 rounds
-- **Events** (`/tournament`): three-tab Events page — Calendar (monthly grid, gold dot for event days, today navy circle, tap day → detail sheet), Club Events (member + hosting events with date badge + expandable rows), Tournaments (tournament-type events with status badge + expandable detail); all data from `events` table
+- **Events** (`/tournament`): four-tab Events page — Calendar, Club Events, Tournaments, **Leaderboard** (top 20 gross rounds in 2026 season, ranked low-to-high, color-coded vs par); all data from `events` + `rounds` + `profiles` tables
 - **Club** (`/club`): 2×2 quick links (Tee Times → CPS Golf booking, Menu → `window.open('/lebaron-menu.pdf', '_blank')` + phone button `tel:5089235712`, Member Statements → Prophet billing, Staff Info → lebaronhills.com/about-us); tee sheet with **Join button** (writes player name to Supabase, optimistic update); **unified channel feed** with horizontal pill switcher (Announcements / Men's League / Women's League / Tournament); active pill navy+gold, inactive gray; messages from `messages` table filtered by channel slug; Supabase Realtime subscription per active tab; optimistic send with dedup; all channels open to all authenticated members (no read-only restrictions)
 - **GPS** (`/gps`): real hole data from `holes`, prev/next nav + **touch swipe** (left=next, right=prev); tee selector; **real GPS positioning** with `watchPosition`, Haversine formula, front/center/back yard distances; GPS status badge; **abstract SVG hole diagram** (dark green, fairway + tee box + green circle + flagstick + gold flag); `GREEN_COORDS` hardcoded (centered 41.8387°N, 70.9762°W)
 - **Auth enforcement**: middleware blocks `/club` + `/rounds` for unauthenticated users
@@ -184,7 +187,8 @@ In Supabase dashboard → SQL Editor, run in order:
 4. `20260409_chat.sql` — messages table (realtime, authenticated-only)
 5. `20260409_channels.sql` — adds `channel` column + index to messages
 6. `20260409_events.sql` — events table + LeBaron seed data
-7. **`20260406_demo_refresh.sql`** — run EVERY TIME before demo: reseeds tee sheet with today's date, fixes tournament scores, adds O'Brien + Connelly entries
+7. `20260410_schema_cleanup.sql` — updated_at columns, score_format/differential, perf indexes, soft-delete, club_id stub, not-null constraints (run once)
+8. **`20260406_demo_refresh.sql`** — run EVERY TIME before demo: reseeds tee sheet with today's date, fixes tournament scores, adds O'Brien + Connelly entries
 
 > Note: `20260407_club_config.sql` and `20260407_chat_gin.sql` are superseded by the 20260409 files — skip them.
 
