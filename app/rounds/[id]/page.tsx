@@ -68,6 +68,9 @@ export default function RoundDetailPage() {
         .select(`strokes, putts, holes(hole_number, par, hcp_index, yardage_blue)`)
         .eq('round_id', roundId)
 
+      // Log raw response so we can diagnose RLS or join issues in dev tools
+      console.log('scores raw:', scoreRows, 'error:', error)
+
       if (scoreRows && scoreRows.length > 0) {
         scoreRows.sort((a: any, b: any) => {
           const aH = Array.isArray(a.holes) ? a.holes[0] : a.holes
