@@ -183,7 +183,8 @@ export default function RoundsPage() {
           const isPartial = r.holes_played > 0 && r.holes_played < 18
 
           return (
-            <div key={r.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <button key={r.id} onClick={() => router.push(`/rounds/${r.id}`)}
+              className="w-full bg-white rounded-2xl shadow-sm overflow-hidden text-left">
               <div className="px-4 py-4 flex items-center gap-4">
 
                 {/* Gross score box */}
@@ -230,7 +231,7 @@ export default function RoundsPage() {
                 )}
 
               </div>
-            </div>
+            </button>
           )
         })}
 

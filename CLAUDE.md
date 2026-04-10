@@ -148,12 +148,13 @@ LeBaron values: rating `73.4`, slope `136`
 
 ### What's Built & Real (Supabase-backed)
 - **Home** (`/`): member card (editable name/handicap), real last round mini scorecard, real club feed from `feed_posts`
-- **Scorecard** (`/scorecard`): 18-hole entry, score shapes, FIR/GIR, multi-player, saves to Supabase; COURSE_ID fetched dynamically
-- **Round history** (`/rounds`): all rounds for logged-in user, gross + score vs par
-- **Profile** (`/profile`): handicap, round count, best gross, last 5 rounds; links from member card avatar
+- **Scorecard** (`/scorecard`): 18-hole entry, no-scroll bottom sheet with Eagle/Birdie/Par/Bogey/Double/Triple buttons (par-relative), back arrow for prev hole, Finish Hole button, Putts + FIR/GIR row; multi-player; saves to Supabase
+- **Round history** (`/rounds`): all rounds for logged-in user, gross + score vs par; cards are tappable → `/rounds/[id]`
+- **Round detail** (`/rounds/[id]`): horizontally scrollable 18-hole table with Par / Score / color-coded ±par rows (gold=birdie+, green=par, red=bogey, dark red=double+); Out/In subtotals; summary stats (birdies, pars, bogeys, doubles+, putts)
+- **Profile** (`/profile`): tiered handicap card — <3 rounds: manual entry input saved to DB; 3–5 rounds: shows entered value + "X rounds to go"; ≥6 rounds: WHS auto-calc (lowest 6 differentials × 0.96) with Recalculate button; sparkline for ≥2 rounds
 - **Events** (`/tournament`): three-tab Events page — Calendar (monthly grid, gold dot for event days, today navy circle, tap day → detail sheet), Club Events (member + hosting events with date badge + expandable rows), Tournaments (tournament-type events with status badge + expandable detail); all data from `events` table
 - **Club** (`/club`): 2×2 quick links (Tee Times → CPS Golf booking, Menu → `window.open('/lebaron-menu.pdf', '_blank')` + phone button `tel:5089235712`, Member Statements → Prophet billing, Staff Info → lebaronhills.com/about-us); tee sheet with **Join button** (writes player name to Supabase, optimistic update); **unified channel feed** with horizontal pill switcher (Announcements / Men's League / Women's League / Tournament); active pill navy+gold, inactive gray; messages from `messages` table filtered by channel slug; Supabase Realtime subscription per active tab; optimistic send with dedup; all channels open to all authenticated members (no read-only restrictions)
-- **GPS** (`/gps`): real hole data from `holes`, prev/next nav, tee selector; **real GPS positioning** with `watchPosition`, Haversine formula, front/center/back yard distances; GPS status badge (green/yellow/red); `GREEN_COORDS` hardcoded (centered 41.8387°N, 70.9762°W — refine with on-course GPS walk)
+- **GPS** (`/gps`): real hole data from `holes`, prev/next nav + **touch swipe** (left=next, right=prev); tee selector; **real GPS positioning** with `watchPosition`, Haversine formula, front/center/back yard distances; GPS status badge; **abstract SVG hole diagram** (dark green, fairway + tee box + green circle + flagstick + gold flag); `GREEN_COORDS` hardcoded (centered 41.8387°N, 70.9762°W)
 - **Auth enforcement**: middleware blocks `/club` + `/rounds` for unauthenticated users
 - **PWA**: manifest.json + apple-touch-icon — installable on iOS/Android home screen
 - **Score sharing**: after round saves, shows share bottom sheet with gross + differential; Web Share API with clipboard copy fallback; text: "Shot 78 (+6) at LeBaron Hills CC via Clubhouse 🏌️"
@@ -165,7 +166,7 @@ LeBaron values: rating `73.4`, slope `136`
 `GREEN_COORDS` in `app/gps/page.tsx` holds approximate lat/lng for all 18 greens (front/center/back). Centered around 41.8387°N, 70.9762°W. To get real accuracy, walk each green with a phone and record `watchPosition` output, then update the constant.
 
 ### What's Still Static / Not Integrated
-- Course map on GPS (placeholder green background — no visual hole map yet)
+- GPS hole diagram is abstract/generic — not shaped to actual LeBaron hole layouts
 - Tournament leaderboard removed — `/tournament` is now the Events page; leaderboard data still in `tournaments`/`tournament_entries`/`tournament_scores` tables but no longer surfaced in UI
 - Tee sheet doesn't prevent double-booking across multiple sessions (no server-side guard)
 - Multi-club: `club_config` table + `getClubConfig()` helper are in place; pages still use hardcoded LeBaron values — future work is wiring each page to the config
@@ -193,7 +194,7 @@ In Supabase dashboard → SQL Editor, run in order:
 1. Refine `GREEN_COORDS` in `app/gps/page.tsx` with real on-course GPS coordinates
 2. Tee sheet double-booking guard (server-side check before update)
 3. Wire remaining pages to `getClubConfig()` (replaces hardcoded LeBaron strings)
-4. Copy `~/lebaron-menu-4/9.pdf` → `public/lebaron-menu.pdf` so Menu quick link works
+4. Replace `public/lebaron-menu.pdf` placeholder with real PDF (copy from `~/lebaron-menu-4/9.pdf`)
 5. Add real event data to `events` table (staff can insert via Supabase dashboard or future admin UI)
 
 ## Longer-Term

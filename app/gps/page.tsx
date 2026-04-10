@@ -67,7 +67,8 @@ export default function GPS() {
   const [loading, setLoading] = useState(true)
   const [gpsStatus, setGpsStatus] = useState<GpsStatus>('acquiring')
   const [userPos, setUserPos] = useState<[number, number] | null>(null)
-  const watchIdRef = useRef<number | null>(null)
+  const watchIdRef   = useRef<number | null>(null)
+  const touchStartX  = useRef<number>(0)
 
   useEffect(() => {
     async function load() {
@@ -118,7 +119,13 @@ export default function GPS() {
   function next() { setCurrentHole(n => Math.min(18, n + 1)) }
 
   return (
-    <main className="min-h-screen bg-gray-100 pb-24">
+    <main className="min-h-screen bg-gray-100 pb-24"
+      onTouchStart={e => { touchStartX.current = e.touches[0].clientX }}
+      onTouchEnd={e => {
+        const dx = e.changedTouches[0].clientX - touchStartX.current
+        if (dx < -50) next()
+        else if (dx > 50) prev()
+      }}>
       <div className="bg-[#152644] px-4 pt-12 pb-4">
         <p className="text-white/40 text-xs uppercase tracking-widest mb-1">Now Playing</p>
 
@@ -179,10 +186,30 @@ export default function GPS() {
         </div>
       </div>
 
-      {/* Course map + distance overlay */}
-      <div className="mx-4 mt-4 bg-[#2d5a27] rounded-2xl overflow-hidden" style={{ height: '220px', position: 'relative' }}>
+      {/* Hole diagram + distance overlay */}
+      <div className="mx-4 mt-4 rounded-2xl overflow-hidden" style={{ height: '220px', position: 'relative', background: '#1a3520' }}>
+
+        {/* Abstract SVG hole diagram */}
+        <svg viewBox="0 0 100 200" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style={{ position: 'absolute', inset: 0 }}>
+          {/* Rough */}
+          <rect width="100" height="200" fill="#1a3520"/>
+          {/* Fairway — tapered from wide at tee to narrow at green */}
+          <path d="M 35 185 Q 28 140 30 85 Q 32 45 38 22 L 62 22 Q 68 45 70 85 Q 72 140 65 185 Z" fill="#2d6627"/>
+          {/* Tee box */}
+          <rect x="42" y="178" width="16" height="8" rx="2" fill="rgba(255,255,255,0.65)"/>
+          {/* Green */}
+          <ellipse cx="50" cy="26" rx="15" ry="12" fill="#3a8f2e"/>
+          <ellipse cx="50" cy="26" rx="15" ry="12" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1"/>
+          {/* Flagstick */}
+          <line x1="50" y1="26" x2="50" y2="11" stroke="rgba(255,255,255,0.75)" strokeWidth="1.5"/>
+          {/* Flag */}
+          <polygon points="50,11 59,15 50,19" fill="#c9a84c"/>
+          {/* Direction arrow in fairway */}
+          <path d="M 50 120 L 46 130 L 50 126 L 54 130 Z" fill="rgba(255,255,255,0.3)"/>
+        </svg>
+
         {/* GPS status badge */}
-        <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-black/30 backdrop-blur rounded-full px-3 py-1">
+        <div className="absolute top-3 right-3 flex items-center gap-1.5 rounded-full px-3 py-1" style={{ background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(6px)' }}>
           <span
             className="w-2 h-2 rounded-full"
             style={{
@@ -190,12 +217,8 @@ export default function GPS() {
             }}
           />
           <span className="text-white text-xs">
-            {gpsStatus === 'active' ? 'GPS Active' : gpsStatus === 'acquiring' ? 'Locating…' : 'GPS Unavailable'}
+            {gpsStatus === 'active' ? 'GPS Active' : gpsStatus === 'acquiring' ? 'Locating…' : 'GPS Off'}
           </span>
-        </div>
-
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-white/20 text-xs uppercase tracking-widest">Course Map</div>
         </div>
 
         {/* Front / Center / Back distances to green */}
@@ -205,9 +228,9 @@ export default function GPS() {
             { label: 'Center', target: coords.center },
             { label: 'Back',   target: coords.back   },
           ] as { label: string; target: [number, number] }[]).map(d => (
-            <div key={d.label} className="bg-white/15 backdrop-blur rounded-xl px-4 py-2 text-center">
+            <div key={d.label} className="rounded-xl px-4 py-2 text-center" style={{ background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(6px)' }}>
               <div className="text-white text-xl font-bold">{distLabel(d.target)}</div>
-              <div className="text-white/60 text-xs">{d.label}</div>
+              <div className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>{d.label}</div>
             </div>
           ))}
         </div>

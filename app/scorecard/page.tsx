@@ -170,6 +170,8 @@ export default function ScorecardPage() {
     setSheetPlayer(playerIdx)
     setSelScore(scores[playerIdx]?.[holeIdx] ?? null)
     setSelPutt(putts[playerIdx]?.[holeIdx] ?? null)
+    setSelFairway(null)
+    setSelGir(null)
     setSheetOpen(true)
   }
 
@@ -191,6 +193,22 @@ export default function ScorecardPage() {
       setSheetHole(next)
       setSelScore(scores[sheetPlayer]?.[next] ?? null)
       setSelPutt(putts[sheetPlayer]?.[next] ?? null)
+      setSelFairway(null)
+      setSelGir(null)
+    } else {
+      setSheetOpen(false)
+    }
+  }
+
+  function prevHole() {
+    commitSheet(sheetHole, sheetPlayer, selScore, selPutt)
+    if (sheetHole > 0) {
+      const prev = sheetHole - 1
+      setSheetHole(prev)
+      setSelScore(scores[sheetPlayer]?.[prev] ?? null)
+      setSelPutt(putts[sheetPlayer]?.[prev] ?? null)
+      setSelFairway(null)
+      setSelGir(null)
     } else {
       setSheetOpen(false)
     }
@@ -431,62 +449,96 @@ export default function ScorecardPage() {
           className="fixed inset-0 flex items-end justify-center"
           style={{ zIndex: 100, background: 'rgba(0,0,0,0.45)' }}
           onClick={e => { if (e.target === e.currentTarget) closeSheet() }}>
-          <div className="bg-white w-full rounded-t-3xl px-4 pt-4 pb-8" style={{ maxHeight: '45vh', overflowY: 'auto' }}>
+          <div className="bg-white w-full rounded-t-3xl px-4 pt-4 pb-8 flex flex-col gap-3">
 
-            <div className="flex justify-between items-center mb-3">
-              <span className="text-sm font-bold" style={{ color: '#152644' }}>Hole {sheetHole + 1} · Par {par}</span>
-              <button onClick={closeSheet} className="text-sm font-semibold" style={{ color: '#c9a84c' }}>Done</button>
+            {/* Header: prev arrow | Hole X · Par Y | Finish Hole */}
+            <div className="flex items-center justify-between">
+              <button onClick={prevHole}
+                className="w-9 h-9 flex items-center justify-center rounded-full"
+                style={{ background: '#f1f5f9' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#152644" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M15 18l-6-6 6-6"/>
+                </svg>
+              </button>
+              <div className="text-center">
+                <div className="text-sm font-bold" style={{ color: '#152644' }}>Hole {sheetHole + 1} · Par {par}</div>
+              </div>
+              <button onClick={closeSheet}
+                className="text-xs font-semibold px-3 py-1.5 rounded-xl"
+                style={{ background: '#152644', color: 'white' }}>
+                Finish Hole
+              </button>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 mb-3">
-              {[1,2,3,4,5,6,7,8,9].map(v => {
-                const diff = v - par
+            {/* Score grid: Eagle / Birdie / Par / Bogey / Double / Triple */}
+            <div className="grid grid-cols-3 gap-2">
+              {([
+                { label: 'Eagle',  diff: -2 },
+                { label: 'Birdie', diff: -1 },
+                { label: 'Par',    diff:  0 },
+                { label: 'Bogey',  diff:  1 },
+                { label: 'Double', diff:  2 },
+                { label: 'Triple', diff:  3 },
+              ] as { label: string; diff: number }[]).map(({ label, diff }) => {
+                const v = par + diff
+                if (v < 1) return null
                 const isSelected = selScore === v
-                let shapeClass = 'rounded-2xl'
-                  return (
-                  <button key={v} onClick={() => setSelScore(v)}
-                    className="rounded-2xl py-3 flex items-center justify-center font-bold text-lg active:scale-95"
-                    style={{ background: isSelected ? '#152644' : '#f1f5f9', color: isSelected ? 'white' : '#1e293b' }}>
-                    <span className={`w-8 h-8 flex items-center justify-center flex-col
-                      ${diff <= -2 ? 'rounded-full outline outline-2 outline-offset-2 outline-current border-2 border-current rounded-full' :
-                        diff === -1 ? 'rounded-full border-2 border-current' :
-                        diff === 0  ? '' :
-                        diff === 1  ? 'rounded-sm border border-current' :
-                                      'rounded-sm outline outline-2 outline-offset-2 outline-current border border-current'}`}>
-                      <span>{v}</span>
-                      {diff === 0 && <span className="text-[8px] font-normal leading-none" style={{ color: isSelected ? 'rgba(255,255,255,0.6)' : '#94a3b8' }}>Par</span>}
+                return (
+                  <button key={label} onClick={() => setSelScore(v)}
+                    className="py-3 rounded-2xl flex flex-col items-center justify-center gap-1 active:scale-95 transition-transform"
+                    style={{ background: isSelected ? '#152644' : '#f1f5f9' }}>
+                    <span className="text-[10px] font-semibold uppercase tracking-wide"
+                      style={{ color: isSelected ? 'rgba(255,255,255,0.55)' : '#94a3b8' }}>
+                      {label}
+                    </span>
+                    <span
+                      className={`w-8 h-8 flex items-center justify-center text-base font-bold
+                        ${diff <= -2 ? 'rounded-full outline outline-2 outline-offset-1 border-2' :
+                          diff === -1 ? 'rounded-full border-2' :
+                          diff === 1  ? 'border' :
+                          diff >= 2   ? 'outline outline-2 outline-offset-1 border' : ''}`}
+                      style={{
+                        color: isSelected ? 'white' : '#152644',
+                        outlineColor: isSelected ? 'rgba(255,255,255,0.5)' : '#152644',
+                        borderColor:  isSelected ? 'rgba(255,255,255,0.5)' : '#152644',
+                      }}>
+                      {v}
                     </span>
                   </button>
                 )
               })}
             </div>
 
-            <p className="text-xs font-semibold text-slate-400 mb-1.5">Putts</p>
-            <div className="flex gap-1.5 mb-3">
-              {[0,1,2,3,'≥4'].map((v, i) => {
-                const val = i === 4 ? 4 : Number(v)
-                const isSel = selPutt === val
-                return (
-                  <button key={i} onClick={() => setSelPutt(val)}
-                    className="flex-1 py-2 rounded-lg font-semibold text-sm"
-                    style={{ background: isSel ? '#152644' : '#f1f5f9', color: isSel ? 'white' : '#152644' }}>
-                    {v}
-                  </button>
-                )
-              })}
+            {/* Putts */}
+            <div>
+              <p className="text-xs font-semibold text-slate-400 mb-1.5">Putts</p>
+              <div className="flex gap-1.5">
+                {([0,1,2,3,'≥4'] as (number|string)[]).map((v, i) => {
+                  const val = i === 4 ? 4 : Number(v)
+                  const isSel = selPutt === val
+                  return (
+                    <button key={i} onClick={() => setSelPutt(isSel ? null : val)}
+                      className="flex-1 py-2 rounded-lg font-semibold text-sm"
+                      style={{ background: isSel ? '#152644' : '#f1f5f9', color: isSel ? 'white' : '#152644' }}>
+                      {v}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
 
-            <div className="flex gap-3 mb-4">
+            {/* FIR + GIR */}
+            <div className="flex gap-3">
               <div className="flex-1">
                 <p className="text-xs font-semibold text-slate-400 mb-1.5">Fairway</p>
                 <div className="flex gap-1.5">
-                  {[{ label: '✓', val: 'hit' as const }, { label: '✕', val: 'miss' as const }].map(opt => (
+                  {([{ label: '✓', val: 'hit' as const }, { label: '✕', val: 'miss' as const }]).map(opt => (
                     <button key={opt.val}
                       onClick={() => setSelFairway(selFairway === opt.val ? null : opt.val)}
-                      className="flex-1 py-2.5 rounded-xl text-base font-bold transition-all"
+                      className="flex-1 py-2.5 rounded-xl text-base font-bold"
                       style={{
                         background: selFairway === opt.val ? (opt.val === 'hit' ? '#152644' : '#fee2e2') : '#f1f5f9',
-                        color: selFairway === opt.val ? (opt.val === 'hit' ? 'white' : '#ef4444') : '#94a3b8'
+                        color: selFairway === opt.val ? (opt.val === 'hit' ? 'white' : '#ef4444') : '#94a3b8',
                       }}>
                       {opt.label}
                     </button>
@@ -496,29 +548,19 @@ export default function ScorecardPage() {
               <div className="flex-1">
                 <p className="text-xs font-semibold text-slate-400 mb-1.5">GIR</p>
                 <div className="flex gap-1.5">
-                  {[{ label: '✓', val: 'hit' as const }, { label: '✕', val: 'miss' as const }].map(opt => (
+                  {([{ label: '✓', val: 'hit' as const }, { label: '✕', val: 'miss' as const }]).map(opt => (
                     <button key={opt.val}
                       onClick={() => setSelGir(selGir === opt.val ? null : opt.val)}
-                      className="flex-1 py-2.5 rounded-xl text-base font-bold transition-all"
+                      className="flex-1 py-2.5 rounded-xl text-base font-bold"
                       style={{
                         background: selGir === opt.val ? (opt.val === 'hit' ? '#152644' : '#fee2e2') : '#f1f5f9',
-                        color: selGir === opt.val ? (opt.val === 'hit' ? 'white' : '#ef4444') : '#94a3b8'
+                        color: selGir === opt.val ? (opt.val === 'hit' ? 'white' : '#ef4444') : '#94a3b8',
                       }}>
                       {opt.label}
                     </button>
                   ))}
                 </div>
               </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-base font-bold" style={{ color: '#152644' }}>Hole {sheetHole + 1}</div>
-                <button onClick={closeSheet} className="text-xs font-semibold" style={{ color: '#c9a84c' }}>Finish Hole</button>
-              </div>
-              <button onClick={nextHole}
-                className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xl"
-                style={{ background: '#152644' }}>›</button>
             </div>
 
           </div>
