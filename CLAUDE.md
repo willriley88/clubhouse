@@ -17,7 +17,7 @@ A golf PWA called **Clubhouse** with a two-tier product model:
 - **Database + Auth**: Supabase (OTP email code auth — no passwords, no magic links)
 - **Auth SSR**: `@supabase/ssr` — `createBrowserClient` in `lib/supabase.ts`, `createServerClient` in middleware + auth callback
 - **Styling**: Tailwind CSS v4
-- **Deployment**: Vercel (auto-deploy from GitHub `willriley88/clubhouse`)
+- **Deployment**: Vercel (auto-deploy from GitHub `willriley88/clubhouse`); `NEXT_PUBLIC_SITE_URL` built from Vercel's auto-set `VERCEL_URL` in `next.config.ts` — override in Vercel env vars for custom domains
 - **Language**: TypeScript (strict mode)
 - **PWA**: `public/manifest.json` linked via Next.js Metadata API — installable on iOS/Android
 
@@ -87,7 +87,7 @@ The splash screen only shows on first visit (sessionStorage). If BottomNav is in
 - `lib/supabase.ts` uses `createBrowserClient` — client components (`'use client'`) only
 - `lib/supabase-server.ts` uses plain `createClient` — server components only
 - Middleware and auth callback use `createServerClient` from `@supabase/ssr` with cookies adapter
-- Auth uses OTP email codes — `signInWithOtp({ email, options: { shouldCreateUser: true } })` sends 6-digit code; `verifyOtp({ email, token, type: 'email' })` completes login client-side; no callback redirect needed
+- Auth uses OTP email codes — `signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: undefined } })` sends 6-digit code (`emailRedirectTo: undefined` is required — a defined value causes Supabase to send a magic link instead); `verifyOtp({ email, token, type: 'email' })` completes login client-side; no callback redirect needed
 - Session persistence is automatic via `createBrowserClient` cookie sync — users stay logged in across page loads
 - RLS required on all new tables
 - Guest users: localStorage persistence via `clubhouse_guest` key
