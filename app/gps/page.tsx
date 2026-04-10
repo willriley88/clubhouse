@@ -186,54 +186,61 @@ export default function GPS() {
         </div>
       </div>
 
-      {/* Hole diagram + distance overlay */}
-      <div className="mx-4 mt-4 rounded-2xl overflow-hidden" style={{ height: '220px', position: 'relative', background: '#1a3520' }}>
-
-        {/* Abstract SVG hole diagram */}
-        <svg viewBox="0 0 100 200" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style={{ position: 'absolute', inset: 0 }}>
-          {/* Rough */}
-          <rect width="100" height="200" fill="#1a3520"/>
-          {/* Fairway — tapered from wide at tee to narrow at green */}
-          <path d="M 35 185 Q 28 140 30 85 Q 32 45 38 22 L 62 22 Q 68 45 70 85 Q 72 140 65 185 Z" fill="#2d6627"/>
-          {/* Tee box */}
-          <rect x="42" y="178" width="16" height="8" rx="2" fill="rgba(255,255,255,0.65)"/>
-          {/* Green */}
-          <ellipse cx="50" cy="26" rx="15" ry="12" fill="#3a8f2e"/>
-          <ellipse cx="50" cy="26" rx="15" ry="12" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1"/>
-          {/* Flagstick */}
-          <line x1="50" y1="26" x2="50" y2="11" stroke="rgba(255,255,255,0.75)" strokeWidth="1.5"/>
-          {/* Flag */}
-          <polygon points="50,11 59,15 50,19" fill="#c9a84c"/>
-          {/* Direction arrow in fairway */}
-          <path d="M 50 120 L 46 130 L 50 126 L 54 130 Z" fill="rgba(255,255,255,0.3)"/>
-        </svg>
-
-        {/* GPS status badge */}
-        <div className="absolute top-3 right-3 flex items-center gap-1.5 rounded-full px-3 py-1" style={{ background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(6px)' }}>
-          <span
-            className="w-2 h-2 rounded-full"
-            style={{
-              background: gpsStatus === 'active' ? '#4ade80' : gpsStatus === 'acquiring' ? '#facc15' : '#f87171',
-            }}
-          />
-          <span className="text-white text-xs">
-            {gpsStatus === 'active' ? 'GPS Active' : gpsStatus === 'acquiring' ? 'Locating…' : 'GPS Off'}
-          </span>
+      {/* ── DISTANCE CARDS (Gallus-style: big numbers, readable in sunlight) ── */}
+      {gpsStatus === 'unavailable' ? (
+        <div className="mx-4 mt-4 rounded-2xl py-6 text-center" style={{ background: '#fff' }}>
+          <p className="text-sm font-semibold" style={{ color: '#152644' }}>GPS Unavailable</p>
+          <p className="text-xs mt-1" style={{ color: '#94a3b8' }}>Enable location access to see distances</p>
         </div>
-
-        {/* Front / Center / Back distances to green */}
-        <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-3">
+      ) : (
+        <div className="mx-4 mt-4 grid grid-cols-3 gap-3">
           {([
-            { label: 'Front',  target: coords.front  },
-            { label: 'Center', target: coords.center },
-            { label: 'Back',   target: coords.back   },
-          ] as { label: string; target: [number, number] }[]).map(d => (
-            <div key={d.label} className="rounded-xl px-4 py-2 text-center" style={{ background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(6px)' }}>
-              <div className="text-white text-xl font-bold">{distLabel(d.target)}</div>
-              <div className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>{d.label}</div>
+            { label: 'Back',   target: coords?.back   },
+            { label: 'Center', target: coords?.center },
+            { label: 'Front',  target: coords?.front  },
+          ] as { label: string; target: [number, number] | undefined }[]).map(d => (
+            <div key={d.label} className="rounded-2xl py-5 text-center shadow-sm" style={{ background: '#fff' }}>
+              {gpsStatus === 'acquiring' ? (
+                /* Spinner while GPS locks */
+                <div className="flex items-center justify-center h-10">
+                  <div className="w-6 h-6 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: '#152644', borderTopColor: 'transparent' }} />
+                </div>
+              ) : (
+                <div className="text-4xl font-bold leading-none" style={{ color: '#152644' }}>
+                  {d.target ? distLabel(d.target) : '—'}
+                </div>
+              )}
+              <div className="text-xs font-semibold uppercase tracking-widest mt-2" style={{ color: '#94a3b8' }}>
+                {d.label}
+              </div>
+              <div className="text-[10px] mt-0.5" style={{ color: '#cbd5e1' }}>yds</div>
             </div>
           ))}
         </div>
+      )}
+
+      {/* GPS status badge */}
+      <div className="mx-4 mt-2 flex items-center gap-1.5">
+        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{
+          background: gpsStatus === 'active' ? '#4ade80' : gpsStatus === 'acquiring' ? '#facc15' : '#f87171',
+        }} />
+        <span className="text-xs" style={{ color: '#94a3b8' }}>
+          {gpsStatus === 'active' ? 'GPS Active — distances update live' : gpsStatus === 'acquiring' ? 'Locating…' : 'GPS Off'}
+        </span>
+      </div>
+
+      {/* Abstract SVG hole diagram */}
+      <div className="mx-4 mt-4 rounded-2xl overflow-hidden" style={{ height: '180px', background: '#1a3520' }}>
+        <svg viewBox="0 0 100 200" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          <rect width="100" height="200" fill="#1a3520"/>
+          <path d="M 35 185 Q 28 140 30 85 Q 32 45 38 22 L 62 22 Q 68 45 70 85 Q 72 140 65 185 Z" fill="#2d6627"/>
+          <rect x="42" y="178" width="16" height="8" rx="2" fill="rgba(255,255,255,0.65)"/>
+          <ellipse cx="50" cy="26" rx="15" ry="12" fill="#3a8f2e"/>
+          <ellipse cx="50" cy="26" rx="15" ry="12" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1"/>
+          <line x1="50" y1="26" x2="50" y2="11" stroke="rgba(255,255,255,0.75)" strokeWidth="1.5"/>
+          <polygon points="50,11 59,15 50,19" fill="#c9a84c"/>
+          <path d="M 50 120 L 46 130 L 50 126 L 54 130 Z" fill="rgba(255,255,255,0.3)"/>
+        </svg>
       </div>
 
       {/* Hole stats */}
