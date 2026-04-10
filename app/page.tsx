@@ -399,7 +399,8 @@ export default function HomePage() {
         )}
       </div>
       {/* ── DRAWER ── */}
-      {/* Backdrop — tap to close */}
+
+      {/* Backdrop — tap outside to close */}
       {drawerOpen && (
         <div
           className="fixed inset-0 z-40"
@@ -410,7 +411,7 @@ export default function HomePage() {
 
       {/* Slide-in panel */}
       <div
-        className="fixed top-0 left-0 h-full z-50 flex flex-col"
+        className="fixed top-0 left-0 h-full z-50 flex flex-col overflow-y-auto"
         style={{
           width: 280,
           background: '#152644',
@@ -419,51 +420,84 @@ export default function HomePage() {
         }}
       >
         {/* Logo */}
-        <div className="px-5 pt-12 pb-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+        <div className="px-5 pt-12 pb-4">
           <img src="/lebaron-logo-transparent-gold.png" alt="LeBaron Hills" className="h-20 object-contain" />
         </div>
 
-        {/* Nav items */}
-        <nav className="flex-1 overflow-y-auto py-2">
-          {[
-            { label: 'Membership Login',  href: '/login',                                          external: false },
-            { label: 'Membership Info',   href: 'https://www.lebaronhills.com/membership',         external: true  },
-            { label: 'Golf Amenities',    href: 'https://www.lebaronhills.com/golf/golf-amenities', external: true  },
-            { label: 'Golf Outings',      href: 'https://www.lebaronhills.com/golf/golf-outings',   external: true  },
-            { label: 'Course Layout',     href: 'https://www.lebaronhills.com/golf/course-layout',  external: true  },
-            { label: 'Course Gallery',    href: 'https://www.lebaronhills.com/golf/course-gallery',  external: true  },
-            { label: 'Golf Personnel',    href: 'https://www.lebaronhills.com/golf/golf-personnel',  external: true  },
-            { label: 'Contact Info',      href: 'https://www.lebaronhills.com/contact',              external: true  },
-          ].map(item => (
+        {/* Divider */}
+        <div style={{ height: 1, background: 'rgba(255,255,255,0.1)', margin: '0 20px' }} />
+
+        {/* Auth section — Login if guest, Sign Out if member */}
+        <div className="py-2">
+          {!user ? (
             <button
-              key={item.label}
-              onClick={() => {
-                setDrawerOpen(false)
-                if (item.external) window.open(item.href, '_blank')
-                else router.push(item.href)
-              }}
-              className="w-full text-left px-5 py-3.5 text-sm font-medium"
+              onClick={() => { setDrawerOpen(false); router.push('/login') }}
+              className="w-full text-left px-5 py-3.5 text-sm font-semibold"
               style={{ color: '#c9a84c' }}
             >
-              {item.label}
+              Membership Login
             </button>
-          ))}
-
-          {/* Sign Out — only when authenticated */}
-          {user && (
+          ) : (
             <button
               onClick={async () => {
                 setDrawerOpen(false)
                 await supabase.auth.signOut()
                 router.push('/login')
               }}
-              className="w-full text-left px-5 py-3.5 text-sm font-medium border-t mt-2"
-              style={{ color: 'rgba(255,255,255,0.45)', borderColor: 'rgba(255,255,255,0.1)' }}
+              className="w-full text-left px-5 py-3.5 text-sm font-semibold"
+              style={{ color: 'rgba(255,255,255,0.55)' }}
             >
               Sign Out
             </button>
           )}
+        </div>
+
+        {/* Divider */}
+        <div style={{ height: 1, background: 'rgba(255,255,255,0.1)', margin: '0 20px' }} />
+
+        {/* Club & course links — always visible */}
+        <nav className="py-2">
+          {[
+            { label: 'Membership Info',  href: 'https://www.lebaronhills.com/membership'          },
+            { label: 'Golf Amenities',   href: 'https://www.lebaronhills.com/golf/golf-amenities'  },
+            { label: 'Golf Outings',     href: 'https://www.lebaronhills.com/golf/golf-outings'    },
+            { label: 'Course Layout',    href: 'https://www.lebaronhills.com/golf/course-layout'   },
+            { label: 'Course Gallery',   href: 'https://www.lebaronhills.com/golf/course-gallery'  },
+            { label: 'Golf Personnel',   href: 'https://www.lebaronhills.com/golf/golf-personnel'  },
+            { label: 'Contact Info',     href: 'https://www.lebaronhills.com/contact'               },
+          ].map(item => (
+            <button
+              key={item.label}
+              onClick={() => { setDrawerOpen(false); window.open(item.href, '_blank') }}
+              className="w-full text-left px-5 py-3 text-sm font-medium"
+              style={{ color: '#c9a84c' }}
+            >
+              {item.label}
+            </button>
+          ))}
         </nav>
+
+        {/* Divider + member-only links */}
+        {user && (
+          <>
+            <div style={{ height: 1, background: 'rgba(255,255,255,0.1)', margin: '0 20px' }} />
+            <nav className="py-2">
+              {[
+                { label: 'Profile',        href: '/profile' },
+                { label: 'Round History',  href: '/rounds'  },
+              ].map(item => (
+                <button
+                  key={item.label}
+                  onClick={() => { setDrawerOpen(false); router.push(item.href) }}
+                  className="w-full text-left px-5 py-3 text-sm font-medium"
+                  style={{ color: '#c9a84c' }}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </nav>
+          </>
+        )}
       </div>
 
     <BottomNav />
