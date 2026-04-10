@@ -224,7 +224,10 @@ npm run lint   # eslint check
 ## Agent Behavior Notes
 - Preserve existing color scheme and BottomNav import pattern on all pages
 - New Supabase tables → migration file in `supabase/migrations/` + update this file
-- FK joins from Supabase return arrays — use `data?.[0]?.field`, not `data?.field`
+- **FK join direction matters**: one-to-many returns arrays (use `?.[0]?.field`); many-to-one (e.g. `scores.hole_id → holes`) returns a single object — use `Array.isArray(s.holes) ? s.holes[0] : s.holes` to handle both safely
 - Prefer server components for data fetching; client components only when interactivity needed
 - Inline comments only — explain the "why", not the "what"
-- Run `npm run build` before every commit
+- Run `npm run build` before every commit — no exceptions
+- Commit after each task; do not batch multiple tasks into one commit
+- No redesigns beyond what is specified — do not add features, refactor adjacent code, or "improve" things not mentioned in the task
+- `public/lebaron-menu.pdf` must exist — if missing the menu button shows a toast instead of a broken link
