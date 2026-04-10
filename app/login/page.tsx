@@ -17,7 +17,12 @@ export default function LoginPage() {
     setError(null)
     const { error } = await supabase.auth.signInWithOtp({
       email: email.trim(),
-      options: { shouldCreateUser: true },
+      options: {
+        shouldCreateUser: true,
+        // emailRedirectTo must be undefined to send a 6-digit OTP code;
+        // a defined redirect URL causes Supabase to send a magic link instead
+        emailRedirectTo: undefined,
+      },
     })
     if (error) {
       setError(error.message)
