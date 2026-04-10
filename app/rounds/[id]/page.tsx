@@ -57,28 +57,38 @@ export default function RoundDetailPage() {
         if (c?.[0]?.name) setCourseName(c[0].name)
       }
 
-      // Fetch scores joined with hole data — include hole_id so we can sort
-      // even if holes(hole_number) ordering isn't supported by this Supabase version
-      const { data: scoreData, error: scoreError } = await supabase
+      const { data: scoreRows, error } = await supabase
         .from('scores')
-        .select('strokes, putts, hole_id, holes(hole_number, par, hcp_index, yardage_blue)')
+        .select(`
+          strokes,
+          putts,
+          hole_id,
+          holes (
+            hole_number,
+            par,
+            hcp_index,
+            yardage_blue
+          )
+        `)
         .eq('round_id', roundId)
 
-      // Log raw response for diagnosis if something is wrong
-      console.log('round detail scores response:', { scoreData, scoreError, roundId })
+      console.log('scoreRows:', scoreRows, 'error:', error)
 
-      if (scoreData && scoreData.length > 0) {
-        const details: ScoreDetail[] = scoreData
+      if (scoreRows && scoreRows.length > 0) {
+        scoreRows.sort((a: any, b: any) =>
+          (a.holes?.[0]?.hole_number ?? 0) - (b.holes?.[0]?.hole_number ?? 0)
+        )
+        const details: ScoreDetail[] = scoreRows
           .map((s: any) => ({
-            // Supabase FK joins return arrays — access with [0]
             hole_number: s.holes?.[0]?.hole_number ?? 0,
             par:         s.holes?.[0]?.par ?? 4,
             strokes:     s.strokes,
             putts:       s.putts ?? null,
           }))
-          .filter(s => s.hole_number > 0)
-          .sort((a, b) => a.hole_number - b.hole_number)
+          .filter((s: ScoreDetail) => s.hole_number > 0)
         setScores(details)
+      } else {
+        console.log('scoreRows empty or null — roundId:', roundId, 'error:', error)
       }
 
       setLoading(false)
