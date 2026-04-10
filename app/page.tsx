@@ -40,6 +40,8 @@ export default function HomePage() {
   const [feedPosts,    setFeedPosts]    = useState<FeedPost[]>([])
   const [mounted,      setMounted]      = useState(false)
 
+  const [drawerOpen, setDrawerOpen] = useState(false)
+
   // Edit name state
   const [editingName, setEditingName] = useState(false)
   const [editName,    setEditName]    = useState('')
@@ -133,8 +135,8 @@ export default function HomePage() {
       {/* ── HEADER ── */}
       <div className="px-4 pt-2 pb-5" style={{ background: '#152644' }}>
         <div className="flex justify-between items-center mb-4">
-          {/* Hamburger */}
-          <button className="flex flex-col gap-1.5">
+          {/* Hamburger — opens slide-in drawer */}
+          <button onClick={() => setDrawerOpen(true)} className="flex flex-col gap-1.5 p-1">
             <span className="block w-5 h-0.5 bg-white/60 rounded" />
             <span className="block w-5 h-0.5 bg-white/60 rounded" />
             <span className="block w-5 h-0.5 bg-white/60 rounded" />
@@ -396,6 +398,74 @@ export default function HomePage() {
           </div>
         )}
       </div>
+      {/* ── DRAWER ── */}
+      {/* Backdrop — tap to close */}
+      {drawerOpen && (
+        <div
+          className="fixed inset-0 z-40"
+          style={{ background: 'rgba(0,0,0,0.45)' }}
+          onClick={() => setDrawerOpen(false)}
+        />
+      )}
+
+      {/* Slide-in panel */}
+      <div
+        className="fixed top-0 left-0 h-full z-50 flex flex-col"
+        style={{
+          width: 280,
+          background: '#152644',
+          transform: drawerOpen ? 'translateX(0)' : 'translateX(-100%)',
+          transition: 'transform 0.25s ease',
+        }}
+      >
+        {/* Logo */}
+        <div className="px-5 pt-12 pb-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+          <img src="/lebaron-logo-transparent-gold.png" alt="LeBaron Hills" className="h-20 object-contain" />
+        </div>
+
+        {/* Nav items */}
+        <nav className="flex-1 overflow-y-auto py-2">
+          {[
+            { label: 'Membership Login',  href: '/login',                                          external: false },
+            { label: 'Membership Info',   href: 'https://www.lebaronhills.com/membership',         external: true  },
+            { label: 'Golf Amenities',    href: 'https://www.lebaronhills.com/golf/golf-amenities', external: true  },
+            { label: 'Golf Outings',      href: 'https://www.lebaronhills.com/golf/golf-outings',   external: true  },
+            { label: 'Course Layout',     href: 'https://www.lebaronhills.com/golf/course-layout',  external: true  },
+            { label: 'Course Gallery',    href: 'https://www.lebaronhills.com/golf/course-gallery',  external: true  },
+            { label: 'Golf Personnel',    href: 'https://www.lebaronhills.com/golf/golf-personnel',  external: true  },
+            { label: 'Contact Info',      href: 'https://www.lebaronhills.com/contact',              external: true  },
+          ].map(item => (
+            <button
+              key={item.label}
+              onClick={() => {
+                setDrawerOpen(false)
+                if (item.external) window.open(item.href, '_blank')
+                else router.push(item.href)
+              }}
+              className="w-full text-left px-5 py-3.5 text-sm font-medium"
+              style={{ color: '#c9a84c' }}
+            >
+              {item.label}
+            </button>
+          ))}
+
+          {/* Sign Out — only when authenticated */}
+          {user && (
+            <button
+              onClick={async () => {
+                setDrawerOpen(false)
+                await supabase.auth.signOut()
+                router.push('/login')
+              }}
+              className="w-full text-left px-5 py-3.5 text-sm font-medium border-t mt-2"
+              style={{ color: 'rgba(255,255,255,0.45)', borderColor: 'rgba(255,255,255,0.1)' }}
+            >
+              Sign Out
+            </button>
+          )}
+        </nav>
+      </div>
+
     <BottomNav />
   </main>
   )
