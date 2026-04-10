@@ -1,9 +1,16 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Geist } from "next/font/google"
 import "./globals.css"
 import { getClubConfig } from "@/lib/club-config"
 
 const geist = Geist({ subsets: ["latin"] })
+
+// themeColor must live in viewport export, not metadata — Next.js 15+ warns
+// if themeColor is placed in generateMetadata.
+export async function generateViewport(): Promise<Viewport> {
+  const config = await getClubConfig()
+  return { themeColor: config.primary_color }
+}
 
 // generateMetadata is async so layout can pull club branding from DB.
 // Pages that need ClubConfig server-side should call getClubConfig() directly.
@@ -13,7 +20,6 @@ export async function generateMetadata(): Promise<Metadata> {
     title: config.club_name,
     description: `${config.club_name} Member App`,
     manifest: "/manifest.json",
-    themeColor: config.primary_color,
     appleWebApp: {
       capable: true,
       statusBarStyle: "black-translucent",
