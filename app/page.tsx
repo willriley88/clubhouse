@@ -71,7 +71,7 @@ export default function HomePage() {
             .limit(1),
           supabase
             .from('rounds')
-            .select('*', { count: 'exact', head: true })
+            .select('id', { count: 'exact' })
             .eq('profile_id', data.user.id),
         ])
         setRoundCount(rCount ?? 0)
