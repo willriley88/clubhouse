@@ -32,7 +32,7 @@ export default function RoundDetailPage() {
 
   const [scores,    setScores]    = useState<ScoreDetail[]>([])
   const [playedAt,  setPlayedAt]  = useState<string>('')
-  const [courseName, setCourseName] = useState('LeBaron Hills CC')
+  const [courseName, setCourseName] = useState('')
   const [loading,   setLoading]   = useState(true)
 
   useEffect(() => {

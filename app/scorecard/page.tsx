@@ -107,9 +107,10 @@ export default function ScorecardPage() {
 
   // Load user + profile + course ID on mount
   useEffect(() => {
-    // Resolve COURSE_ID dynamically so hardcoded fallback isn't load-bearing
-    supabase.from('courses').select('id').eq('name', 'LeBaron Hills CC').single()
-      .then(({ data: c }) => { if (c?.id) setCourseId(c.id) })
+    // Resolve course_id via club_config — works for any club without hardcoding
+    // the course name; falls back to COURSE_ID_FALLBACK if DB unreachable
+    supabase.from('club_config').select('course_id').limit(1).single()
+      .then(({ data: c }) => { if (c?.course_id) setCourseId(c.course_id) })
 
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) {
