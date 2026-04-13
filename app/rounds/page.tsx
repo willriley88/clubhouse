@@ -43,25 +43,38 @@ function scoreToParColor(_gross: number, _parTotal: number): string {
 
 export default function RoundsPage() {
   const router = useRouter()
-  const [rounds, setRounds] = useState<RoundSummary[]>([])
-  const [loading, setLoading] = useState(true)
-  const [isGuest, setIsGuest] = useState(false)
+  const [rounds,      setRounds]      = useState<RoundSummary[]>([])
+  const [loading,     setLoading]     = useState(true)
+  const [isGuest,     setIsGuest]     = useState(false)
+  const [user,        setUser]        = useState<any>(null)
+  const [deletingId,  setDeletingId]  = useState<string | null>(null)
+
+  async function handleDelete(roundId: string) {
+    if (!window.confirm('Delete this round?')) return
+    setDeletingId(roundId)
+    // Scores must be deleted before round due to FK constraint
+    await supabase.from('scores').delete().eq('round_id', roundId)
+    await supabase.from('rounds').delete().eq('id', roundId)
+    setRounds(prev => prev.filter(r => r.id !== roundId))
+    setDeletingId(null)
+  }
 
   useEffect(() => {
     async function load() {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user: authUser } } = await supabase.auth.getUser()
 
-      if (!user) {
+      if (!authUser) {
         setIsGuest(true)
         setLoading(false)
         return
       }
+      setUser(authUser)
 
       // Fetch all rounds with course name
       const { data: roundData } = await supabase
         .from('rounds')
         .select('id, played_at, courses(name)')
-        .eq('profile_id', user.id)
+        .eq('profile_id', authUser.id)
         .order('played_at', { ascending: false })
 
       const roundRows = (roundData ?? []) as RoundRow[]
@@ -178,39 +191,45 @@ export default function RoundsPage() {
         {rounds.map(r => {
           const hasScore  = r.gross > 0 && r.par_total > 0
           const isPartial = r.holes_played > 0 && r.holes_played < 18
+          const isDeleting = deletingId === r.id
 
           return (
-            <button key={r.id} onClick={() => router.push(`/rounds/${r.id}`)}
-              className="w-full bg-white rounded-2xl shadow-sm overflow-hidden text-left">
+            <div key={r.id} className="w-full bg-white rounded-2xl shadow-sm overflow-hidden">
               <div className="px-4 py-4 flex items-center gap-4">
 
-                {/* Gross score box */}
-                <div
-                  className="w-14 h-14 rounded-xl flex flex-col items-center justify-center flex-shrink-0"
-                  style={{ background: '#f8fafc', border: '1px solid #e2e8f0' }}
+                {/* Main tappable area — navigates to round detail */}
+                <button
+                  onClick={() => router.push(`/rounds/${r.id}`)}
+                  className="flex items-center gap-4 flex-1 min-w-0 text-left"
                 >
-                  <span className="text-2xl font-bold leading-none" style={{ color: '#152644' }}>
-                    {r.gross || '—'}
-                  </span>
-                  <span className="text-[9px] uppercase tracking-widest mt-0.5" style={{ color: '#94a3b8' }}>
-                    Gross
-                  </span>
-                </div>
+                  {/* Gross score box */}
+                  <div
+                    className="w-14 h-14 rounded-xl flex flex-col items-center justify-center flex-shrink-0"
+                    style={{ background: '#f8fafc', border: '1px solid #e2e8f0' }}
+                  >
+                    <span className="text-2xl font-bold leading-none" style={{ color: '#152644' }}>
+                      {r.gross || '—'}
+                    </span>
+                    <span className="text-[9px] uppercase tracking-widest mt-0.5" style={{ color: '#94a3b8' }}>
+                      Gross
+                    </span>
+                  </div>
 
-                {/* Course + date */}
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold truncate" style={{ color: '#152644' }}>
-                    {r.course_name}
-                  </p>
-                  <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>
-                    {formatDate(r.played_at)}
-                  </p>
-                  {isPartial && (
-                    <p className="text-[10px] mt-0.5 font-medium" style={{ color: '#f59e0b' }}>
-                      {r.holes_played} holes
+                  {/* Course + date */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold truncate" style={{ color: '#152644' }}>
+                      {r.course_name}
                     </p>
-                  )}
-                </div>
+                    <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>
+                      {formatDate(r.played_at)}
+                    </p>
+                    {isPartial && (
+                      <p className="text-[10px] mt-0.5 font-medium" style={{ color: '#f59e0b' }}>
+                        {r.holes_played} holes
+                      </p>
+                    )}
+                  </div>
+                </button>
 
                 {/* Score vs par */}
                 {hasScore && (
@@ -227,8 +246,27 @@ export default function RoundsPage() {
                   </div>
                 )}
 
+                {/* Delete button — logged-in users only */}
+                {user && (
+                  <button
+                    onClick={() => handleDelete(r.id)}
+                    disabled={isDeleting}
+                    className="flex-shrink-0 p-1.5 rounded-lg"
+                    style={{ color: isDeleting ? '#e2e8f0' : '#cbd5e1' }}
+                    aria-label="Delete round"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="3 6 5 6 21 6"/>
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                      <path d="M10 11v6M14 11v6"/>
+                      <path d="M9 6V4h6v2"/>
+                    </svg>
+                  </button>
+                )}
+
               </div>
-            </button>
+            </div>
           )
         })}
 
