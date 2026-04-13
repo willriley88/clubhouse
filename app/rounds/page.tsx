@@ -1,28 +1,16 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
 import BottomNav from '../components/BottomNav'
 
-type RoundRow = {
-  id: string
-  played_at: string
-  courses: { name: string }[] | null  // Supabase returns FK joins as arrays
-}
-
-type ScoreRow = {
-  round_id: string
-  strokes: number
-  holes: { par: number }[] | null  // Supabase returns FK joins as arrays
-}
-
-type RoundSummary = {
+type LocalRound = {
   id: string
   played_at: string
   course_name: string
   gross: number
   par_total: number
   holes_played: number
+  hole_scores: { hole_number: number; par: number; strokes: number; putts: number | null }[]
 }
 
 function formatDate(ts: string): string {
@@ -37,90 +25,27 @@ function scoreToPar(gross: number, parTotal: number): string {
   return diff > 0 ? `+${diff}` : String(diff)
 }
 
-function scoreToParColor(_gross: number, _parTotal: number): string {
-  return '#152644'
-}
-
 export default function RoundsPage() {
   const router = useRouter()
-  const [rounds,      setRounds]      = useState<RoundSummary[]>([])
-  const [loading,     setLoading]     = useState(true)
-  const [isGuest,     setIsGuest]     = useState(false)
-  const [user,        setUser]        = useState<any>(null)
-  const [deletingId,  setDeletingId]  = useState<string | null>(null)
-
-  async function handleDelete(roundId: string) {
-    if (!window.confirm('Delete this round?')) return
-    setDeletingId(roundId)
-    // Scores must be deleted before round due to FK constraint
-    await supabase.from('scores').delete().eq('round_id', roundId)
-    await supabase.from('rounds').delete().eq('id', roundId)
-    setRounds(prev => prev.filter(r => r.id !== roundId))
-    setDeletingId(null)
-  }
+  const [rounds, setRounds] = useState<LocalRound[]>([])
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    async function load() {
-      const { data: { user: authUser } } = await supabase.auth.getUser()
-
-      if (!authUser) {
-        setIsGuest(true)
-        setLoading(false)
-        return
-      }
-      setUser(authUser)
-
-      // Fetch all rounds with course name
-      const { data: roundData } = await supabase
-        .from('rounds')
-        .select('id, played_at, courses(name)')
-        .eq('profile_id', authUser.id)
-        .order('played_at', { ascending: false })
-
-      const roundRows = (roundData ?? []) as RoundRow[]
-
-      if (roundRows.length === 0) {
-        setLoading(false)
-        return
-      }
-
-      // Fetch all scores for these rounds in one query — avoids N+1
-      const roundIds = roundRows.map(r => r.id)
-      const { data: scoreData } = await supabase
-        .from('scores')
-        .select('round_id, strokes, holes(par)')
-        .in('round_id', roundIds)
-
-      const scoreRows = (scoreData ?? []) as ScoreRow[]
-
-      // Group scores by round_id
-      const byRound = new Map<string, ScoreRow[]>()
-      for (const s of scoreRows) {
-        const arr = byRound.get(s.round_id) ?? []
-        arr.push(s)
-        byRound.set(s.round_id, arr)
-      }
-
-      const summaries: RoundSummary[] = roundRows.map(r => {
-        const scores = byRound.get(r.id) ?? []
-        const gross     = scores.reduce((a: number, s) => a + s.strokes, 0)
-        const par_total = scores.reduce((a: number, s) => a + (s.holes?.[0]?.par ?? 0), 0)
-        return {
-          id:           r.id,
-          played_at:    r.played_at,
-          course_name:  r.courses?.[0]?.name ?? 'LeBaron Hills CC',
-          gross,
-          par_total,
-          holes_played: scores.length,
-        }
-      })
-
-      setRounds(summaries)
-      setLoading(false)
+    try {
+      const raw = localStorage.getItem('clubhouse_rounds')
+      setRounds(raw ? JSON.parse(raw) : [])
+    } catch {
+      setRounds([])
     }
-
-    load()
+    setLoaded(true)
   }, [])
+
+  function handleDelete(id: string) {
+    if (!window.confirm('Delete this round?')) return
+    const updated = rounds.filter(r => r.id !== id)
+    setRounds(updated)
+    localStorage.setItem('clubhouse_rounds', JSON.stringify(updated))
+  }
 
   return (
     <main className="min-h-screen pb-[max(96px,env(safe-area-inset-bottom))]" style={{ background: '#f1f5f9' }}>
@@ -139,7 +64,7 @@ export default function RoundsPage() {
           <span className="text-sm">Home</span>
         </button>
         <h1 className="text-white text-2xl font-bold">Round History</h1>
-        {!loading && !isGuest && (
+        {loaded && (
           <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
             {rounds.length} round{rounds.length !== 1 ? 's' : ''} played
           </p>
@@ -148,30 +73,11 @@ export default function RoundsPage() {
 
       <div className="px-4 pt-4 space-y-3">
 
-        {/* Loading */}
-        {loading && (
+        {!loaded && (
           <div className="text-center py-16 text-sm" style={{ color: '#94a3b8' }}>Loading...</div>
         )}
 
-        {/* Guest — no rounds available */}
-        {!loading && isGuest && (
-          <div className="bg-white rounded-2xl px-4 py-12 text-center shadow-sm">
-            <p className="text-sm font-semibold mb-1" style={{ color: '#152644' }}>Sign in to view your rounds</p>
-            <p className="text-xs mb-5" style={{ color: '#94a3b8' }}>
-              Round history is saved to your member account
-            </p>
-            <button
-              onClick={() => router.push('/login')}
-              className="px-5 py-2 rounded-xl text-sm font-bold"
-              style={{ background: '#152644', color: '#c9a84c' }}
-            >
-              Sign In
-            </button>
-          </div>
-        )}
-
-        {/* No rounds yet */}
-        {!loading && !isGuest && rounds.length === 0 && (
+        {loaded && rounds.length === 0 && (
           <div className="bg-white rounded-2xl px-4 py-12 text-center shadow-sm">
             <p className="text-sm font-semibold mb-1" style={{ color: '#152644' }}>No rounds recorded yet</p>
             <p className="text-xs mb-5" style={{ color: '#94a3b8' }}>
@@ -187,17 +93,14 @@ export default function RoundsPage() {
           </div>
         )}
 
-        {/* Round cards */}
         {rounds.map(r => {
           const hasScore  = r.gross > 0 && r.par_total > 0
           const isPartial = r.holes_played > 0 && r.holes_played < 18
-          const isDeleting = deletingId === r.id
 
           return (
             <div key={r.id} className="w-full bg-white rounded-2xl shadow-sm overflow-hidden">
               <div className="px-4 py-4 flex items-center gap-4">
 
-                {/* Main tappable area — navigates to round detail */}
                 <button
                   onClick={() => router.push(`/rounds/${r.id}`)}
                   className="flex items-center gap-4 flex-1 min-w-0 text-left"
@@ -234,10 +137,7 @@ export default function RoundsPage() {
                 {/* Score vs par */}
                 {hasScore && (
                   <div className="text-right flex-shrink-0">
-                    <span
-                      className="text-lg font-bold"
-                      style={{ color: scoreToParColor(r.gross, r.par_total) }}
-                    >
+                    <span className="text-lg font-bold" style={{ color: '#152644' }}>
                       {scoreToPar(r.gross, r.par_total)}
                     </span>
                     <p className="text-[10px] uppercase tracking-widest mt-0.5" style={{ color: '#94a3b8' }}>
@@ -246,24 +146,21 @@ export default function RoundsPage() {
                   </div>
                 )}
 
-                {/* Delete button — logged-in users only */}
-                {user && (
-                  <button
-                    onClick={() => handleDelete(r.id)}
-                    disabled={isDeleting}
-                    className="flex-shrink-0 p-1.5 rounded-lg"
-                    style={{ color: isDeleting ? '#e2e8f0' : '#cbd5e1' }}
-                    aria-label="Delete round"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="3 6 5 6 21 6"/>
-                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                      <path d="M10 11v6M14 11v6"/>
-                      <path d="M9 6V4h6v2"/>
-                    </svg>
-                  </button>
-                )}
+                {/* Delete */}
+                <button
+                  onClick={() => handleDelete(r.id)}
+                  className="flex-shrink-0 p-1.5 rounded-lg"
+                  style={{ color: '#cbd5e1' }}
+                  aria-label="Delete round"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                    <path d="M10 11v6M14 11v6"/>
+                    <path d="M9 6V4h6v2"/>
+                  </svg>
+                </button>
 
               </div>
             </div>

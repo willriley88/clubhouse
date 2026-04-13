@@ -97,9 +97,8 @@ export default function ScorecardPage() {
 
   // Misc
   const [courseId,        setCourseId]        = useState(COURSE_ID_FALLBACK)
-  const [saving,          setSaving]          = useState(false)
-  const [showLoginPrompt, setShowLoginPrompt] = useState(false)
-  const [roundActive,     setRoundActive]     = useState(false)
+  const [saving,      setSaving]      = useState(false)
+  const [roundActive, setRoundActive] = useState(false)
   const [showShare,       setShowShare]       = useState(false)
   const [shareGross,      setShareGross]      = useState(0)
   const [shareDiff,       setShareDiff]       = useState(0)
@@ -127,13 +126,13 @@ export default function ScorecardPage() {
             }
           })
       } else {
-        // Guest — restore from localStorage
+        // No account — restore player name/handicap from localStorage
         try {
-          const g = JSON.parse(localStorage.getItem('clubhouse_guest') || '{}')
-          if (g.name) {
-            setEditName(g.name)
-            setEditHcp(g.handicap?.toString() || '')
-            setPlayers([{ id: 0, name: g.name, handicap: g.handicap || null, avatarColor: AVATAR_COLORS[0], isUser: true }])
+          const p = JSON.parse(localStorage.getItem('clubhouse_player') || '{}')
+          if (p.name) {
+            setEditName(p.name)
+            setEditHcp(p.handicap?.toString() || '')
+            setPlayers([{ id: 0, name: p.name, handicap: p.handicap || null, avatarColor: AVATAR_COLORS[0], isUser: true }])
           }
         } catch {}
       }
@@ -216,30 +215,55 @@ export default function ScorecardPage() {
   }
 
   async function finishRound() {
-    if (!user) { setShowLoginPrompt(true); return }
     setSaving(true)
-    const { data: round, error } = await supabase
-      .from('rounds').insert({ profile_id: user.id, course_id: courseId, format: 'stroke' })
-      .select().single()
-    if (error || !round) { setSaving(false); return }
-
-    const { data: holeRows } = await supabase
-      .from('holes').select('id,hole_number').eq('course_id', courseId).order('hole_number')
-
-    if (holeRows) {
-      await supabase.from('scores').insert(
-        holeRows.map((h, i) => ({ round_id: round.id, hole_id: h.id, strokes: scores[0][i] ?? 0, putts: putts[0][i] ?? null }))
-      )
-    }
     const diff = ((total0 - teeData.rating) * 113) / teeData.slope
-    // Use new dedicated columns (score_format + differential) introduced in
-    // 20260410_schema_cleanup.sql. Keep the legacy format string for backwards
-    // compat with any code that still reads it.
-    await supabase.from('rounds').update({
-      score_format: 'stroke',
-      differential: parseFloat(diff.toFixed(1)),
-      format: `stroke|diff:${diff.toFixed(1)}`,
-    }).eq('id', round.id)
+
+    // Build hole scores — only holes with a recorded stroke
+    const holeScores = HOLES
+      .map((h, i) => ({
+        hole_number: h.h,
+        par:         h.par,
+        strokes:     scores[0][i] ?? 0,
+        putts:       putts[0][i] ?? null,
+      }))
+      .filter((_, i) => scores[0][i] !== null)
+
+    // Save to localStorage — always, no login required
+    const localRound = {
+      id:          crypto.randomUUID(),
+      played_at:   new Date().toISOString(),
+      course_name: 'LeBaron Hills CC',
+      gross:       total0,
+      par_total:   HOLES.reduce((a, h) => a + h.par, 0),
+      holes_played: holeScores.length,
+      hole_scores:  holeScores,
+    }
+    try {
+      const existing = JSON.parse(localStorage.getItem('clubhouse_rounds') || '[]')
+      localStorage.setItem('clubhouse_rounds', JSON.stringify([localRound, ...existing]))
+    } catch {}
+
+    // Also save to Supabase when logged in
+    if (user) {
+      const { data: round } = await supabase
+        .from('rounds').insert({ profile_id: user.id, course_id: courseId, format: 'stroke' })
+        .select().single()
+      if (round) {
+        const { data: holeRows } = await supabase
+          .from('holes').select('id,hole_number').eq('course_id', courseId).order('hole_number')
+        if (holeRows) {
+          await supabase.from('scores').insert(
+            holeRows.map((h, i) => ({ round_id: round.id, hole_id: h.id, strokes: scores[0][i] ?? 0, putts: putts[0][i] ?? null }))
+          )
+        }
+        await supabase.from('rounds').update({
+          score_format: 'stroke',
+          differential: parseFloat(diff.toFixed(1)),
+          format: `stroke|diff:${diff.toFixed(1)}`,
+        }).eq('id', round.id)
+      }
+    }
+
     setSaving(false)
     setShareGross(total0)
     setShareDiff(diff)
@@ -252,7 +276,7 @@ export default function ScorecardPage() {
     if (user) {
       await supabase.from('profiles').update({ full_name: editName, handicap: hcp }).eq('id', user.id)
     } else {
-      localStorage.setItem('clubhouse_guest', JSON.stringify({ name: editName, handicap: hcp }))
+      localStorage.setItem('clubhouse_player', JSON.stringify({ name: editName, handicap: hcp }))
     }
     setProfileOpen(false)
   }
@@ -614,15 +638,8 @@ export default function ScorecardPage() {
             <button onClick={saveProfile}
               className="w-full py-4 rounded-2xl text-white font-bold text-base mb-3"
               style={{ background: '#c9a84c' }}>
-              {user ? 'Save Profile' : 'Save as Guest'}
+              Save
             </button>
-
-            {!user && (
-              <button onClick={() => { setProfileOpen(false); router.push('/login') }}
-                className="w-full py-3 text-sm font-semibold text-center" style={{ color: '#152644' }}>
-                Log in to sync your profile →
-              </button>
-            )}
           </div>
         </div>
       )}
@@ -669,22 +686,6 @@ export default function ScorecardPage() {
               className="w-full py-3 text-sm font-semibold text-center" style={{ color: '#152644' }}>
               Done
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* ── LOGIN PROMPT ── */}
-      {showLoginPrompt && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-6"
-          style={{ background: 'rgba(0,0,0,0.5)' }}>
-          <div className="bg-white rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl">
-            <h2 className="text-xl font-bold mb-2" style={{ color: '#152644' }}>Save Your Round</h2>
-            <p className="text-sm text-slate-500 mb-5">Log in to save your scorecard and track your handicap over time.</p>
-            <button onClick={() => router.push('/login')}
-              className="w-full py-3.5 rounded-2xl text-white font-bold mb-2"
-              style={{ background: '#c9a84c' }}>Log In</button>
-            <button onClick={() => setShowLoginPrompt(false)}
-              className="w-full py-2.5 text-sm text-slate-400">Continue without saving</button>
           </div>
         </div>
       )}

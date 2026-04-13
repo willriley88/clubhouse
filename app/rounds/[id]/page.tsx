@@ -1,14 +1,23 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
 import BottomNav from '../../components/BottomNav'
 
-type ScoreDetail = {
+type HoleScore = {
   hole_number: number
   par: number
   strokes: number
   putts: number | null
+}
+
+type LocalRound = {
+  id: string
+  played_at: string
+  course_name: string
+  gross: number
+  par_total: number
+  holes_played: number
+  hole_scores: HoleScore[]
 }
 
 function formatDate(ts: string): string {
@@ -17,107 +26,42 @@ function formatDate(ts: string): string {
   })
 }
 
-function cellBg(_strokes: number, _par: number): string {
-  return '#f8fafc'
-}
-
-function cellText(_strokes: number, _par: number): string {
-  return '#152644'
-}
-
 export default function RoundDetailPage() {
   const router  = useRouter()
   const params  = useParams<{ id: string }>()
   const roundId = params.id
 
-  const [scores,    setScores]    = useState<ScoreDetail[]>([])
-  const [playedAt,  setPlayedAt]  = useState<string>('')
-  const [courseName, setCourseName] = useState('')
-  const [loading,   setLoading]   = useState(true)
+  const [round,   setRound]   = useState<LocalRound | null>(null)
+  const [loaded,  setLoaded]  = useState(false)
 
   useEffect(() => {
-    async function load() {
-      const { data: { session } } = await supabase.auth.getSession()
-      console.log('session check:', session)
-
-      // Fetch round metadata
-      const { data: round } = await supabase
-        .from('rounds')
-        .select('played_at, courses(name)')
-        .eq('id', roundId)
-        .single()
-
-      if (round) {
-        setPlayedAt(round.played_at)
-        const c = round.courses as unknown as { name: string }[] | null
-        if (c?.[0]?.name) setCourseName(c[0].name)
-      }
-
-      // Split into two queries — inline holes join triggers RLS on the holes
-      // table even though direct queries work fine (PostgREST nested selects
-      // run under the requesting user's policy context, not public read).
-
-      // Step 1: fetch scores for this round
-      const { data: scoreRows, error: scoresError } = await supabase
-        .from('scores')
-        .select('strokes, putts, hole_id')
-        .eq('round_id', roundId)
-
-      console.log('scores:', scoreRows, scoresError)
-
-      if (!scoreRows || scoreRows.length === 0) {
-        setLoading(false)
-        return
-      }
-
-      // Step 2: fetch hole data for those hole_ids separately
-      const holeIds = scoreRows.map((s: any) => s.hole_id)
-      const { data: holeRows, error: holesError } = await supabase
-        .from('holes')
-        .select('id, hole_number, par')
-        .in('id', holeIds)
-
-      console.log('holes:', holeRows, holesError)
-
-      // Step 3: join in JS using a Map for O(1) lookup
-      const holeMap = new Map(holeRows?.map((h: any) => [h.id, h]) ?? [])
-      const details: ScoreDetail[] = scoreRows
-        .map((s: any) => {
-          const h = holeMap.get(s.hole_id)
-          return {
-            hole_number: h?.hole_number ?? 0,
-            par:         h?.par ?? 4,
-            strokes:     s.strokes,
-            putts:       s.putts ?? null,
-          }
-        })
-        .filter((s: ScoreDetail) => s.hole_number > 0)
-        .sort((a: ScoreDetail, b: ScoreDetail) => a.hole_number - b.hole_number)
-
-      setScores(details)
-
-      setLoading(false)
+    try {
+      const raw = localStorage.getItem('clubhouse_rounds')
+      const rounds: LocalRound[] = raw ? JSON.parse(raw) : []
+      setRound(rounds.find(r => r.id === roundId) ?? null)
+    } catch {
+      setRound(null)
     }
-    load()
+    setLoaded(true)
   }, [roundId])
 
-  const gross     = scores.reduce((a: number, s) => a + s.strokes, 0)
-  const parTotal  = scores.reduce((a: number, s) => a + s.par, 0)
-  const toPar     = gross - parTotal
-  const toParStr  = toPar === 0 ? 'E' : toPar > 0 ? `+${toPar}` : String(toPar)
+  const scores = round?.hole_scores ?? []
+  const gross      = scores.reduce((a: number, s) => a + s.strokes, 0)
+  const parTotal   = scores.reduce((a: number, s) => a + s.par, 0)
+  const toPar      = gross - parTotal
+  const toParStr   = toPar === 0 ? 'E' : toPar > 0 ? `+${toPar}` : String(toPar)
 
-  const front9    = scores.slice(0, 9)
-  const back9     = scores.slice(9, 18)
+  const front9     = scores.slice(0, 9)
+  const back9      = scores.slice(9, 18)
   const frontGross = front9.reduce((a: number, s) => a + s.strokes, 0)
   const backGross  = back9.reduce((a: number, s) => a + s.strokes, 0)
   const frontPar   = front9.reduce((a: number, s) => a + s.par, 0)
   const backPar    = back9.reduce((a: number, s) => a + s.par, 0)
 
-  // Summary stats
-  const birdies  = scores.filter(s => s.strokes - s.par <= -1).length
-  const pars     = scores.filter(s => s.strokes - s.par === 0).length
-  const bogeys   = scores.filter(s => s.strokes - s.par === 1).length
-  const doubles  = scores.filter(s => s.strokes - s.par >= 2).length
+  const birdies    = scores.filter(s => s.strokes - s.par <= -1).length
+  const pars       = scores.filter(s => s.strokes - s.par === 0).length
+  const bogeys     = scores.filter(s => s.strokes - s.par === 1).length
+  const doubles    = scores.filter(s => s.strokes - s.par >= 2).length
   const totalPutts = scores.reduce((a: number, s) => a + (s.putts ?? 0), 0)
   const puttCount  = scores.filter(s => s.putts !== null).length
 
@@ -137,29 +81,29 @@ export default function RoundDetailPage() {
           </svg>
           <span className="text-sm">History</span>
         </button>
-        <h1 className="text-white text-xl font-bold">{courseName}</h1>
-        {playedAt && (
-          <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>{formatDate(playedAt)}</p>
+        <h1 className="text-white text-xl font-bold">{round?.course_name ?? 'Round Detail'}</h1>
+        {round?.played_at && (
+          <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>{formatDate(round.played_at)}</p>
         )}
-        {!loading && scores.length > 0 && (
+        {loaded && scores.length > 0 && (
           <div className="flex gap-6 mt-3">
             <div>
               <div className="text-2xl font-bold text-white">{gross}</div>
               <div className="text-[10px] uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>Gross</div>
             </div>
             <div>
-              <div className="text-2xl font-bold" style={{ color: 'white' }}>{toParStr}</div>
+              <div className="text-2xl font-bold text-white">{toParStr}</div>
               <div className="text-[10px] uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>To Par</div>
             </div>
           </div>
         )}
       </div>
 
-      {loading && (
+      {!loaded && (
         <div className="text-center py-16 text-sm" style={{ color: '#94a3b8' }}>Loading...</div>
       )}
 
-      {!loading && scores.length > 0 && (
+      {loaded && scores.length > 0 && (
         <>
           {/* Scorecard table — horizontally scrollable */}
           <div className="mx-4 mt-4 bg-white rounded-2xl shadow-sm overflow-hidden">
@@ -167,13 +111,12 @@ export default function RoundDetailPage() {
               <table className="border-collapse" style={{ minWidth: '100%' }}>
                 <colgroup>
                   <col style={{ width: 52 }}/>
-                  {scores.slice(0, 9).map((_, i) => <col key={i} style={{ width: 36 }}/>)}
+                  {front9.map((_, i) => <col key={i} style={{ width: 36 }}/>)}
                   <col style={{ width: 40 }}/>
-                  {scores.slice(9).map((_, i) => <col key={i} style={{ width: 36 }}/>)}
-                  <col style={{ width: 40 }}/>
+                  {back9.map((_, i) => <col key={i} style={{ width: 36 }}/>)}
+                  {back9.length > 0 && <col style={{ width: 40 }}/>}
                 </colgroup>
 
-                {/* Header row: Hole numbers */}
                 <thead>
                   <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
                     <th className="text-left pl-3 py-2 text-[10px] font-bold uppercase tracking-wide text-slate-400">Hole</th>
@@ -229,7 +172,7 @@ export default function RoundDetailPage() {
                     )}
                   </tr>
 
-                  {/* vs Par color row */}
+                  {/* vs Par row */}
                   <tr>
                     <td className="pl-3 py-1.5 text-[10px] font-semibold text-slate-400 uppercase">+/−</td>
                     {front9.map(s => {
@@ -238,7 +181,7 @@ export default function RoundDetailPage() {
                       return (
                         <td key={s.hole_number} className="text-center py-1.5">
                           <span className="inline-flex items-center justify-center w-7 h-5 rounded text-[10px] font-bold"
-                            style={{ background: cellBg(s.strokes, s.par), color: cellText(s.strokes, s.par) }}>
+                            style={{ background: '#f8fafc', color: '#152644' }}>
                             {str}
                           </span>
                         </td>
@@ -256,7 +199,7 @@ export default function RoundDetailPage() {
                       return (
                         <td key={s.hole_number} className="text-center py-1.5">
                           <span className="inline-flex items-center justify-center w-7 h-5 rounded text-[10px] font-bold"
-                            style={{ background: cellBg(s.strokes, s.par), color: cellText(s.strokes, s.par) }}>
+                            style={{ background: '#f8fafc', color: '#152644' }}>
                             {str}
                           </span>
                         </td>
@@ -281,13 +224,13 @@ export default function RoundDetailPage() {
             <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">Round Summary</p>
             <div className="grid grid-cols-4 gap-3">
               {[
-                { label: 'Birdies',  val: birdies, color: '#152644' },
-                { label: 'Pars',     val: pars,    color: '#152644' },
-                { label: 'Bogeys',   val: bogeys,  color: '#152644' },
-                { label: 'Doubles+', val: doubles, color: '#152644' },
+                { label: 'Birdies',  val: birdies },
+                { label: 'Pars',     val: pars    },
+                { label: 'Bogeys',   val: bogeys  },
+                { label: 'Doubles+', val: doubles },
               ].map(stat => (
                 <div key={stat.label} className="rounded-xl p-3 text-center" style={{ background: '#f8fafc' }}>
-                  <div className="text-xl font-bold" style={{ color: stat.color }}>{stat.val}</div>
+                  <div className="text-xl font-bold" style={{ color: '#152644' }}>{stat.val}</div>
                   <div className="text-[10px] text-slate-400 mt-0.5">{stat.label}</div>
                 </div>
               ))}
@@ -302,11 +245,11 @@ export default function RoundDetailPage() {
         </>
       )}
 
-      {!loading && scores.length === 0 && (
+      {loaded && !round && (
         <div className="mx-4 mt-8 bg-white rounded-2xl p-8 text-center shadow-sm">
-          <p className="text-sm font-semibold mb-2" style={{ color: '#152644' }}>No hole data recorded</p>
+          <p className="text-sm font-semibold mb-2" style={{ color: '#152644' }}>Round not found</p>
           <p className="text-xs mb-5" style={{ color: '#94a3b8' }}>
-            Score data could not be loaded for this round.
+            This round may have been deleted or saved on another device.
           </p>
           <button
             onClick={() => router.push('/rounds')}
