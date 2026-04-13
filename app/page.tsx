@@ -52,12 +52,13 @@ export default function HomePage() {
       if (data.user) {
         setUser(data.user)
 
-        // Load profile
+        // Load profile — maybeSingle() avoids PGRST116 error for new users
+        // who haven't had a profile row inserted yet
         const { data: p } = await supabase
           .from('profiles')
           .select('full_name, handicap')
           .eq('id', data.user.id)
-          .single()
+          .maybeSingle()
         if (p) {
           setProfile(p)
           setEditName(p.full_name || data.user.email?.split('@')[0] || 'Member')
