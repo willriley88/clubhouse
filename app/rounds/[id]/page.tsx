@@ -17,19 +17,12 @@ function formatDate(ts: string): string {
   })
 }
 
-// Color coding for score vs par
-function cellBg(strokes: number, par: number): string {
-  const d = strokes - par
-  if (d <= -1) return '#c9a84c'   // birdie+ — gold
-  if (d === 0) return '#15803d'   // par — green
-  if (d === 1) return '#ef4444'   // bogey — red
-  return '#991b1b'                // double+ — dark red
+function cellBg(_strokes: number, _par: number): string {
+  return '#f8fafc'
 }
 
-function cellText(strokes: number, par: number): string {
-  const d = strokes - par
-  if (d <= -1 || d === 0) return 'white'
-  return 'white'
+function cellText(_strokes: number, _par: number): string {
+  return '#152644'
 }
 
 export default function RoundDetailPage() {
@@ -81,7 +74,7 @@ export default function RoundDetailPage() {
       const holeIds = scoreRows.map((s: any) => s.hole_id)
       const { data: holeRows, error: holesError } = await supabase
         .from('holes')
-        .select('id, hole_number, par, hcp_index')
+        .select('id, hole_number, par')
         .in('id', holeIds)
 
       console.log('holes:', holeRows, holesError)
@@ -155,7 +148,7 @@ export default function RoundDetailPage() {
               <div className="text-[10px] uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>Gross</div>
             </div>
             <div>
-              <div className="text-2xl font-bold" style={{ color: toPar < 0 ? '#c9a84c' : toPar === 0 ? '#4ade80' : '#f87171' }}>{toParStr}</div>
+              <div className="text-2xl font-bold" style={{ color: 'white' }}>{toParStr}</div>
               <div className="text-[10px] uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>To Par</div>
             </div>
           </div>
@@ -253,10 +246,7 @@ export default function RoundDetailPage() {
                     })}
                     <td className="text-center py-1.5">
                       <span className="inline-flex items-center justify-center rounded px-1.5 py-0.5 text-[10px] font-bold"
-                        style={{
-                          background: frontGross - frontPar < 0 ? '#c9a84c' : frontGross - frontPar === 0 ? '#15803d' : '#ef4444',
-                          color: 'white',
-                        }}>
+                        style={{ background: '#f8fafc', color: '#152644' }}>
                         {frontGross - frontPar === 0 ? 'E' : frontGross - frontPar > 0 ? `+${frontGross - frontPar}` : frontGross - frontPar}
                       </span>
                     </td>
@@ -275,10 +265,7 @@ export default function RoundDetailPage() {
                     {back9.length > 0 && (
                       <td className="text-center py-1.5">
                         <span className="inline-flex items-center justify-center rounded px-1.5 py-0.5 text-[10px] font-bold"
-                          style={{
-                            background: backGross - backPar < 0 ? '#c9a84c' : backGross - backPar === 0 ? '#15803d' : '#ef4444',
-                            color: 'white',
-                          }}>
+                          style={{ background: '#f8fafc', color: '#152644' }}>
                           {backGross - backPar === 0 ? 'E' : backGross - backPar > 0 ? `+${backGross - backPar}` : backGross - backPar}
                         </span>
                       </td>
@@ -294,10 +281,10 @@ export default function RoundDetailPage() {
             <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">Round Summary</p>
             <div className="grid grid-cols-4 gap-3">
               {[
-                { label: 'Birdies', val: birdies,  color: '#c9a84c' },
-                { label: 'Pars',    val: pars,     color: '#15803d' },
-                { label: 'Bogeys',  val: bogeys,   color: '#ef4444' },
-                { label: 'Doubles+', val: doubles, color: '#991b1b' },
+                { label: 'Birdies',  val: birdies, color: '#152644' },
+                { label: 'Pars',     val: pars,    color: '#152644' },
+                { label: 'Bogeys',   val: bogeys,  color: '#152644' },
+                { label: 'Doubles+', val: doubles, color: '#152644' },
               ].map(stat => (
                 <div key={stat.label} className="rounded-xl p-3 text-center" style={{ background: '#f8fafc' }}>
                   <div className="text-xl font-bold" style={{ color: stat.color }}>{stat.val}</div>

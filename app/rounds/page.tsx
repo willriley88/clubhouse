@@ -37,11 +37,8 @@ function scoreToPar(gross: number, parTotal: number): string {
   return diff > 0 ? `+${diff}` : String(diff)
 }
 
-function scoreToParColor(gross: number, parTotal: number): string {
-  const diff = gross - parTotal
-  if (diff < 0) return '#c9a84c'  // under par — gold
-  if (diff === 0) return '#15803d' // even — green
-  return '#475569'                 // over par — slate
+function scoreToParColor(_gross: number, _parTotal: number): string {
+  return '#152644'
 }
 
 export default function RoundsPage() {
