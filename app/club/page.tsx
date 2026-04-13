@@ -69,6 +69,9 @@ export default function Club() {
   const [sending,       setSending]       = useState(false)
   const [loadingMsgs,   setLoadingMsgs]   = useState(true)
   const [menuToast,     setMenuToast]     = useState(false)
+  const [isAdmin,       setIsAdmin]       = useState(false)
+  const [profileName,   setProfileName]   = useState('')
+  const [profileInitials, setProfileInitials] = useState('')
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -86,6 +89,18 @@ export default function Club() {
       ])
       setTeeSheet(slotRows ?? [])
       setUser(authData.user)
+
+      if (authData.user) {
+        const { data: prof } = await supabase
+          .from('profiles')
+          .select('full_name, is_admin')
+          .eq('id', authData.user.id)
+          .maybeSingle()
+        setIsAdmin(prof?.is_admin === true)
+        const name = prof?.full_name || authData.user.email?.split('@')[0] || 'Member'
+        setProfileName(name)
+        setProfileInitials(getInitials(name))
+      }
     }
     load()
   }, [])
@@ -352,14 +367,14 @@ export default function Club() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Post input — all channels open to authenticated members */}
-            {user ? (
+            {/* Post input — admin only; all users can read */}
+            {isAdmin ? (
               <div className="border-t border-gray-100 px-4 py-3 flex items-center gap-3">
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
                   style={{ background: '#152644' }}
                 >
-                  {(user.email?.charAt(0) ?? 'M').toUpperCase()}
+                  {profileInitials || (user?.email?.charAt(0) ?? 'M').toUpperCase()}
                 </div>
                 <input
                   value={messageText}
@@ -384,13 +399,13 @@ export default function Club() {
                   </svg>
                 </button>
               </div>
-            ) : (
+            ) : !user ? (
               <div className="border-t border-gray-100 px-4 py-3">
                 <p className="text-xs text-center text-gray-400">
-                  <button onClick={() => router.push('/login')} className="underline">Sign in</button> to post
+                  <button onClick={() => router.push('/login')} className="underline">Sign in</button> to view
                 </p>
               </div>
-            )}
+            ) : null}
 
           </div>
         </div>
