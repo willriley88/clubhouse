@@ -111,7 +111,7 @@ The splash screen only shows on first visit (sessionStorage). If BottomNav is in
 
 **courses** — `id` uuid, `name` text, `city`, `state`, `slope` integer (136), `rating` numeric (73.4)
 
-**holes** — `id`, `course_id`, `hole_number` 1–18, `par`, `hcp_index`, `yardage_blue/white/green/gold`
+**holes** — `id`, `course_id`, `hole_number` 1–18, `par`, `hcp_index`, `yardage_blue/white/green/gold`, `front_lat`, `front_lng`, `center_lat`, `center_lng`, `back_lat`, `back_lng` (all `double precision`, nullable — GPS coordinates for in-app distance calc; seeded for LeBaron via `20260412_holes_gps_coords.sql`)
 
 **rounds** — `id`, `profile_id`, `course_id`, `played_at`, `updated_at`, `format` (legacy — `'stroke'` or `'stroke|diff:2.3'`), `score_format` text (`'stroke'`), `differential` numeric (WHS diff)
 
@@ -166,7 +166,7 @@ LeBaron values: rating `73.4`, slope `136`
 - **Club config** (`lib/club-config.ts`): `getClubConfig(courseId?)` server helper + `ClubConfig` type; `club_config` table uses `course_id` FK; `app/layout.tsx` uses `generateMetadata()` to pull club name + brand color from DB
 
 ### GPS Notes
-`HOLES` in `app/gps/page.tsx` holds real Google Earth coordinates for all 18 greens (front/center/back) recorded April 2026. Accuracy verified by distance check. No further update needed unless greens are regraded.
+GPS coordinates now live in the `holes` table (`front_lat/lng`, `center_lat/lng`, `back_lat/lng`), seeded from real Google Earth coordinates recorded April 2026. The GPS page fetches them dynamically via `club_config.course_id` — no hardcoded arrays. To add a new club's GPS data, run UPDATE statements on the `holes` table for that course. The page shows a "no GPS data" state gracefully when columns are null.
 
 ### What's Still Static / Not Integrated
 - GPS hole diagram is abstract/generic — not shaped to actual LeBaron hole layouts
@@ -196,9 +196,8 @@ In Supabase dashboard → SQL Editor, run in order:
 
 ## Immediate Priorities
 1. Tee sheet double-booking guard (server-side check before update)
-2. Wire remaining pages to `getClubConfig()` (replaces hardcoded LeBaron strings)
-3. Replace `public/lebaron-menu.pdf` placeholder with real PDF (copy from `~/lebaron-menu-4/9.pdf`)
-4. Add real event data to `events` table (staff can insert via Supabase dashboard or future admin UI)
+2. Replace `public/lebaron-menu.pdf` placeholder with real PDF (copy from `~/lebaron-menu-4/9.pdf`)
+3. Add real event data to `events` table (staff can insert via Supabase dashboard or future admin UI)
 
 ## Longer-Term
 - Beta test with bag room staff
