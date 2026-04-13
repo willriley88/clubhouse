@@ -265,13 +265,13 @@ export default function Events() {
               {/* Calendar cells */}
               <div className="grid grid-cols-7 px-2 pb-3">
                 {cells.map((day, idx) => {
-                  if (day === null) return <div key={`e-${idx}`} className="h-10" />
+                  if (day === null) return <div key={`e-${idx}`} className="h-20" />
 
-                  const dateStr   = toDateStr(viewYear, viewMonth, day)
-                  const isToday   = dateStr === today
+                  const dateStr    = toDateStr(viewYear, viewMonth, day)
+                  const isToday    = dateStr === today
                   const isSelected = dateStr === selectedDate
-                  const dayEvents = eventsOnDate(events, dateStr)
-                  const hasEvents = dayEvents.length > 0
+                  const dayEvents  = eventsOnDate(events, dateStr)
+                  const hasEvents  = dayEvents.length > 0
 
                   return (
                     <button
@@ -280,24 +280,30 @@ export default function Events() {
                         if (!hasEvents) return
                         setSelectedDate(isSelected ? null : dateStr)
                       }}
-                      className="flex flex-col items-center justify-start py-0.5"
+                      className="flex flex-col items-center pt-1 pb-1 min-h-20"
                     >
                       <div
-                        className="w-8 h-8 flex items-center justify-center rounded-full text-xs font-medium"
+                        className="w-7 h-7 flex items-center justify-center rounded-full text-xs font-medium flex-shrink-0"
                         style={{
-                          background: isToday   ? '#152644' :
+                          background: isToday    ? '#152644' :
                                       isSelected ? '#e2e8f0' : 'transparent',
-                          color: isToday ? 'white' : '#1e293b',
+                          color:      isToday ? 'white' : '#1e293b',
                           fontWeight: isToday || hasEvents ? 700 : 400,
                         }}
                       >
                         {day}
                       </div>
-                      {/* Gold dot under days with events; invisible spacer otherwise so rows stay aligned */}
-                      <div
-                        className="w-1 h-1 rounded-full mt-0.5"
-                        style={{ background: hasEvents ? '#c9a84c' : 'transparent' }}
-                      />
+                      {/* Gold dot + truncated event name for each event on this date */}
+                      <div className="w-full flex flex-col gap-0.5 mt-0.5 px-0.5">
+                        {dayEvents.slice(0, 2).map(ev => (
+                          <div key={ev.id} className="flex items-center gap-0.5 w-full min-w-0">
+                            <div className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: '#c9a84c' }} />
+                            <span className="text-[9px] leading-tight truncate" style={{ color: '#152644' }}>
+                              {ev.title}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                     </button>
                   )
                 })}
