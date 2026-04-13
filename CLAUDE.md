@@ -40,7 +40,7 @@ app/
   tournament/page.tsx   # Events page — Calendar / Club Events / Tournaments tabs
   club/page.tsx         # Club tab — quick links, tee sheet (Join), unified channel feed with pill switcher
   gps/page.tsx          # GPS tab — real hole data, prev/next nav, tee selector
-  rounds/page.tsx       # Round history — all saved rounds for logged-in user
+  rounds/page.tsx       # Round history — reads from localStorage (clubhouse_rounds), no auth required
   profile/page.tsx      # Member profile — handicap, round count, last 5 rounds
   login/page.tsx        # OTP login — step 1: email + Send Code; step 2: 6-digit code + Verify
   auth/callback/route.ts # Legacy magic-link callback (kept for backwards compat, not used by OTP flow)
@@ -66,7 +66,7 @@ supabase/migrations/
   20260409_channels.sql              # adds channel column to messages table
   20260409_events.sql                # events table (member/hosting/tournament), RLS, LeBaron seed
 
-middleware.ts           # Auth: /club and /rounds redirect to /login if unauthenticated
+middleware.ts           # Auth: only /club requires login; scorecard/rounds/GPS are open to all
 ```
 
 ---
@@ -90,7 +90,8 @@ The splash screen only shows on first visit (sessionStorage). If BottomNav is in
 - Auth uses OTP email codes — `signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: undefined } })` sends 6-digit code (`emailRedirectTo: undefined` is required — a defined value causes Supabase to send a magic link instead); `verifyOtp({ email, token, type: 'email' })` completes login client-side; no callback redirect needed
 - Session persistence is automatic via `createBrowserClient` cookie sync — users stay logged in across page loads
 - RLS required on all new tables
-- Guest users: localStorage persistence via `clubhouse_guest` key
+- **Local-first model**: scorecard/rounds/GPS require no account. Rounds always saved to `localStorage` (`clubhouse_rounds` key — array of round objects with `hole_scores`). Supabase save is additive, only when user is logged in. Player name/handicap stored in `clubhouse_player` key.
+- No `isGuest` state anywhere — all pages work without auth
 - Migrations in `supabase/migrations/` — run manually in Supabase SQL editor
 
 ### Styling
@@ -158,7 +159,7 @@ LeBaron values: rating `73.4`, slope `136`
 - **Events** (`/tournament`): four-tab Events page — Calendar, Club Events, Tournaments, **Leaderboard** (top 20 gross rounds in 2026 season, ranked low-to-high, color-coded vs par); all data from `events` + `rounds` + `profiles` tables
 - **Club** (`/club`): 2×2 quick links (Tee Times → CPS Golf booking, Menu → `window.open('/lebaron-menu.pdf', '_blank')` + phone button `tel:5089235712`, Member Statements → Prophet billing, Staff Info → lebaronhills.com/about-us); tee sheet with **Join button** (writes player name to Supabase, optimistic update); **Club Announcements feed** — queries `messages` table hardcoded to `channel = 'announcements'`; single Realtime subscription on that channel; **post input is admin-only** — only `profiles.is_admin = true` sees the compose bar; **admin edit/delete** — pencil and trash icons appear next to each message for admins; delete removes from DB + local state; edit renders inline input with save (✓) and cancel (✗); all members can read; no channel switching, no pill tabs
 - **GPS** (`/gps`): real hole data from `holes`, prev/next nav + **touch swipe** (left=next, right=prev); tee selector; **real GPS positioning** with `watchPosition`, Haversine formula, front/center/back yard distances; GPS status badge; **abstract SVG hole diagram** (dark green, fairway + tee box + green circle + flagstick + gold flag); `GREEN_COORDS` hardcoded (centered 41.8387°N, 70.9762°W)
-- **Auth enforcement**: middleware blocks `/club` + `/rounds` for unauthenticated users
+- **Auth enforcement**: middleware blocks only `/club` for unauthenticated users; all other pages are open
 - **PWA**: manifest.json + apple-touch-icon — installable on iOS/Android home screen; iPhone safe area insets applied (viewportFit:cover, env(safe-area-inset-*) on all pages + BottomNav), WebkitOverflowScrolling on scroll containers, 44px tap targets
 - **Score sharing**: after round saves, shows share bottom sheet with gross + differential; Web Share API with clipboard copy fallback; text: "Shot 78 (+6) at LeBaron Hills CC via Clubhouse 🏌️"
 - **Handicap sparkline**: profile page shows inline SVG gold trend line for last 5 rounds (oldest-left, newest-right); labels ↓ Improving / ↑ Rising / — Steady
