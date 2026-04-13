@@ -95,7 +95,7 @@ export default function RoundsPage() {
         return {
           id:           r.id,
           played_at:    r.played_at,
-          course_name:  r.courses?.[0]?.name ?? 'Unknown Course',
+          course_name:  r.courses?.[0]?.name ?? 'LeBaron Hills CC',
           gross,
           par_total,
           holes_played: scores.length,
