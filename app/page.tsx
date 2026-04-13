@@ -112,7 +112,7 @@ export default function HomePage() {
       } else {
         // Guest
         try {
-          const g = JSON.parse(localStorage.getItem('clubhouse_guest') || '{}')
+          const g = JSON.parse(localStorage.getItem('clubhouse_player') || '{}')
           setEditName(g.name || 'Guest')
           setProfile({ full_name: g.name || 'Guest', handicap: g.handicap || null })
         } catch {}
@@ -147,8 +147,8 @@ export default function HomePage() {
     if (user) {
       await supabase.from('profiles').update({ full_name: editName }).eq('id', user.id)
     } else {
-      const g = JSON.parse(localStorage.getItem('clubhouse_guest') || '{}')
-      localStorage.setItem('clubhouse_guest', JSON.stringify({ ...g, name: editName }))
+      const g = JSON.parse(localStorage.getItem('clubhouse_player') || '{}')
+      localStorage.setItem('clubhouse_player', JSON.stringify({ ...g, name: editName }))
     }
   }
 
