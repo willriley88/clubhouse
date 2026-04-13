@@ -166,7 +166,7 @@ LeBaron values: rating `73.4`, slope `136`
 - **Club config** (`lib/club-config.ts`): `getClubConfig(courseId?)` server helper + `ClubConfig` type; `club_config` table uses `course_id` FK; `app/layout.tsx` uses `generateMetadata()` to pull club name + brand color from DB
 
 ### GPS Notes
-`GREEN_COORDS` in `app/gps/page.tsx` holds approximate lat/lng for all 18 greens (front/center/back). Centered around 41.8387°N, 70.9762°W. To get real accuracy, walk each green with a phone and record `watchPosition` output, then update the constant.
+`HOLES` in `app/gps/page.tsx` holds real Google Earth coordinates for all 18 greens (front/center/back) recorded April 2026. Accuracy verified by distance check. No further update needed unless greens are regraded.
 
 ### What's Still Static / Not Integrated
 - GPS hole diagram is abstract/generic — not shaped to actual LeBaron hole layouts
@@ -176,6 +176,7 @@ LeBaron values: rating `73.4`, slope `136`
 
 ### Known Issues
 - Dual-boot EFI issue on dev machine (unrelated to app)
+- Round detail page previously showed no hole data — fixed April 2026 (holes table missing RLS SELECT policy + hcp_index column name mismatch)
 
 ---
 
@@ -195,7 +196,7 @@ In Supabase dashboard → SQL Editor, run in order:
 ---
 
 ## Immediate Priorities
-1. Refine `GREEN_COORDS` in `app/gps/page.tsx` with real on-course GPS coordinates
+1. iPhone polish pass — safe area insets, tap targets, scroll feel for demo on Tom's phone
 2. Tee sheet double-booking guard (server-side check before update)
 3. Wire remaining pages to `getClubConfig()` (replaces hardcoded LeBaron strings)
 4. Replace `public/lebaron-menu.pdf` placeholder with real PDF (copy from `~/lebaron-menu-4/9.pdf`)
