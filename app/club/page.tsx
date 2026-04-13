@@ -62,9 +62,11 @@ export default function Club() {
   const [sending,       setSending]       = useState(false)
   const [loadingMsgs,   setLoadingMsgs]   = useState(true)
   const [menuToast,     setMenuToast]     = useState(false)
-  const [isAdmin,       setIsAdmin]       = useState(false)
-  const [profileName,   setProfileName]   = useState('')
+  const [isAdmin,         setIsAdmin]         = useState(false)
+  const [profileName,     setProfileName]     = useState('')
   const [profileInitials, setProfileInitials] = useState('')
+  const [editingMsgId,    setEditingMsgId]    = useState<string | null>(null)
+  const [editText,        setEditText]        = useState('')
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -167,6 +169,19 @@ export default function Club() {
       setMenuToast(true)
       setTimeout(() => setMenuToast(false), 3000)
     }
+  }
+
+  async function handleDeleteMsg(id: string) {
+    await supabase.from('messages').delete().eq('id', id)
+    setMessages(prev => prev.filter(m => m.id !== id))
+  }
+
+  async function handleSaveEdit(id: string) {
+    const text = editText.trim()
+    if (!text) return
+    const { error } = await supabase.from('messages').update({ message: text }).eq('id', id)
+    if (!error) setMessages(prev => prev.map(m => m.id === id ? { ...m, message: text } : m))
+    setEditingMsgId(null)
   }
 
   async function handleSend() {
@@ -331,11 +346,72 @@ export default function Club() {
                       {msg.author_initials}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-baseline gap-2">
+                      <div className="flex items-center gap-2">
                         <span className="text-xs font-semibold text-[#152644]">{msg.author_name}</span>
                         <span className="text-[10px] text-gray-400">{relativeTime(msg.created_at)}</span>
+                        {/* Admin controls — edit and delete */}
+                        {isAdmin && editingMsgId !== msg.id && (
+                          <div className="flex items-center gap-1 ml-auto">
+                            <button
+                              onClick={() => { setEditingMsgId(msg.id); setEditText(msg.message) }}
+                              className="p-1 rounded"
+                              style={{ color: '#94a3b8' }}
+                              aria-label="Edit message"
+                            >
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                              </svg>
+                            </button>
+                            <button
+                              onClick={() => handleDeleteMsg(msg.id)}
+                              className="p-1 rounded"
+                              style={{ color: '#94a3b8' }}
+                              aria-label="Delete message"
+                            >
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="3 6 5 6 21 6"/>
+                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                                <path d="M10 11v6M14 11v6"/>
+                                <path d="M9 6V4h6v2"/>
+                              </svg>
+                            </button>
+                          </div>
+                        )}
                       </div>
-                      <p className="text-sm text-gray-700 mt-0.5 break-words">{msg.message}</p>
+                      {editingMsgId === msg.id ? (
+                        <div className="flex items-center gap-2 mt-1">
+                          <input
+                            value={editText}
+                            onChange={e => setEditText(e.target.value)}
+                            onKeyDown={e => {
+                              if (e.key === 'Enter') handleSaveEdit(msg.id)
+                              if (e.key === 'Escape') setEditingMsgId(null)
+                            }}
+                            autoFocus
+                            maxLength={500}
+                            className="flex-1 text-sm outline-none border-b pb-0.5"
+                            style={{ color: '#1e293b', borderColor: '#152644' }}
+                          />
+                          <button onClick={() => handleSaveEdit(msg.id)} style={{ color: '#152644' }} aria-label="Save">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                              stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                          </button>
+                          <button onClick={() => setEditingMsgId(null)} style={{ color: '#94a3b8' }} aria-label="Cancel">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                              stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <line x1="18" y1="6" x2="6" y2="18"/>
+                              <line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                          </button>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-700 mt-0.5 break-words">{msg.message}</p>
+                      )}
                     </div>
                   </div>
                 ))
