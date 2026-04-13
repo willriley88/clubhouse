@@ -23,12 +23,6 @@ type Message = {
   created_at: string
 }
 
-const CHANNEL_TABS = [
-  { label: 'Announcements',  slug: 'announcements'     },
-  { label: "Men's League",   slug: 'mens-league'       },
-  { label: "Women's League", slug: 'womens-league'     },
-  { label: 'Tournament',     slug: 'member-guest-2026' },
-]
 
 function relativeTime(ts: string): string {
   const diff = Date.now() - new Date(ts).getTime()
@@ -63,7 +57,6 @@ export default function Club() {
   const [teeSheet,      setTeeSheet]      = useState<TeeSlot[]>([])
   const [user,          setUser]          = useState<any>(null)
   const [joiningId,     setJoiningId]     = useState<string | null>(null)
-  const [activeChannel, setActiveChannel] = useState('announcements')
   const [messages,      setMessages]      = useState<Message[]>([])
   const [messageText,   setMessageText]   = useState('')
   const [sending,       setSending]       = useState(false)
@@ -105,29 +98,27 @@ export default function Club() {
     load()
   }, [])
 
-  // Load messages whenever the active channel changes
+  // Load announcements on mount
   useEffect(() => {
-    setLoadingMsgs(true)
-    setMessages([])
     supabase
       .from('messages')
       .select('id, profile_id, author_name, author_initials, message, channel, created_at')
-      .eq('channel', activeChannel)
+      .eq('channel', 'announcements')
       .order('created_at', { ascending: true })
       .limit(50)
       .then(({ data }) => {
         setMessages((data as Message[]) ?? [])
         setLoadingMsgs(false)
       })
-  }, [activeChannel])
+  }, [])
 
-  // Realtime subscription — recreated whenever activeChannel changes
+  // Realtime subscription for announcements channel
   useEffect(() => {
     const ch = supabase
-      .channel(`club-feed:${activeChannel}`)
+      .channel('club-feed:announcements')
       .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'messages', filter: `channel=eq.${activeChannel}` },
+        { event: 'INSERT', schema: 'public', table: 'messages', filter: 'channel=eq.announcements' },
         payload => {
           setMessages(prev => {
             // Dedup: skip if already present from optimistic insert
@@ -138,7 +129,7 @@ export default function Club() {
       )
       .subscribe()
     return () => { supabase.removeChannel(ch) }
-  }, [activeChannel])
+  }, [])
 
   // Auto-scroll to newest message
   useEffect(() => {
@@ -193,14 +184,14 @@ export default function Club() {
     const optimistic: Message = {
       id: tempId, profile_id: user.id,
       author_name: name, author_initials: initials,
-      message: text, channel: activeChannel,
+      message: text, channel: 'announcements',
       created_at: new Date().toISOString(),
     }
     setMessages(prev => [...prev, optimistic])
 
     const { data, error } = await supabase
       .from('messages')
-      .insert({ profile_id: user.id, author_name: name, author_initials: initials, message: text, channel: activeChannel })
+      .insert({ profile_id: user.id, author_name: name, author_initials: initials, message: text, channel: 'announcements' })
       .select('id, profile_id, author_name, author_initials, message, channel, created_at')
       .single()
 
@@ -318,24 +309,9 @@ export default function Club() {
           </div>
         </div>
 
-        {/* ── UNIFIED FEED ── */}
+        {/* ── CLUB ANNOUNCEMENTS ── */}
         <div>
-          {/* Horizontal pill switcher */}
-          <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
-            {CHANNEL_TABS.map(tab => (
-              <button
-                key={tab.slug}
-                onClick={() => { setActiveChannel(tab.slug); setMessageText('') }}
-                className="flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold"
-                style={{
-                  background: activeChannel === tab.slug ? '#152644' : '#f1f5f9',
-                  color:      activeChannel === tab.slug ? '#c9a84c' : '#64748b',
-                }}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Club Announcements</p>
 
           {/* Messages list + post input, all inside one card */}
           <div className="bg-white rounded-2xl overflow-hidden">

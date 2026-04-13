@@ -4,11 +4,11 @@ import { useRouter } from 'next/navigation'
 import BottomNav from './components/BottomNav'
 import { supabase } from '@/lib/supabase'
 
-type FeedPost = {
+type AnnouncementPost = {
   id: string
   author_initials: string
   author_name: string
-  content: string
+  message: string
   created_at: string
 }
 
@@ -54,7 +54,7 @@ export default function HomePage() {
   const [lastRound,    setLastRound]    = useState<Round | null>(null)
   const [roundCount,   setRoundCount]   = useState<number | null>(null)
   const [loadingRound, setLoadingRound] = useState(true)
-  const [feedPosts,    setFeedPosts]    = useState<FeedPost[]>([])
+  const [feedPosts,    setFeedPosts]    = useState<AnnouncementPost[]>([])
   const [mounted,      setMounted]      = useState(false)
 
   const [nextEvent,  setNextEvent]  = useState<NextEvent | null>(null)
@@ -117,10 +117,11 @@ export default function HomePage() {
           setProfile({ full_name: g.name || 'Guest', handicap: g.handicap || null })
         } catch {}
       }
-      // Fetch 3 most recent club feed posts regardless of auth state
+      // Fetch 3 most recent announcements — same source as Club tab
       const { data: posts } = await supabase
-        .from('feed_posts')
-        .select('id, author_initials, author_name, content, created_at')
+        .from('messages')
+        .select('id, author_initials, author_name, message, created_at')
+        .eq('channel', 'announcements')
         .order('created_at', { ascending: false })
         .limit(3)
       setFeedPosts(posts ?? [])
@@ -423,7 +424,7 @@ export default function HomePage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-slate-700">
-                      <span className="font-semibold">{post.author_name}</span> {post.content}
+                      <span className="font-semibold">{post.author_name}</span> {post.message}
                     </p>
                     <p className="text-xs text-slate-400 mt-0.5">{relativeTime(post.created_at)}</p>
                   </div>
