@@ -1,304 +1,332 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
-import { supabase } from '@/lib/supabase'
+import { useState, useEffect, useCallback } from 'react'
 import BottomNav from '../components/BottomNav'
 
-const COURSE_ID_FALLBACK = 'b0000000-0000-0000-0000-000000000001'
+// DMS converted to decimal degrees
+// Formula: DD = degrees + minutes/60 + seconds/3600 (negative for W)
+const HOLES = [
+  {
+    hole: 1,
+    front:  { lat: 41.867697, lng: -70.971383 },
+    center: { lat: 41.867797, lng: -70.971508 },
+    back:   { lat: 41.867936, lng: -70.971600 },
+  },
+  {
+    hole: 2,
+    front:  { lat: 41.864986, lng: -70.970867 },
+    center: { lat: 41.864839, lng: -70.970825 },
+    back:   { lat: 41.864706, lng: -70.970792 },
+  },
+  {
+    hole: 3,
+    front:  { lat: 41.864836, lng: -70.976917 },
+    center: { lat: 41.864853, lng: -70.977097 },
+    back:   { lat: 41.864842, lng: -70.977286 },
+  },
+  {
+    hole: 4,
+    front:  { lat: 41.864075, lng: -70.977450 },
+    center: { lat: 41.863950, lng: -70.977344 },
+    back:   { lat: 41.863822, lng: -70.977278 },
+  },
+  {
+    hole: 5,
+    front:  { lat: 41.864783, lng: -70.974394 },
+    center: { lat: 41.864786, lng: -70.974219 },
+    back:   { lat: 41.864764, lng: -70.974050 },
+  },
+  {
+    hole: 6,
+    front:  { lat: 41.864553, lng: -70.970222 },
+    center: { lat: 41.864586, lng: -70.970028 },
+    back:   { lat: 41.864642, lng: -70.969875 },
+  },
+  {
+    hole: 7,
+    front:  { lat: 41.862283, lng: -70.973144 },
+    center: { lat: 41.862183, lng: -70.973283 },
+    back:   { lat: 41.862072, lng: -70.973439 },
+  },
+  {
+    hole: 8,
+    front:  { lat: 41.862056, lng: -70.971875 },
+    center: { lat: 41.862122, lng: -70.971731 },
+    back:   { lat: 41.862189, lng: -70.971600 },
+  },
+  {
+    hole: 9,
+    front:  { lat: 41.864964, lng: -70.967597 },
+    center: { lat: 41.865125, lng: -70.967528 },
+    back:   { lat: 41.865319, lng: -70.967367 },
+  },
+  {
+    hole: 10,
+    front:  { lat: 41.867694, lng: -70.971386 },
+    center: { lat: 41.867794, lng: -70.971517 },
+    back:   { lat: 41.867933, lng: -70.971589 },
+  },
+  {
+    hole: 11,
+    front:  { lat: 41.869186, lng: -70.971058 },
+    center: { lat: 41.869261, lng: -70.971031 },
+    back:   { lat: 41.869356, lng: -70.970978 },
+  },
+  {
+    hole: 12,
+    front:  { lat: 41.870008, lng: -70.974719 },
+    center: { lat: 41.870022, lng: -70.974864 },
+    back:   { lat: 41.870050, lng: -70.975039 },
+  },
+  {
+    hole: 13,
+    front:  { lat: 41.868889, lng: -70.974828 },
+    center: { lat: 41.868783, lng: -70.974731 },
+    back:   { lat: 41.868678, lng: -70.974653 },
+  },
+  {
+    hole: 14,
+    front:  { lat: 41.865967, lng: -70.973314 },
+    center: { lat: 41.865831, lng: -70.973233 },
+    back:   { lat: 41.865708, lng: -70.973169 },
+  },
+  {
+    hole: 15,
+    front:  { lat: 41.869525, lng: -70.971594 },
+    center: { lat: 41.869653, lng: -70.971486 },
+    back:   { lat: 41.869775, lng: -70.971381 },
+  },
+  {
+    hole: 16,
+    front:  { lat: 41.872186, lng: -70.971897 },
+    center: { lat: 41.872286, lng: -70.971886 },
+    back:   { lat: 41.872406, lng: -70.971867 },
+  },
+  {
+    hole: 17,
+    front:  { lat: 41.870061, lng: -70.969208 },
+    center: { lat: 41.869914, lng: -70.969214 },
+    back:   { lat: 41.869828, lng: -70.969161 },
+  },
+  {
+    hole: 18,
+    front:  { lat: 41.865953, lng: -70.967200 },
+    center: { lat: 41.865853, lng: -70.967044 },
+    back:   { lat: 41.865739, lng: -70.966900 },
+  },
+]
 
-type Tee = 'blue' | 'white' | 'green' | 'gold'
-type GpsStatus = 'acquiring' | 'active' | 'unavailable'
-
-type HoleData = {
-  hole_number: number
-  par: number
-  hcp_index: number
-  yardage_blue: number
-  yardage_white: number
-  yardage_green: number
-  yardage_gold: number
-}
-
-// Approximate LeBaron Hills CC green coordinates (Lakeville MA, centered ~41.8387°N, 70.9762°W)
-// front = closer to tee; back = far edge. Refine with an on-course GPS walk.
-const GREEN_COORDS: Record<number, { front: [number, number]; center: [number, number]; back: [number, number] }> = {
-   1: { front: [41.8402, -70.9742], center: [41.8406, -70.9739], back: [41.8410, -70.9736] },
-   2: { front: [41.8418, -70.9722], center: [41.8422, -70.9719], back: [41.8426, -70.9716] },
-   3: { front: [41.8438, -70.9712], center: [41.8442, -70.9709], back: [41.8446, -70.9706] },
-   4: { front: [41.8452, -70.9697], center: [41.8456, -70.9694], back: [41.8460, -70.9691] },
-   5: { front: [41.8442, -70.9677], center: [41.8446, -70.9674], back: [41.8450, -70.9671] },
-   6: { front: [41.8428, -70.9659], center: [41.8432, -70.9656], back: [41.8436, -70.9653] },
-   7: { front: [41.8412, -70.9641], center: [41.8416, -70.9638], back: [41.8420, -70.9635] },
-   8: { front: [41.8396, -70.9626], center: [41.8400, -70.9623], back: [41.8404, -70.9620] },
-   9: { front: [41.8376, -70.9638], center: [41.8380, -70.9635], back: [41.8384, -70.9632] },
-  10: { front: [41.8356, -70.9658], center: [41.8360, -70.9655], back: [41.8364, -70.9652] },
-  11: { front: [41.8340, -70.9676], center: [41.8344, -70.9673], back: [41.8348, -70.9670] },
-  12: { front: [41.8328, -70.9695], center: [41.8332, -70.9692], back: [41.8336, -70.9689] },
-  13: { front: [41.8320, -70.9715], center: [41.8324, -70.9712], back: [41.8328, -70.9709] },
-  14: { front: [41.8330, -70.9738], center: [41.8334, -70.9735], back: [41.8338, -70.9732] },
-  15: { front: [41.8347, -70.9758], center: [41.8351, -70.9755], back: [41.8355, -70.9752] },
-  16: { front: [41.8364, -70.9774], center: [41.8368, -70.9771], back: [41.8372, -70.9768] },
-  17: { front: [41.8378, -70.9779], center: [41.8382, -70.9776], back: [41.8386, -70.9773] },
-  18: { front: [41.8390, -70.9769], center: [41.8394, -70.9766], back: [41.8398, -70.9763] },
-}
-
-function haversineYards(lat1: number, lng1: number, lat2: number, lng2: number): number {
-  const R = 6371000 // Earth radius in meters
-  const toRad = (d: number) => (d * Math.PI) / 180
+// Haversine formula — returns distance in yards between two lat/lng points
+function distanceYards(
+  lat1: number, lng1: number,
+  lat2: number, lng2: number
+): number {
+  const R = 6371000 // earth radius in meters
+  const toRad = (x: number) => (x * Math.PI) / 180
   const dLat = toRad(lat2 - lat1)
   const dLng = toRad(lng2 - lng1)
   const a =
     Math.sin(dLat / 2) ** 2 +
     Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2
-  const meters = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-  return Math.round(meters * 1.09361)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  const meters = R * c
+  return Math.round(meters * 1.09361) // convert to yards
 }
 
-const TEE_LABELS: Record<Tee, string> = {
-  blue: 'Blue', white: 'White', green: 'Green', gold: 'Gold',
-}
-const TEE_COLORS: Record<Tee, string> = {
-  blue: '#1d4ed8', white: '#475569', green: '#15803d', gold: '#c9a84c',
-}
+type GPSState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'error'; message: string }
+  | { status: 'active'; lat: number; lng: number; accuracy: number }
 
-export default function GPS() {
-  const [holes, setHoles] = useState<HoleData[]>([])
-  const [currentHole, setCurrentHole] = useState(1)
-  const [selectedTee, setSelectedTee] = useState<Tee>('blue')
-  const [loading, setLoading] = useState(true)
-  const [gpsStatus, setGpsStatus] = useState<GpsStatus>('acquiring')
-  const [userPos, setUserPos] = useState<[number, number] | null>(null)
-  const watchIdRef   = useRef<number | null>(null)
-  const touchStartX  = useRef<number>(0)
+export default function GPSPage() {
+  const [selectedHole, setSelectedHole] = useState(1)
+  const [gps, setGps] = useState<GPSState>({ status: 'idle' })
+  const [watchId, setWatchId] = useState<number | null>(null)
 
-  useEffect(() => {
-    async function load() {
-      const { data: course } = await supabase
-        .from('courses').select('id').eq('name', 'LeBaron Hills CC').single()
-      const id = course?.id ?? COURSE_ID_FALLBACK
+  const hole = HOLES[selectedHole - 1]
 
-      const { data } = await supabase
-        .from('holes')
-        .select('hole_number, par, hcp_index, yardage_blue, yardage_white, yardage_green, yardage_gold')
-        .eq('course_id', id)
-        .order('hole_number')
-      if (data) setHoles(data)
-      setLoading(false)
-    }
-    load()
-
-    // Start GPS watch
+  // Start GPS watch
+  const startGPS = useCallback(() => {
     if (!navigator.geolocation) {
-      setGpsStatus('unavailable')
+      setGps({ status: 'error', message: 'GPS not supported on this device' })
       return
     }
-    watchIdRef.current = navigator.geolocation.watchPosition(
-      pos => {
-        setUserPos([pos.coords.latitude, pos.coords.longitude])
-        setGpsStatus('active')
+    setGps({ status: 'loading' })
+    const id = navigator.geolocation.watchPosition(
+      (pos) => {
+        setGps({
+          status: 'active',
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          accuracy: Math.round(pos.coords.accuracy),
+        })
       },
-      () => setGpsStatus('unavailable'),
-      { enableHighAccuracy: true, maximumAge: 5000 }
+      (err) => {
+        setGps({ status: 'error', message: err.message })
+      },
+      { enableHighAccuracy: true, maximumAge: 2000, timeout: 10000 }
     )
-    return () => {
-      if (watchIdRef.current !== null) navigator.geolocation.clearWatch(watchIdRef.current)
-    }
+    setWatchId(id)
   }, [])
 
-  const hole = holes.find(h => h.hole_number === currentHole)
-  const yardage = hole ? hole[`yardage_${selectedTee}` as keyof HoleData] as number : 0
-  const coords = GREEN_COORDS[currentHole]
+  // Stop watch on unmount
+  useEffect(() => {
+    startGPS()
+    return () => {
+      if (watchId !== null) navigator.geolocation.clearWatch(watchId)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Compute distances to front/center/back of green
-  function distLabel(target: [number, number]): string {
-    if (gpsStatus === 'acquiring') return '…'
-    if (gpsStatus === 'unavailable' || !userPos) return '—'
-    return String(haversineYards(userPos[0], userPos[1], target[0], target[1]))
-  }
+  // Compute distances
+  const toFront  = gps.status === 'active' ? distanceYards(gps.lat, gps.lng, hole.front.lat,  hole.front.lng)  : null
+  const toCenter = gps.status === 'active' ? distanceYards(gps.lat, gps.lng, hole.center.lat, hole.center.lng) : null
+  const toBack   = gps.status === 'active' ? distanceYards(gps.lat, gps.lng, hole.back.lat,   hole.back.lng)   : null
 
-  function prev() { setCurrentHole(n => Math.max(1, n - 1)) }
-  function next() { setCurrentHole(n => Math.min(18, n + 1)) }
+  const prevHole = () => setSelectedHole(h => Math.max(1, h - 1))
+  const nextHole = () => setSelectedHole(h => Math.min(18, h + 1))
 
   return (
-    <main className="min-h-screen bg-gray-100 pb-24"
-      onTouchStart={e => { touchStartX.current = e.touches[0].clientX }}
-      onTouchEnd={e => {
-        const dx = e.changedTouches[0].clientX - touchStartX.current
-        if (dx < -50) next()
-        else if (dx > 50) prev()
-      }}>
-      <div className="bg-[#152644] px-4 pt-12 pb-4">
-        <p className="text-white/40 text-xs uppercase tracking-widest mb-1">Now Playing</p>
+    <main className="min-h-screen pb-24 flex flex-col" style={{ background: '#f1f5f9' }}>
 
-        {/* Hole number row with prev/next */}
-        <div className="flex items-center justify-between">
+      {/* Header */}
+      <div className="px-4 pt-12 pb-6" style={{ background: '#152644' }}>
+        <h1 className="text-white text-2xl font-bold">GPS</h1>
+        <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>
+          LeBaron Hills CC
+        </p>
+      </div>
+
+      {/* Hole selector */}
+      <div className="mx-4 mt-4 bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-4">
           <button
-            onClick={prev}
-            disabled={currentHole === 1}
-            className="w-9 h-9 rounded-full flex items-center justify-center"
-            style={{ background: currentHole === 1 ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.12)' }}
+            onClick={prevHole}
+            disabled={selectedHole === 1}
+            className="w-10 h-10 rounded-xl flex items-center justify-center transition-opacity"
+            style={{ background: '#f1f5f9', opacity: selectedHole === 1 ? 0.3 : 1 }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-              stroke={currentHole === 1 ? 'rgba(255,255,255,0.2)' : 'white'}
-              strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="#152644" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M15 18l-6-6 6-6"/>
             </svg>
           </button>
 
-          <h1 className="text-white text-2xl font-bold">
-            {loading ? 'Loading…' : `Hole ${currentHole}`}
-          </h1>
+          <div className="text-center">
+            <div className="text-4xl font-bold" style={{ color: '#152644' }}>{selectedHole}</div>
+            <div className="text-[10px] uppercase tracking-widest mt-0.5" style={{ color: '#94a3b8' }}>Hole</div>
+          </div>
 
           <button
-            onClick={next}
-            disabled={currentHole === 18}
-            className="w-9 h-9 rounded-full flex items-center justify-center"
-            style={{ background: currentHole === 18 ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.12)' }}
+            onClick={nextHole}
+            disabled={selectedHole === 18}
+            className="w-10 h-10 rounded-xl flex items-center justify-center transition-opacity"
+            style={{ background: '#f1f5f9', opacity: selectedHole === 18 ? 0.3 : 1 }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-              stroke={currentHole === 18 ? 'rgba(255,255,255,0.2)' : 'white'}
-              strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="#152644" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 18l6-6-6-6"/>
             </svg>
           </button>
         </div>
 
-        <p className="text-white/40 text-xs mt-1 text-center">
-          {hole
-            ? `Par ${hole.par} · ${yardage} yds · HCP ${hole.hcp_index}`
-            : loading ? '' : 'No data'}
-        </p>
-
-        {/* Tee selector */}
-        <div className="flex gap-1 mt-3 bg-white/5 rounded-lg p-1">
-          {(['blue', 'white', 'green', 'gold'] as Tee[]).map(tee => (
+        {/* Hole quick-select dots */}
+        <div className="px-4 pb-4 flex gap-1.5 flex-wrap justify-center">
+          {HOLES.map(h => (
             <button
-              key={tee}
-              onClick={() => setSelectedTee(tee)}
-              className="flex-1 text-xs py-1.5 rounded-md font-medium"
+              key={h.hole}
+              onClick={() => setSelectedHole(h.hole)}
+              className="w-7 h-7 rounded-lg text-[11px] font-bold transition-all"
               style={{
-                background: selectedTee === tee ? 'rgba(255,255,255,0.15)' : 'transparent',
-                color: selectedTee === tee ? 'white' : 'rgba(255,255,255,0.4)',
+                background: selectedHole === h.hole ? '#152644' : '#f1f5f9',
+                color: selectedHole === h.hole ? '#c9a84c' : '#94a3b8',
               }}
             >
-              {TEE_LABELS[tee]}
+              {h.hole}
             </button>
           ))}
         </div>
       </div>
 
-      {/* ── DISTANCE CARDS (Gallus-style: big numbers, readable in sunlight) ── */}
-      {gpsStatus === 'unavailable' ? (
-        <div className="mx-4 mt-4 rounded-2xl py-6 text-center" style={{ background: '#fff' }}>
-          <p className="text-sm font-semibold" style={{ color: '#152644' }}>GPS Unavailable</p>
-          <p className="text-xs mt-1" style={{ color: '#94a3b8' }}>Enable location access to see distances</p>
-        </div>
-      ) : (
-        <div className="mx-4 mt-4 grid grid-cols-3 gap-3">
-          {([
-            { label: 'Back',   target: coords?.back   },
-            { label: 'Center', target: coords?.center },
-            { label: 'Front',  target: coords?.front  },
-          ] as { label: string; target: [number, number] | undefined }[]).map(d => (
-            <div key={d.label} className="rounded-2xl py-5 text-center shadow-sm" style={{ background: '#fff' }}>
-              {gpsStatus === 'acquiring' ? (
-                /* Spinner while GPS locks */
-                <div className="flex items-center justify-center h-10">
-                  <div className="w-6 h-6 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: '#152644', borderTopColor: 'transparent' }} />
-                </div>
-              ) : (
-                <div className="text-4xl font-bold leading-none" style={{ color: '#152644' }}>
-                  {d.target ? distLabel(d.target) : '—'}
-                </div>
-              )}
-              <div className="text-xs font-semibold uppercase tracking-widest mt-2" style={{ color: '#94a3b8' }}>
-                {d.label}
+      {/* Distance cards */}
+      <div className="mx-4 mt-4">
+        {gps.status === 'loading' && (
+          <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
+            <div className="w-10 h-10 rounded-full border-2 border-t-transparent mx-auto mb-3 animate-spin"
+              style={{ borderColor: '#152644', borderTopColor: 'transparent' }}/>
+            <p className="text-sm font-medium" style={{ color: '#152644' }}>Acquiring GPS signal…</p>
+            <p className="text-xs mt-1" style={{ color: '#94a3b8' }}>Make sure location is enabled</p>
+          </div>
+        )}
+
+        {gps.status === 'error' && (
+          <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
+            <p className="text-sm font-semibold mb-1" style={{ color: '#152644' }}>GPS unavailable</p>
+            <p className="text-xs mb-4" style={{ color: '#94a3b8' }}>{gps.message}</p>
+            <button
+              onClick={startGPS}
+              className="px-5 py-2 rounded-xl text-sm font-bold"
+              style={{ background: '#152644', color: '#c9a84c' }}
+            >
+              Try Again
+            </button>
+          </div>
+        )}
+
+        {gps.status === 'idle' && (
+          <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
+            <button
+              onClick={startGPS}
+              className="px-6 py-3 rounded-xl text-sm font-bold"
+              style={{ background: '#152644', color: '#c9a84c' }}
+            >
+              Start GPS
+            </button>
+          </div>
+        )}
+
+        {gps.status === 'active' && (
+          <>
+            {/* Main center distance — big and prominent */}
+            <div className="bg-white rounded-2xl shadow-sm p-6 text-center mb-3"
+              style={{ border: '2px solid #152644' }}>
+              <div className="text-[11px] uppercase tracking-widest mb-1" style={{ color: '#94a3b8' }}>
+                Center
               </div>
-              <div className="text-[10px] mt-0.5" style={{ color: '#cbd5e1' }}>yds</div>
+              <div className="text-6xl font-bold leading-none" style={{ color: '#152644' }}>
+                {toCenter}
+              </div>
+              <div className="text-sm mt-1 font-medium" style={{ color: '#94a3b8' }}>yards</div>
             </div>
-          ))}
-        </div>
-      )}
 
-      {/* GPS status badge */}
-      <div className="mx-4 mt-2 flex items-center gap-1.5">
-        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{
-          background: gpsStatus === 'active' ? '#4ade80' : gpsStatus === 'acquiring' ? '#facc15' : '#f87171',
-        }} />
-        <span className="text-xs" style={{ color: '#94a3b8' }}>
-          {gpsStatus === 'active' ? 'GPS Active — distances update live' : gpsStatus === 'acquiring' ? 'Locating…' : 'GPS Off'}
-        </span>
-      </div>
-
-      {/* Abstract SVG hole diagram */}
-      <div className="mx-4 mt-4 rounded-2xl overflow-hidden" style={{ height: '180px', background: '#1a3520' }}>
-        <svg viewBox="0 0 100 200" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
-          <rect width="100" height="200" fill="#1a3520"/>
-          <path d="M 35 185 Q 28 140 30 85 Q 32 45 38 22 L 62 22 Q 68 45 70 85 Q 72 140 65 185 Z" fill="#2d6627"/>
-          <rect x="42" y="178" width="16" height="8" rx="2" fill="rgba(255,255,255,0.65)"/>
-          <ellipse cx="50" cy="26" rx="15" ry="12" fill="#3a8f2e"/>
-          <ellipse cx="50" cy="26" rx="15" ry="12" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1"/>
-          <line x1="50" y1="26" x2="50" y2="11" stroke="rgba(255,255,255,0.75)" strokeWidth="1.5"/>
-          <polygon points="50,11 59,15 50,19" fill="#c9a84c"/>
-          <path d="M 50 120 L 46 130 L 50 126 L 54 130 Z" fill="rgba(255,255,255,0.3)"/>
-        </svg>
-      </div>
-
-      {/* Hole stats */}
-      <div className="mx-4 mt-4 bg-white rounded-2xl p-4">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Hole Layout</p>
-        <div className="grid grid-cols-3 gap-3">
-          {hole ? (
-            <>
-              <div className="bg-gray-50 rounded-xl p-3 text-center">
-                <div className="text-sm font-bold text-[#152644]">{yardage} yds</div>
-                <div className="text-xs text-gray-400 mt-0.5">Tee to Green</div>
-              </div>
-              <div className="bg-gray-50 rounded-xl p-3 text-center">
-                <div className="text-sm font-bold text-[#152644]">{hole.par}</div>
-                <div className="text-xs text-gray-400 mt-0.5">Par</div>
-              </div>
-              <div className="bg-gray-50 rounded-xl p-3 text-center">
-                <div className="text-sm font-bold text-[#152644]">{hole.hcp_index}</div>
-                <div className="text-xs text-gray-400 mt-0.5">Handicap</div>
-              </div>
-              {/* Other tee yardages */}
-              {(['blue','white','green','gold'] as Tee[])
-                .filter(t => t !== selectedTee)
-                .map(tee => (
-                  <div key={tee} className="bg-gray-50 rounded-xl p-3 text-center">
-                    <div className="text-sm font-bold" style={{ color: TEE_COLORS[tee] }}>
-                      {hole[`yardage_${tee}` as keyof HoleData] as number} yds
-                    </div>
-                    <div className="text-xs text-gray-400 mt-0.5">{TEE_LABELS[tee]} Tees</div>
+            {/* Front / Back row */}
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              {[
+                { label: 'Front', val: toFront },
+                { label: 'Back',  val: toBack  },
+              ].map(({ label, val }) => (
+                <div key={label} className="bg-white rounded-2xl shadow-sm p-5 text-center">
+                  <div className="text-[10px] uppercase tracking-widest mb-1" style={{ color: '#94a3b8' }}>
+                    {label}
                   </div>
-                ))
-              }
-            </>
-          ) : (
-            Array.from({ length: 6 }, (_, i) => (
-              <div key={i} className="bg-gray-50 rounded-xl p-3 text-center animate-pulse">
-                <div className="h-4 bg-gray-200 rounded mx-auto w-10 mb-1" />
-                <div className="h-3 bg-gray-100 rounded mx-auto w-14" />
-              </div>
-            ))
-          )}
-        </div>
-      </div>
+                  <div className="text-3xl font-bold" style={{ color: '#152644' }}>{val}</div>
+                  <div className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>yds</div>
+                </div>
+              ))}
+            </div>
 
-      {/* Hole progress dots */}
-      <div className="mx-4 mt-4 flex justify-center gap-1.5">
-        {Array.from({ length: 18 }, (_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentHole(i + 1)}
-            className="rounded-full transition-all"
-            style={{
-              width: i + 1 === currentHole ? 20 : 6,
-              height: 6,
-              background: i + 1 === currentHole ? '#152644' : '#cbd5e1',
-            }}
-          />
-        ))}
+            {/* Accuracy pill */}
+            <div className="flex justify-center">
+              <div className="px-3 py-1.5 rounded-full flex items-center gap-1.5"
+                style={{ background: '#f1f5f9' }}>
+                <div className="w-1.5 h-1.5 rounded-full"
+                  style={{ background: gps.accuracy <= 5 ? '#22c55e' : gps.accuracy <= 15 ? '#f59e0b' : '#ef4444' }}/>
+                <span className="text-[10px] font-medium" style={{ color: '#64748b' }}>
+                  ±{gps.accuracy}m accuracy
+                </span>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <BottomNav />
