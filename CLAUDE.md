@@ -171,7 +171,7 @@ GPS coordinates now live in the `holes` table (`front_lat/lng`, `center_lat/lng`
 ### What's Still Static / Not Integrated
 - GPS hole diagram is abstract/generic — not shaped to actual LeBaron hole layouts
 - Tournament leaderboard removed — `/tournament` is now the Events page; leaderboard data still in `tournaments`/`tournament_entries`/`tournament_scores` tables but no longer surfaced in UI
-- Tee sheet doesn't prevent double-booking across multiple sessions (no server-side guard)
+- Tee sheet deprioritized — no API integration path without club system access (CPS Golf). Keep in UI but do not invest further until a real API or webhook is available.
 - Multi-club: `club_config` table + `getClubConfig()` helper are in place; pages still use hardcoded LeBaron values — future work is wiring each page to the config
 
 ### Known Issues
@@ -186,18 +186,18 @@ In Supabase dashboard → SQL Editor, run in order:
 3. `20260409_club_config.sql` — club_config table (course_id FK), seeded with LeBaron values
 4. `20260409_chat.sql` — messages table (realtime, authenticated-only)
 5. `20260409_channels.sql` — adds `channel` column + index to messages
-6. `20260409_events.sql` — events table + LeBaron seed data
-7. `20260410_schema_cleanup.sql` — updated_at columns, score_format/differential, perf indexes, soft-delete, club_id stub, not-null constraints (run once)
-8. **`20260406_demo_refresh.sql`** — run EVERY TIME before demo: reseeds tee sheet with today's date, fixes tournament scores, adds O'Brien + Connelly entries
+6. `20260409_events.sql` — events table + placeholder seed data
+7. `20260412_events_seed.sql` — real LeBaron Hills events (Cinco De Mayo Tournament, SEAL Foundation, Mass Amateur Qualifying, Mass Golf Member Day, NEPGA Junior Tour, Father Daughter Scotch); seeded April 2026
+8. `20260410_schema_cleanup.sql` — updated_at columns, score_format/differential, perf indexes, soft-delete, club_id stub, not-null constraints (run once)
+9. **`20260406_demo_refresh.sql`** — run EVERY TIME before demo: reseeds tee sheet with today's date, fixes tournament scores, adds O'Brien + Connelly entries
 
 > Note: `20260407_club_config.sql` and `20260407_chat_gin.sql` are superseded by the 20260409 files — skip them.
 
 ---
 
 ## Immediate Priorities
-1. Tee sheet double-booking guard (server-side check before update)
-2. Replace `public/lebaron-menu.pdf` placeholder with real PDF (copy from `~/lebaron-menu-4/9.pdf`)
-3. Add real event data to `events` table (staff can insert via Supabase dashboard or future admin UI)
+1. Replace `public/lebaron-menu.pdf` placeholder with real PDF (copy from `~/lebaron-menu-4/9.pdf`)
+2. Wire remaining pages to `getClubConfig()` (replaces hardcoded LeBaron strings)
 
 ## Longer-Term
 - Beta test with bag room staff
