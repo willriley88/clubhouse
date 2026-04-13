@@ -99,7 +99,7 @@ export default function BottomNav() {
   }, [pathname])
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t"
+    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t pb-[env(safe-area-inset-bottom)]"
       style={{ background: 'white', borderColor: '#f1f5f9' }}>
       <div className="flex items-stretch">
         {NAV_ITEMS.map(item => {

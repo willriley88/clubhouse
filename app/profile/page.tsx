@@ -179,10 +179,10 @@ export default function ProfilePage() {
   }
 
   return (
-    <main className="min-h-screen pb-24" style={{ background: '#f1f5f9' }}>
+    <main className="min-h-screen pb-[max(96px,env(safe-area-inset-bottom))]" style={{ background: '#f1f5f9' }}>
 
       {/* Header */}
-      <div className="px-4 pt-12 pb-6" style={{ background: '#152644' }}>
+      <div className="px-4 pt-[max(48px,env(safe-area-inset-top))] pb-6" style={{ background: '#152644' }}>
         <button
           onClick={() => router.push('/')}
           className="flex items-center gap-1 mb-5"

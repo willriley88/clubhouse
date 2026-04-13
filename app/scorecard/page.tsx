@@ -259,10 +259,10 @@ export default function ScorecardPage() {
   const par = HOLES[sheetHole]?.par ?? 4
 
   return (
-    <main className="min-h-screen pb-60" style={{ background: '#f1f5f9' }}>
+    <main className="min-h-screen pb-[max(240px,env(safe-area-inset-bottom))]" style={{ background: '#f1f5f9' }}>
 
       {/* ── HEADER ── */}
-      <div className="sticky top-0 z-40 px-4 pt-12 pb-3" style={{ background: '#152644' }}>
+      <div className="sticky top-0 z-40 px-4 pt-[max(48px,env(safe-area-inset-top))] pb-3" style={{ background: '#152644' }}>
         <div className="flex justify-between items-start mb-1">
           <div>
             <p className="text-[10px] uppercase tracking-widest mb-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>

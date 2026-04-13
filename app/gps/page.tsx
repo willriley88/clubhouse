@@ -186,10 +186,10 @@ export default function GPSPage() {
   const nextHole = () => setSelectedHole(h => Math.min(18, h + 1))
 
   return (
-    <main className="min-h-screen pb-24 flex flex-col" style={{ background: '#f1f5f9' }}>
+    <main className="min-h-screen pb-[max(96px,env(safe-area-inset-bottom))] flex flex-col" style={{ background: '#f1f5f9' }}>
 
       {/* Header */}
-      <div className="px-4 pt-12 pb-6" style={{ background: '#152644' }}>
+      <div className="px-4 pt-[max(48px,env(safe-area-inset-top))] pb-6" style={{ background: '#152644' }}>
         <h1 className="text-white text-2xl font-bold">GPS</h1>
         <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>
           LeBaron Hills CC

@@ -199,10 +199,10 @@ export default function Events() {
   const selectedEvents   = selectedDate ? eventsOnDate(events, selectedDate) : []
 
   return (
-    <main className="min-h-screen bg-gray-100 pb-24">
+    <main className="min-h-screen bg-gray-100 pb-[max(96px,env(safe-area-inset-bottom))]">
 
       {/* ── HEADER ── */}
-      <div className="bg-[#152644] px-4 pt-12 pb-4">
+      <div className="bg-[#152644] px-4 pt-[max(48px,env(safe-area-inset-top))] pb-4">
         <p className="text-white/40 text-xs uppercase tracking-widest mb-1">LeBaron Hills CC</p>
         <h1 className="text-white text-2xl font-bold">Events</h1>
       </div>
@@ -210,7 +210,7 @@ export default function Events() {
       <div className="px-4 mt-4 space-y-4">
 
         {/* ── PILL SWITCHER ── */}
-        <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
+        <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
           {([
             ['calendar',    'Calendar'],
             ['events',      'Club Events'],

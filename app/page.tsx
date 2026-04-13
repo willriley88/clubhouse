@@ -130,13 +130,13 @@ export default function HomePage() {
   const lastPar = lastRound?.scores.reduce((a: number, s) => a + (s.holes?.[0]?.par ?? 0), 0) || 72
 
   return (
-    <main className="min-h-screen pb-24" style={{ background: '#f1f5f9' }}>
+    <main className="min-h-screen pb-[max(96px,env(safe-area-inset-bottom))]" style={{ background: '#f1f5f9' }}>
 
       {/* ── HEADER ── */}
       <div className="px-4 pt-2 pb-5" style={{ background: '#152644' }}>
         <div className="flex justify-between items-center mb-4">
           {/* Hamburger — opens slide-in drawer */}
-          <button onClick={() => setDrawerOpen(true)} className="flex flex-col gap-1.5 p-1">
+          <button onClick={() => setDrawerOpen(true)} className="flex flex-col gap-1.5 p-1 min-h-[44px] min-w-[44px] items-center justify-center">
             <span className="block w-5 h-0.5 bg-white/60 rounded" />
             <span className="block w-5 h-0.5 bg-white/60 rounded" />
             <span className="block w-5 h-0.5 bg-white/60 rounded" />

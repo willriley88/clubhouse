@@ -9,7 +9,8 @@ const geist = Geist({ subsets: ["latin"] })
 // if themeColor is placed in generateMetadata.
 export async function generateViewport(): Promise<Viewport> {
   const config = await getClubConfig()
-  return { themeColor: config.primary_color }
+  // viewportFit:'cover' is required for env(safe-area-inset-*) to work on iPhone
+  return { themeColor: config.primary_color, viewportFit: 'cover' }
 }
 
 // generateMetadata is async so layout can pull club branding from DB.

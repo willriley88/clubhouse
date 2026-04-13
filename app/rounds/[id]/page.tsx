@@ -122,10 +122,10 @@ export default function RoundDetailPage() {
   const puttCount  = scores.filter(s => s.putts !== null).length
 
   return (
-    <main className="min-h-screen pb-24" style={{ background: '#f1f5f9' }}>
+    <main className="min-h-screen pb-[max(96px,env(safe-area-inset-bottom))]" style={{ background: '#f1f5f9' }}>
 
       {/* Header */}
-      <div className="px-4 pt-12 pb-5" style={{ background: '#152644' }}>
+      <div className="px-4 pt-[max(48px,env(safe-area-inset-top))] pb-5" style={{ background: '#152644' }}>
         <button
           onClick={() => router.push('/rounds')}
           className="flex items-center gap-1 mb-4"
@@ -163,7 +163,7 @@ export default function RoundDetailPage() {
         <>
           {/* Scorecard table — horizontally scrollable */}
           <div className="mx-4 mt-4 bg-white rounded-2xl shadow-sm overflow-hidden">
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
               <table className="border-collapse" style={{ minWidth: '100%' }}>
                 <colgroup>
                   <col style={{ width: 52 }}/>

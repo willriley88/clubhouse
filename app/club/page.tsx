@@ -200,10 +200,10 @@ export default function Club() {
 
 
   return (
-    <main className="min-h-screen bg-gray-100 pb-24">
+    <main className="min-h-screen bg-gray-100 pb-[max(96px,env(safe-area-inset-bottom))]">
 
       {/* ── HEADER ── */}
-      <div className="bg-[#152644] px-4 pt-12 pb-4">
+      <div className="bg-[#152644] px-4 pt-[max(48px,env(safe-area-inset-top))] pb-4">
         <p className="text-white/40 text-xs uppercase tracking-widest mb-1">Members Only</p>
         <h1 className="text-white text-2xl font-bold">LeBaron Hills CC</h1>
         <p className="text-white/40 text-xs mt-1">Lakeville, MA · Par 72 · 6,803 yds</p>
@@ -306,7 +306,7 @@ export default function Club() {
         {/* ── UNIFIED FEED ── */}
         <div>
           {/* Horizontal pill switcher */}
-          <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
+          <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
             {CHANNEL_TABS.map(tab => (
               <button
                 key={tab.slug}
@@ -325,7 +325,7 @@ export default function Club() {
           {/* Messages list + post input, all inside one card */}
           <div className="bg-white rounded-2xl overflow-hidden">
 
-            <div className="overflow-y-auto max-h-80 px-4 py-3 space-y-3">
+            <div className="overflow-y-auto max-h-80 px-4 py-3 space-y-3" style={{ WebkitOverflowScrolling: 'touch' }}>
               {loadingMsgs ? (
                 <p className="text-center text-sm text-gray-400 py-4">Loading…</p>
               ) : messages.length === 0 ? (
