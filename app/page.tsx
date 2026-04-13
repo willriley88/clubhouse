@@ -399,7 +399,7 @@ export default function HomePage() {
         {/* mounted guard prevents SSR/client HTML mismatch on feedPosts.length check */}
         {mounted && (
           <div>
-            <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-2">Club Feed</p>
+            <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-2">Club Announcements</p>
             <div className="space-y-2">
               {feedPosts.length === 0 ? (
                 <div className="bg-white rounded-2xl px-4 py-8 text-center shadow-sm">
