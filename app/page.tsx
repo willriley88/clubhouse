@@ -30,6 +30,23 @@ type Round = {
   scores: { strokes: number; holes: { par: number; hole_number: number }[] }[]
 }
 
+type NextEvent = {
+  id: string
+  title: string
+  type: string
+  start_date: string
+  end_date: string | null
+}
+
+function formatEventDate(start: string, end: string | null): string {
+  const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+  const [sy, sm, sd] = start.split('-').map(Number)
+  if (!end || end === start) return `${M[sm-1]} ${sd}, ${sy}`
+  const [ey, em, ed] = end.split('-').map(Number)
+  if (sm === em && sy === ey) return `${M[sm-1]} ${sd}–${ed}, ${sy}`
+  return `${M[sm-1]} ${sd} – ${M[em-1]} ${ed}, ${ey}`
+}
+
 export default function HomePage() {
   const router = useRouter()
   const [user,         setUser]         = useState<any>(null)
@@ -40,6 +57,7 @@ export default function HomePage() {
   const [feedPosts,    setFeedPosts]    = useState<FeedPost[]>([])
   const [mounted,      setMounted]      = useState(false)
 
+  const [nextEvent,  setNextEvent]  = useState<NextEvent | null>(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
 
   // Edit name state
@@ -106,6 +124,17 @@ export default function HomePage() {
         .order('created_at', { ascending: false })
         .limit(3)
       setFeedPosts(posts ?? [])
+
+      // Closest upcoming event — filter by start_date >= today, limit 1
+      const todayStr = new Date().toISOString().split('T')[0]
+      const { data: ev } = await supabase
+        .from('events')
+        .select('id, title, type, start_date, end_date')
+        .gte('start_date', todayStr)
+        .order('start_date', { ascending: true })
+        .limit(1)
+        .maybeSingle()
+      setNextEvent(ev ?? null)
 
       setLoadingRound(false)
     })
@@ -337,26 +366,31 @@ export default function HomePage() {
           </button>
         </div>
 
-        {/* ── EVENTS ── placeholder card */}
+        {/* ── EVENTS ── closest upcoming event fetched from Supabase */}
         <div>
-          <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-2">Events</p>
+          <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-2">Next Event</p>
           <div className="rounded-2xl p-4 shadow-sm relative overflow-hidden" style={{ background: '#152644' }}>
-            {/* Decorative circle */}
             <div className="absolute right-4 top-4 w-16 h-16 rounded-full opacity-10" style={{ background: '#c9a84c' }} />
-            <p className="text-[10px] uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.45)' }}>
-              Member-Guest Classic
-            </p>
-            <h3 className="text-xl font-bold text-white mb-1" style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
-              June 14 – 16, 2025
-            </h3>
-            <p className="text-xs mb-3" style={{ color: 'rgba(255,255,255,0.5)' }}>
-              Stroke Play · Stableford · 67 Players
-            </p>
+            {nextEvent ? (
+              <>
+                <p className="text-[10px] uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                  {nextEvent.type === 'tournament' ? 'Tournament' : nextEvent.type === 'member' ? 'Members' : 'Private'}
+                </p>
+                <h3 className="text-xl font-bold text-white mb-1" style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
+                  {nextEvent.title}
+                </h3>
+                <p className="text-xs mb-3" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                  {formatEventDate(nextEvent.start_date, nextEvent.end_date)}
+                </p>
+              </>
+            ) : (
+              <p className="text-sm mb-3" style={{ color: 'rgba(255,255,255,0.6)' }}>No upcoming events</p>
+            )}
             <button
               onClick={() => router.push('/tournament')}
               className="px-4 py-2 rounded-xl text-sm font-bold"
               style={{ background: '#c9a84c', color: '#152644' }}>
-              View Leaderboard →
+              View All Events →
             </button>
           </div>
         </div>
