@@ -184,10 +184,9 @@ export default function Club() {
     const text = messageText.trim()
     setMessageText('')
 
-    const { data: profile } = await supabase
-      .from('profiles').select('full_name').eq('id', user.id).single()
-    const name     = profile?.full_name || user.email?.split('@')[0] || 'Member'
-    const initials = getInitials(name)
+    // Use profile name/initials already fetched at load time — avoids extra round-trip
+    const name     = profileName     || user.email?.split('@')[0] || 'Member'
+    const initials = profileInitials || getInitials(name)
 
     // Optimistic insert with temp ID
     const tempId = `temp-${Date.now()}`
@@ -205,10 +204,11 @@ export default function Club() {
       .select('id, profile_id, author_name, author_initials, message, channel, created_at')
       .single()
 
-    if (!error && data) {
-      setMessages(prev => prev.map(m => m.id === tempId ? (data as Message) : m))
-    } else {
+    if (error) {
+      console.error('chat insert error:', error)
       setMessages(prev => prev.filter(m => m.id !== tempId))
+    } else if (data) {
+      setMessages(prev => prev.map(m => m.id === tempId ? (data as Message) : m))
     }
     setSending(false)
   }
