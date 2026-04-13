@@ -107,7 +107,7 @@ The splash screen only shows on first visit (sessionStorage). If BottomNav is in
 
 ### Tables (current)
 
-**profiles** — `id` uuid (→ auth.users), `full_name` text, `handicap` numeric, `created_at`, `updated_at`, `club_id` uuid (FK→courses, nullable — future multi-tenant)
+**profiles** — `id` uuid (→ auth.users), `full_name` text, `handicap` numeric, `is_admin` boolean (default false — set manually in Supabase dashboard; controls chat post access in Club tab), `created_at`, `updated_at`, `club_id` uuid (FK→courses, nullable — future multi-tenant)
 
 **courses** — `id` uuid, `name` text, `city`, `state`, `slope` integer (136), `rating` numeric (73.4)
 
@@ -156,7 +156,7 @@ LeBaron values: rating `73.4`, slope `136`
 - **Round detail** (`/rounds/[id]`): horizontally scrollable 18-hole table with Par / Score / color-coded ±par rows (gold=birdie+, green=par, red=bogey, dark red=double+); Out/In subtotals; summary stats (birdies, pars, bogeys, doubles+, putts)
 - **Profile** (`/profile`): tiered handicap card — <3 rounds: manual entry input saved to DB; 3–5 rounds: shows entered value + "X rounds to go"; ≥6 rounds: WHS auto-calc (lowest 6 differentials × 0.96) with Recalculate button; sparkline for ≥2 rounds
 - **Events** (`/tournament`): four-tab Events page — Calendar, Club Events, Tournaments, **Leaderboard** (top 20 gross rounds in 2026 season, ranked low-to-high, color-coded vs par); all data from `events` + `rounds` + `profiles` tables
-- **Club** (`/club`): 2×2 quick links (Tee Times → CPS Golf booking, Menu → `window.open('/lebaron-menu.pdf', '_blank')` + phone button `tel:5089235712`, Member Statements → Prophet billing, Staff Info → lebaronhills.com/about-us); tee sheet with **Join button** (writes player name to Supabase, optimistic update); **unified channel feed** with horizontal pill switcher (Announcements / Men's League / Women's League / Tournament); active pill navy+gold, inactive gray; messages from `messages` table filtered by channel slug; Supabase Realtime subscription per active tab; optimistic send with dedup; all channels open to all authenticated members (no read-only restrictions)
+- **Club** (`/club`): 2×2 quick links (Tee Times → CPS Golf booking, Menu → `window.open('/lebaron-menu.pdf', '_blank')` + phone button `tel:5089235712`, Member Statements → Prophet billing, Staff Info → lebaronhills.com/about-us); tee sheet with **Join button** (writes player name to Supabase, optimistic update); **unified channel feed** with horizontal pill switcher (Announcements / Men's League / Women's League / Tournament); active pill navy+gold, inactive gray; messages from `messages` table filtered by channel slug; Supabase Realtime subscription per active tab; optimistic send with dedup; **chat input is admin-only** — only users with `profiles.is_admin = true` see the input bar; all members can read; set via Supabase dashboard
 - **GPS** (`/gps`): real hole data from `holes`, prev/next nav + **touch swipe** (left=next, right=prev); tee selector; **real GPS positioning** with `watchPosition`, Haversine formula, front/center/back yard distances; GPS status badge; **abstract SVG hole diagram** (dark green, fairway + tee box + green circle + flagstick + gold flag); `GREEN_COORDS` hardcoded (centered 41.8387°N, 70.9762°W)
 - **Auth enforcement**: middleware blocks `/club` + `/rounds` for unauthenticated users
 - **PWA**: manifest.json + apple-touch-icon — installable on iOS/Android home screen; iPhone safe area insets applied (viewportFit:cover, env(safe-area-inset-*) on all pages + BottomNav), WebkitOverflowScrolling on scroll containers, 44px tap targets
@@ -189,7 +189,8 @@ In Supabase dashboard → SQL Editor, run in order:
 6. `20260409_events.sql` — events table + placeholder seed data
 7. `20260412_events_seed.sql` — real LeBaron Hills events (Cinco De Mayo Tournament, SEAL Foundation, Mass Amateur Qualifying, Mass Golf Member Day, NEPGA Junior Tour, Father Daughter Scotch); seeded April 2026
 8. `20260410_schema_cleanup.sql` — updated_at columns, score_format/differential, perf indexes, soft-delete, club_id stub, not-null constraints (run once)
-9. **`20260406_demo_refresh.sql`** — run EVERY TIME before demo: reseeds tee sheet with today's date, fixes tournament scores, adds O'Brien + Connelly entries
+9. `20260412_profiles_is_admin.sql` — adds `is_admin boolean default false` to profiles
+10. **`20260406_demo_refresh.sql`** — run EVERY TIME before demo: reseeds tee sheet with today's date, fixes tournament scores, adds O'Brien + Connelly entries
 
 > Note: `20260407_club_config.sql` and `20260407_chat_gin.sql` are superseded by the 20260409 files — skip them.
 
