@@ -159,7 +159,7 @@ LeBaron values: rating `73.4`, slope `136`
 - **Club** (`/club`): 2×2 quick links (Tee Times → CPS Golf booking, Menu → `window.open('/lebaron-menu.pdf', '_blank')` + phone button `tel:5089235712`, Member Statements → Prophet billing, Staff Info → lebaronhills.com/about-us); tee sheet with **Join button** (writes player name to Supabase, optimistic update); **unified channel feed** with horizontal pill switcher (Announcements / Men's League / Women's League / Tournament); active pill navy+gold, inactive gray; messages from `messages` table filtered by channel slug; Supabase Realtime subscription per active tab; optimistic send with dedup; all channels open to all authenticated members (no read-only restrictions)
 - **GPS** (`/gps`): real hole data from `holes`, prev/next nav + **touch swipe** (left=next, right=prev); tee selector; **real GPS positioning** with `watchPosition`, Haversine formula, front/center/back yard distances; GPS status badge; **abstract SVG hole diagram** (dark green, fairway + tee box + green circle + flagstick + gold flag); `GREEN_COORDS` hardcoded (centered 41.8387°N, 70.9762°W)
 - **Auth enforcement**: middleware blocks `/club` + `/rounds` for unauthenticated users
-- **PWA**: manifest.json + apple-touch-icon — installable on iOS/Android home screen
+- **PWA**: manifest.json + apple-touch-icon — installable on iOS/Android home screen; iPhone safe area insets applied (viewportFit:cover, env(safe-area-inset-*) on all pages + BottomNav), WebkitOverflowScrolling on scroll containers, 44px tap targets
 - **Score sharing**: after round saves, shows share bottom sheet with gross + differential; Web Share API with clipboard copy fallback; text: "Shot 78 (+6) at LeBaron Hills CC via Clubhouse 🏌️"
 - **Handicap sparkline**: profile page shows inline SVG gold trend line for last 5 rounds (oldest-left, newest-right); labels ↓ Improving / ↑ Rising / — Steady
 - **Club tab badge**: gold dot on Club icon in BottomNav when there are unread feed posts; tracks last visit via `clubhouse_last_club_visit` in localStorage; clears on /club visit
@@ -175,7 +175,6 @@ LeBaron values: rating `73.4`, slope `136`
 - Multi-club: `club_config` table + `getClubConfig()` helper are in place; pages still use hardcoded LeBaron values — future work is wiring each page to the config
 
 ### Known Issues
-- Dual-boot EFI issue on dev machine (unrelated to app)
 - Round detail page previously showed no hole data — fixed April 2026 (holes table missing RLS SELECT policy + hcp_index column name mismatch)
 
 ---
@@ -196,11 +195,10 @@ In Supabase dashboard → SQL Editor, run in order:
 ---
 
 ## Immediate Priorities
-1. iPhone polish pass — safe area insets, tap targets, scroll feel for demo on Tom's phone
-2. Tee sheet double-booking guard (server-side check before update)
-3. Wire remaining pages to `getClubConfig()` (replaces hardcoded LeBaron strings)
-4. Replace `public/lebaron-menu.pdf` placeholder with real PDF (copy from `~/lebaron-menu-4/9.pdf`)
-5. Add real event data to `events` table (staff can insert via Supabase dashboard or future admin UI)
+1. Tee sheet double-booking guard (server-side check before update)
+2. Wire remaining pages to `getClubConfig()` (replaces hardcoded LeBaron strings)
+3. Replace `public/lebaron-menu.pdf` placeholder with real PDF (copy from `~/lebaron-menu-4/9.pdf`)
+4. Add real event data to `events` table (staff can insert via Supabase dashboard or future admin UI)
 
 ## Longer-Term
 - Beta test with bag room staff
