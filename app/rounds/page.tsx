@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from '../components/BottomNav'
+import { supabase } from '../../lib/supabase'
 
 type LocalRound = {
   id: string
@@ -29,22 +30,91 @@ export default function RoundsPage() {
   const router = useRouter()
   const [rounds, setRounds] = useState<LocalRound[]>([])
   const [loaded, setLoaded] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem('clubhouse_rounds')
-      setRounds(raw ? JSON.parse(raw) : [])
-    } catch {
-      setRounds([])
+    async function load() {
+      const { data: { user } } = await supabase.auth.getUser()
+
+      if (user) {
+        setIsLoggedIn(true)
+        // Fetch rounds from Supabase with nested scores and holes for par/stroke data
+        const { data, error } = await supabase
+          .from('rounds')
+          .select(`
+            id, played_at,
+            courses(name),
+            scores(strokes, putts, holes(hole_number, par))
+          `)
+          .eq('profile_id', user.id)
+          .order('played_at', { ascending: false })
+
+        if (!error && data) {
+          const mapped: LocalRound[] = data.map((r) => {
+            // courses is many-to-one — single object
+            const coursesRaw = r.courses as unknown
+            const courseName =
+              coursesRaw && !Array.isArray(coursesRaw)
+                ? (coursesRaw as { name: string }).name
+                : Array.isArray(coursesRaw) && coursesRaw.length > 0
+                ? (coursesRaw[0] as { name: string }).name
+                : 'LeBaron Hills CC'
+
+            const scoresArr = Array.isArray(r.scores) ? r.scores : []
+            const holeScores = scoresArr.map((s) => {
+              // holes is many-to-one — single object; guard with Array.isArray for safety
+              const h = Array.isArray(s.holes) ? s.holes[0] : s.holes
+              return {
+                hole_number: (h as { hole_number: number } | null)?.hole_number ?? 0,
+                par: (h as { par: number } | null)?.par ?? 0,
+                strokes: s.strokes ?? 0,
+                putts: s.putts ?? null,
+              }
+            })
+
+            const gross = holeScores.reduce((a: number, v) => a + v.strokes, 0)
+            const par_total = holeScores.reduce((a: number, v) => a + v.par, 0)
+
+            return {
+              id: r.id,
+              played_at: r.played_at,
+              course_name: courseName,
+              gross,
+              par_total,
+              holes_played: holeScores.length,
+              hole_scores: holeScores,
+            }
+          })
+          setRounds(mapped)
+        }
+      } else {
+        // Not logged in — fall back to localStorage
+        try {
+          const raw = localStorage.getItem('clubhouse_rounds')
+          setRounds(raw ? JSON.parse(raw) : [])
+        } catch {
+          setRounds([])
+        }
+      }
+
+      setLoaded(true)
     }
-    setLoaded(true)
+    load()
   }, [])
 
-  function handleDelete(id: string) {
+  async function handleDelete(id: string) {
     if (!window.confirm('Delete this round?')) return
-    const updated = rounds.filter(r => r.id !== id)
-    setRounds(updated)
-    localStorage.setItem('clubhouse_rounds', JSON.stringify(updated))
+
+    if (isLoggedIn) {
+      // Delete scores first (FK constraint), then the round
+      await supabase.from('scores').delete().eq('round_id', id)
+      await supabase.from('rounds').delete().eq('id', id)
+    } else {
+      const updated = rounds.filter(r => r.id !== id)
+      localStorage.setItem('clubhouse_rounds', JSON.stringify(updated))
+    }
+
+    setRounds(prev => prev.filter(r => r.id !== id))
   }
 
   return (
