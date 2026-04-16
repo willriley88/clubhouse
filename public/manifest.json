@@ -1,0 +1,18 @@
+{
+  "name": "Clubhouse",
+  "short_name": "Clubhouse",
+  "description": "LeBaron Hills CC Member App",
+  "theme_color": "#152644",
+  "background_color": "#152644",
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/lebaron-logo-transparent-gold.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

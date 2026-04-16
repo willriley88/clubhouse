@@ -1,80 +1,477 @@
-import BottomNav from "../components/BottomNav"
+'use client'
+import { useState, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
+import BottomNav from '../components/BottomNav'
+
+type TeeSlot = {
+  id: string
+  tee_date: string
+  tee_time: string
+  tee_order: number
+  players: string
+  max_players: number
+}
+
+type Message = {
+  id: string
+  profile_id: string
+  author_name: string
+  author_initials: string
+  message: string
+  channel: string
+  created_at: string
+}
+
+
+function relativeTime(ts: string): string {
+  const diff = Date.now() - new Date(ts).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 1) return 'just now'
+  if (mins < 60) return `${mins}m ago`
+  const hours = Math.floor(mins / 60)
+  if (hours < 24) return `${hours}h ago`
+  const days = Math.floor(hours / 24)
+  if (days === 1) return 'Yesterday'
+  return `${days}d ago`
+}
+
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/)
+  if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+  return name.slice(0, 2).toUpperCase()
+}
+
+function avatarBg(initials: string): string {
+  const palette = ['#dbeafe', '#dcfce7', '#fef9c3', '#fce7f3', '#ede9fe']
+  return palette[(initials.charCodeAt(0) + (initials.charCodeAt(1) || 0)) % palette.length]
+}
+
+function avatarColor(initials: string): string {
+  const palette = ['#1d4ed8', '#15803d', '#854d0e', '#9d174d', '#5b21b6']
+  return palette[(initials.charCodeAt(0) + (initials.charCodeAt(1) || 0)) % palette.length]
+}
 
 export default function Club() {
-  const teeSheet = [
-    { time: "7:00 AM", players: "Sullivan, Ricci, Monroe, Chen", open: false },
-    { time: "7:12 AM", players: "Walsh, Peters", open: true, spots: 2 },
-    { time: "7:24 AM", players: "", open: true, spots: 4 },
-    { time: "7:36 AM", players: "Kim, Torres, Adams", open: true, spots: 1 },
-    { time: "7:48 AM", players: "Thompson, Lee, Burke, Grant", open: false },
-  ]
+  const router = useRouter()
+  const [teeSheet,      setTeeSheet]      = useState<TeeSlot[]>([])
+  const [user,          setUser]          = useState<any>(null)
+  const [joiningId,     setJoiningId]     = useState<string | null>(null)
+  const [messages,      setMessages]      = useState<Message[]>([])
+  const [messageText,   setMessageText]   = useState('')
+  const [sending,       setSending]       = useState(false)
+  const [loadingMsgs,   setLoadingMsgs]   = useState(true)
+  const [menuToast,     setMenuToast]     = useState(false)
+  const [isAdmin,         setIsAdmin]         = useState(false)
+  const [profileName,     setProfileName]     = useState('')
+  const [profileInitials, setProfileInitials] = useState('')
+  const [editingMsgId,    setEditingMsgId]    = useState<string | null>(null)
+  const [editText,        setEditText]        = useState('')
 
-  const feed = [
-    { initials: "TR", name: "Tom R.", msg: "Course is in great shape today, greens rolling fast", time: "1h ago", bg: "bg-blue-100", text: "text-blue-700" },
-    { initials: "Admin", name: "Club Admin", msg: "Pro shop sale this weekend — 20% off all apparel", time: "3h ago", bg: "bg-[#152644]", text: "text-[#c9a84c]" },
-    { initials: "MK", name: "Mike K.", msg: "Anyone up for a game Saturday morning?", time: "Yesterday", bg: "bg-green-100", text: "text-green-700" },
-  ]
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // Initial load: tee sheet + auth user
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0]
+    async function load() {
+      const [{ data: slotRows }, { data: authData }] = await Promise.all([
+        supabase
+          .from('tee_sheet')
+          .select('id, tee_date, tee_time, tee_order, players, max_players')
+          .eq('tee_date', today)
+          .order('tee_order'),
+        supabase.auth.getUser(),
+      ])
+      setTeeSheet(slotRows ?? [])
+      setUser(authData.user)
+
+      if (authData.user) {
+        const { data: prof } = await supabase
+          .from('profiles')
+          .select('full_name, is_admin')
+          .eq('id', authData.user.id)
+          .maybeSingle()
+        setIsAdmin(prof?.is_admin === true)
+        const name = prof?.full_name || authData.user.email?.split('@')[0] || 'Member'
+        setProfileName(name)
+        setProfileInitials(getInitials(name))
+      }
+    }
+    load()
+  }, [])
+
+  // Load announcements on mount
+  useEffect(() => {
+    supabase
+      .from('messages')
+      .select('id, profile_id, author_name, author_initials, message, channel, created_at')
+      .eq('channel', 'announcements')
+      .order('created_at', { ascending: true })
+      .limit(50)
+      .then(({ data }) => {
+        setMessages((data as Message[]) ?? [])
+        setLoadingMsgs(false)
+      })
+  }, [])
+
+  // Realtime subscription for announcements channel
+  useEffect(() => {
+    const ch = supabase
+      .channel('club-feed:announcements')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'messages', filter: 'channel=eq.announcements' },
+        payload => {
+          setMessages(prev => {
+            // Dedup: skip if already present from optimistic insert
+            if (prev.some(m => m.id === payload.new.id)) return prev
+            return [...prev, payload.new as Message]
+          })
+        }
+      )
+      .subscribe()
+    return () => { supabase.removeChannel(ch) }
+  }, [])
+
+  // Auto-scroll to newest message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
+
+  async function handleJoin(slot: TeeSlot) {
+    if (!user) { router.push('/login'); return }
+    const playerList = slot.players ? slot.players.split(',').map(p => p.trim()).filter(Boolean) : []
+    if (slot.max_players - playerList.length <= 0) return
+    setJoiningId(slot.id)
+    const { data: profile } = await supabase
+      .from('profiles').select('full_name').eq('id', user.id).single()
+    const name = profile?.full_name || user.email?.split('@')[0] || 'Member'
+    if (playerList.some(p => p.toLowerCase() === name.toLowerCase())) {
+      setJoiningId(null); return
+    }
+    const newPlayers = playerList.length > 0 ? `${slot.players}, ${name}` : name
+    const { error } = await supabase.from('tee_sheet').update({ players: newPlayers }).eq('id', slot.id)
+    if (!error) setTeeSheet(prev => prev.map(s => s.id === slot.id ? { ...s, players: newPlayers } : s))
+    setJoiningId(null)
+  }
+
+  async function openMenu() {
+    // HEAD check first — if PDF is missing, show a toast instead of a blank tab
+    try {
+      const res = await fetch('/lebaron-menu.pdf', { method: 'HEAD' })
+      if (res.ok) {
+        window.open('/lebaron-menu.pdf', '_blank')
+      } else {
+        setMenuToast(true)
+        setTimeout(() => setMenuToast(false), 3000)
+      }
+    } catch {
+      setMenuToast(true)
+      setTimeout(() => setMenuToast(false), 3000)
+    }
+  }
+
+  async function handleDeleteMsg(id: string) {
+    await supabase.from('messages').delete().eq('id', id)
+    setMessages(prev => prev.filter(m => m.id !== id))
+  }
+
+  async function handleSaveEdit(id: string) {
+    const text = editText.trim()
+    if (!text) return
+    const { error } = await supabase.from('messages').update({ message: text }).eq('id', id)
+    if (!error) setMessages(prev => prev.map(m => m.id === id ? { ...m, message: text } : m))
+    setEditingMsgId(null)
+  }
+
+  async function handleSend() {
+    if (!messageText.trim() || sending || !user) return
+    setSending(true)
+    const text = messageText.trim()
+    setMessageText('')
+
+    // Use profile name/initials already fetched at load time — avoids extra round-trip
+    const name     = profileName     || user.email?.split('@')[0] || 'Member'
+    const initials = profileInitials || getInitials(name)
+
+    // Optimistic insert with temp ID
+    const tempId = `temp-${Date.now()}`
+    const optimistic: Message = {
+      id: tempId, profile_id: user.id,
+      author_name: name, author_initials: initials,
+      message: text, channel: 'announcements',
+      created_at: new Date().toISOString(),
+    }
+    setMessages(prev => [...prev, optimistic])
+
+    const { data, error } = await supabase
+      .from('messages')
+      .insert({ profile_id: user.id, author_name: name, author_initials: initials, message: text, channel: 'announcements' })
+      .select('id, profile_id, author_name, author_initials, message, channel, created_at')
+      .single()
+
+    if (error) {
+      console.error('chat insert error:', error)
+      setMessages(prev => prev.filter(m => m.id !== tempId))
+    } else if (data) {
+      setMessages(prev => prev.map(m => m.id === tempId ? (data as Message) : m))
+    }
+    setSending(false)
+  }
+
 
   return (
-    <main className="min-h-screen bg-gray-100 pb-24">
-      <div className="bg-[#152644] px-4 pt-12 pb-4">
+    <main className="min-h-screen bg-gray-100 pb-[max(96px,env(safe-area-inset-bottom))]">
+
+      {/* ── HEADER ── */}
+      <div className="bg-[#152644] px-4 pt-[max(48px,env(safe-area-inset-top))] pb-4">
         <p className="text-white/40 text-xs uppercase tracking-widest mb-1">Members Only</p>
         <h1 className="text-white text-2xl font-bold">LeBaron Hills CC</h1>
         <p className="text-white/40 text-xs mt-1">Lakeville, MA · Par 72 · 6,803 yds</p>
       </div>
 
       <div className="px-4 mt-4 space-y-4">
+
+        {/* ── QUICK LINKS ── */}
         <div className="grid grid-cols-2 gap-3">
-          {[
-            { label: "Tee Times", icon: "🕐", sub: "Book online" },
-            { label: "Online Ordering", icon: "🍽️", sub: "Sunset Grille" },
-            { label: "Member Statements", icon: "📄", sub: "View billing" },
-            { label: "Staff Info", icon: "👤", sub: "Contact staff" },
-          ].map(item => (
-            <button key={item.label} className="bg-white rounded-2xl p-4 text-left">
-              <div className="text-2xl mb-2">{item.icon}</div>
-              <div className="text-sm font-semibold text-[#152644]">{item.label}</div>
-              <div className="text-xs text-gray-400 mt-0.5">{item.sub}</div>
+
+          <button
+            onClick={() => window.open('https://lebaronhills.cps.golf/onlineresweb/search-teetime?TeeOffTimeMin=0&TeeOffTimeMax=23.999722222222225', '_blank')}
+            className="bg-white rounded-2xl p-4 text-left"
+          >
+            <div className="text-2xl mb-2">🕐</div>
+            <div className="text-sm font-semibold text-[#152644]">Tee Times</div>
+            <div className="text-xs text-gray-400 mt-0.5">Book online</div>
+          </button>
+
+          {/* Menu — HEAD-checks PDF first, shows toast if missing */}
+          <div className="bg-white rounded-2xl p-4 relative">
+            <button
+              onClick={openMenu}
+              className="w-full text-left"
+            >
+              <div className="text-2xl mb-2">🍽️</div>
+              <div className="text-sm font-semibold text-[#152644]">Menu</div>
+              <div className="text-xs text-gray-400 mt-0.5">Sunset Grille</div>
             </button>
-          ))}
+            <button
+              onClick={e => { e.stopPropagation(); window.location.href = 'tel:5089235712' }}
+              className="absolute bottom-3 right-3 flex items-center justify-center"
+              aria-label="Call the club"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="#c9a84c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.32h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.13 6.13l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </button>
+          </div>
+
+          <button
+            onClick={() => window.open('https://secure.east.prophetservices.com/LebaronHillsBilling/', '_blank')}
+            className="bg-white rounded-2xl p-4 text-left"
+          >
+            <div className="text-2xl mb-2">📄</div>
+            <div className="text-sm font-semibold text-[#152644]">Member Statements</div>
+            <div className="text-xs text-gray-400 mt-0.5">View billing</div>
+          </button>
+
+          <button
+            onClick={() => window.open('https://www.lebaronhills.com/about-us', '_blank')}
+            className="bg-white rounded-2xl p-4 text-left"
+          >
+            <div className="text-2xl mb-2">👤</div>
+            <div className="text-sm font-semibold text-[#152644]">Staff Info</div>
+            <div className="text-xs text-gray-400 mt-0.5">Contact staff</div>
+          </button>
+
         </div>
 
+        {/* ── TEE SHEET ── */}
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Today's Tee Sheet</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Today&apos;s Tee Sheet</p>
           <div className="bg-white rounded-2xl overflow-hidden">
-            {teeSheet.map((slot, i) => (
-              <div key={slot.time} className={`flex items-center gap-3 px-4 py-3 ${i < teeSheet.length - 1 ? "border-b border-gray-100" : ""}`}>
-                <div className="text-sm font-bold text-[#152644] w-20">{slot.time}</div>
-                <div className="flex-1 text-xs text-gray-500">{slot.players || "Open"}</div>
-                {slot.open ? (
-                  <div className="text-xs font-semibold text-green-600">{slot.spots} open</div>
-                ) : (
-                  <div className="text-xs text-gray-300">Full</div>
-                )}
-              </div>
-            ))}
+            {teeSheet.length === 0 ? (
+              <div className="px-4 py-6 text-center text-sm text-gray-400">No tee times available today</div>
+            ) : (
+              teeSheet.map((slot, i) => {
+                const playerList = slot.players ? slot.players.split(',').map(p => p.trim()).filter(Boolean) : []
+                const openSpots  = slot.max_players - playerList.length
+                const isFull     = openSpots <= 0
+                const isJoining  = joiningId === slot.id
+                return (
+                  <div key={slot.id}
+                    className={`flex items-center gap-3 px-4 py-3 ${i < teeSheet.length - 1 ? 'border-b border-gray-100' : ''}`}>
+                    <div className="text-sm font-bold text-[#152644] w-20">{slot.tee_time}</div>
+                    <div className="flex-1 text-xs text-gray-500">
+                      {playerList.length > 0 ? playerList.join(', ') : 'Open'}
+                    </div>
+                    {isFull ? (
+                      <div className="text-xs text-gray-300">Full</div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-semibold text-green-600">{openSpots} open</span>
+                        <button onClick={() => handleJoin(slot)} disabled={isJoining}
+                          className="text-xs font-bold px-2 py-0.5 rounded-lg"
+                          style={{ background: '#152644', color: '#c9a84c', opacity: isJoining ? 0.5 : 1 }}>
+                          {isJoining ? '…' : 'Join'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )
+              })
+            )}
           </div>
         </div>
 
+        {/* ── CLUB ANNOUNCEMENTS ── */}
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Club Feed</p>
-          <div className="space-y-2">
-            {feed.map(item => (
-              <div key={item.name} className="bg-white rounded-2xl p-4 flex gap-3">
-                <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${item.bg} ${item.text}`}>
-                  {item.initials.length > 2 ? "A" : item.initials}
+          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Club Announcements</p>
+
+          {/* Messages list + post input, all inside one card */}
+          <div className="bg-white rounded-2xl overflow-hidden">
+
+            <div className="overflow-y-auto max-h-80 px-4 py-3 space-y-3" style={{ WebkitOverflowScrolling: 'touch' }}>
+              {loadingMsgs ? (
+                <p className="text-center text-sm text-gray-400 py-4">Loading…</p>
+              ) : messages.length === 0 ? (
+                <p className="text-center text-sm text-gray-400 py-4">No messages yet</p>
+              ) : (
+                messages.map(msg => (
+                  <div key={msg.id} className="flex gap-3">
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                      style={{ backgroundColor: avatarBg(msg.author_initials), color: avatarColor(msg.author_initials) }}
+                    >
+                      {msg.author_initials}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-semibold text-[#152644]">{msg.author_name}</span>
+                        <span className="text-[10px] text-gray-400">{relativeTime(msg.created_at)}</span>
+                        {/* Admin controls — edit and delete */}
+                        {isAdmin && editingMsgId !== msg.id && (
+                          <div className="flex items-center gap-1 ml-auto">
+                            <button
+                              onClick={() => { setEditingMsgId(msg.id); setEditText(msg.message) }}
+                              className="p-1 rounded"
+                              style={{ color: '#94a3b8' }}
+                              aria-label="Edit message"
+                            >
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                              </svg>
+                            </button>
+                            <button
+                              onClick={() => handleDeleteMsg(msg.id)}
+                              className="p-1 rounded"
+                              style={{ color: '#94a3b8' }}
+                              aria-label="Delete message"
+                            >
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="3 6 5 6 21 6"/>
+                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                                <path d="M10 11v6M14 11v6"/>
+                                <path d="M9 6V4h6v2"/>
+                              </svg>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                      {editingMsgId === msg.id ? (
+                        <div className="flex items-center gap-2 mt-1">
+                          <input
+                            value={editText}
+                            onChange={e => setEditText(e.target.value)}
+                            onKeyDown={e => {
+                              if (e.key === 'Enter') handleSaveEdit(msg.id)
+                              if (e.key === 'Escape') setEditingMsgId(null)
+                            }}
+                            autoFocus
+                            maxLength={500}
+                            className="flex-1 text-sm outline-none border-b pb-0.5"
+                            style={{ color: '#1e293b', borderColor: '#152644' }}
+                          />
+                          <button onClick={() => handleSaveEdit(msg.id)} style={{ color: '#152644' }} aria-label="Save">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                              stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                          </button>
+                          <button onClick={() => setEditingMsgId(null)} style={{ color: '#94a3b8' }} aria-label="Cancel">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                              stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <line x1="18" y1="6" x2="6" y2="18"/>
+                              <line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                          </button>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-700 mt-0.5 break-words">{msg.message}</p>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Post input — admin only; all users can read */}
+            {isAdmin ? (
+              <div className="border-t border-gray-100 px-4 py-3 flex items-center gap-3">
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+                  style={{ background: '#152644' }}
+                >
+                  {profileInitials || (user?.email?.charAt(0) ?? 'M').toUpperCase()}
                 </div>
-                <div>
-                  <p className="text-xs font-semibold text-[#152644]">{item.name}</p>
-                  <p className="text-sm text-gray-600 mt-0.5">{item.msg}</p>
-                  <p className="text-xs text-gray-400 mt-1">{item.time}</p>
-                </div>
+                <input
+                  value={messageText}
+                  onChange={e => setMessageText(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend() } }}
+                  placeholder="Message…"
+                  maxLength={500}
+                  className="flex-1 text-sm outline-none bg-transparent"
+                  style={{ color: '#1e293b' }}
+                />
+                <button
+                  onClick={handleSend}
+                  disabled={!messageText.trim() || sending}
+                  className="flex items-center justify-center w-8 h-8 rounded-full flex-shrink-0"
+                  style={{ background: messageText.trim() && !sending ? '#152644' : '#e2e8f0' }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke={messageText.trim() && !sending ? '#c9a84c' : '#94a3b8'}
+                    strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"/>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                  </svg>
+                </button>
               </div>
-            ))}
+            ) : !user ? (
+              <div className="border-t border-gray-100 px-4 py-3">
+                <p className="text-xs text-center text-gray-400">
+                  <button onClick={() => router.push('/login')} className="underline">Sign in</button> to view
+                </p>
+              </div>
+            ) : null}
+
           </div>
         </div>
+
       </div>
-      <BottomNav/>
+      {/* Menu unavailable toast */}
+      {menuToast && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl text-sm font-semibold shadow-lg"
+          style={{ background: '#152644', color: '#c9a84c' }}>
+          Menu unavailable
+        </div>
+      )}
+
+      <BottomNav />
     </main>
   )
 }
