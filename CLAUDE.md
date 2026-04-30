@@ -57,14 +57,21 @@ public/
   manifest.json         # PWA manifest (name, theme, icon)
 
 supabase/migrations/
-  20260406_club_feed_tee_sheet.sql   # feed_posts + tee_sheet tables, RLS, seed
-  20260406_tournaments.sql           # tournaments + entries + scores, seed
-  20260406_demo_refresh.sql          # Run before demo: reseeds tee sheet to today,
-                                     # fixes tournament scores + adds players
-  20260409_club_config.sql           # club_config table (course_id FK), LeBaron seed
-  20260409_chat.sql                  # messages table (realtime, authenticated-only)
-  20260409_channels.sql              # adds channel column to messages table
-  20260409_events.sql                # events table (member/hosting/tournament), RLS, LeBaron seed
+  20260406_club_feed_tee_sheet.sql    # feed_posts + tee_sheet tables, RLS, seed
+  20260406_tournaments.sql            # tournaments + entries + scores, seed
+  20260406_demo_refresh.sql           # Run before demo: reseeds tee sheet to today, fixes tournament scores + adds players
+  20260407_club_config.sql            # SUPERSEDED by 20260409_club_config.sql — skip
+  20260407_chat_gin.sql               # SUPERSEDED by 20260409_chat.sql + 20260409_gin.sql — skip
+  20260409_club_config.sql            # club_config table (course_id FK), LeBaron seed
+  20260409_chat.sql                   # messages table (realtime, authenticated-only)
+  20260409_channels.sql               # adds channel column + index to messages
+  20260409_events.sql                 # events table (member/hosting/tournament), RLS, LeBaron seed
+  20260409_gin.sql                    # ORPHAN: gin_requests table created, no UI consumes it — leave in place
+  20260410_schema_cleanup.sql         # updated_at columns, score_format/differential, perf indexes, soft-delete, not-null constraints
+  20260412_events_seed.sql            # real LeBaron Hills events (Cinco De Mayo, SEAL Foundation, Mass Amateur, etc.)
+  20260412_holes_gps_coords.sql       # GPS coordinates for all 18 LeBaron holes
+  20260412_profiles_is_admin.sql      # adds is_admin boolean default false to profiles
+  20260429_club_config_extensions.sql # tee_sheet_url, billing_url, staff_info_url, website_url, menu_pdf_path, nav_links
 
 middleware.ts           # Auth: only /club requires login; scorecard/rounds/GPS are open to all
 ```
@@ -173,7 +180,8 @@ GPS coordinates now live in the `holes` table (`front_lat/lng`, `center_lat/lng`
 - GPS hole diagram is abstract/generic — not shaped to actual LeBaron hole layouts
 - Tournament leaderboard removed — `/tournament` is now the Events page; leaderboard data still in `tournaments`/`tournament_entries`/`tournament_scores` tables but no longer surfaced in UI
 - Tee sheet deprioritized — no API integration path without club system access (CPS Golf). Keep in UI but do not invest further until a real API or webhook is available.
-- Multi-club: `club_config` table + `getClubConfig()` helper are in place; pages still use hardcoded LeBaron values — future work is wiring each page to the config
+- Multi-club: `club_config` table + `getClubConfig()` (server) + `useClubConfig()` (client hook, `lib/use-club-config.ts`) are in place; `/rounds` now wired to `useClubConfig()` — remaining pages (home, scorecard, GPS, profile, club, tournament) still use hardcoded LeBaron values; future work is wiring each page to the config
+- Schema rule for `club_config`: well-known universal links (`tee_sheet_url`, `billing_url`, `staff_info_url`, `website_url`, `menu_pdf_path`) get dedicated columns so they are typed and queryable; variable per-club marketing nav lives in `nav_links` jsonb
 
 ### Known Issues
 - Round detail page previously showed no hole data — fixed April 2026 (holes table missing RLS SELECT policy + hcp_index column name mismatch)
@@ -188,12 +196,14 @@ In Supabase dashboard → SQL Editor, run in order:
 4. `20260409_chat.sql` — messages table (realtime, authenticated-only)
 5. `20260409_channels.sql` — adds `channel` column + index to messages
 6. `20260409_events.sql` — events table + placeholder seed data
-7. `20260412_events_seed.sql` — real LeBaron Hills events (Cinco De Mayo Tournament, SEAL Foundation, Mass Amateur Qualifying, Mass Golf Member Day, NEPGA Junior Tour, Father Daughter Scotch); seeded April 2026
-8. `20260410_schema_cleanup.sql` — updated_at columns, score_format/differential, perf indexes, soft-delete, club_id stub, not-null constraints (run once)
-9. `20260412_profiles_is_admin.sql` — adds `is_admin boolean default false` to profiles
-10. **`20260406_demo_refresh.sql`** — run EVERY TIME before demo: reseeds tee sheet with today's date, fixes tournament scores, adds O'Brien + Connelly entries
+7. `20260410_schema_cleanup.sql` — updated_at columns, score_format/differential, perf indexes, soft-delete, club_id stub, not-null constraints (run once)
+8. `20260412_events_seed.sql` — real LeBaron Hills events (Cinco De Mayo Tournament, SEAL Foundation, Mass Amateur Qualifying, Mass Golf Member Day, NEPGA Junior Tour, Father Daughter Scotch); seeded April 2026
+9. `20260412_holes_gps_coords.sql` — GPS coordinates for all 18 LeBaron holes
+10. `20260412_profiles_is_admin.sql` — adds `is_admin boolean default false` to profiles
+11. `20260429_club_config_extensions.sql` — adds tee_sheet_url, billing_url, staff_info_url, website_url, menu_pdf_path, nav_links to club_config
+12. **`20260406_demo_refresh.sql`** — run EVERY TIME before demo: reseeds tee sheet with today's date, fixes tournament scores, adds O'Brien + Connelly entries
 
-> Note: `20260407_club_config.sql` and `20260407_chat_gin.sql` are superseded by the 20260409 files — skip them.
+> Note: `20260407_club_config.sql` and `20260407_chat_gin.sql` are superseded by the 20260409 files — skip them. `20260409_gin.sql` is an orphan (table exists but no UI uses it) — leave in place.
 
 ---
 
