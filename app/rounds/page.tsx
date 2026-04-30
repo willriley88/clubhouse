@@ -3,11 +3,12 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from '../components/BottomNav'
 import { supabase } from '../../lib/supabase'
+import { useClubConfig } from '../../lib/use-club-config'
 
 type LocalRound = {
   id: string
   played_at: string
-  course_name: string
+  course_name: string | null
   gross: number
   par_total: number
   holes_played: number
@@ -28,6 +29,7 @@ function scoreToPar(gross: number, parTotal: number): string {
 
 export default function RoundsPage() {
   const router = useRouter()
+  const config = useClubConfig()
   const [rounds, setRounds] = useState<LocalRound[]>([])
   const [loaded, setLoaded] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -58,7 +60,7 @@ export default function RoundsPage() {
                 ? (coursesRaw as { name: string }).name
                 : Array.isArray(coursesRaw) && coursesRaw.length > 0
                 ? (coursesRaw[0] as { name: string }).name
-                : 'LeBaron Hills CC'
+                : null
 
             const scoresArr = Array.isArray(r.scores) ? r.scores : []
             const holeScores = scoresArr.map((s) => {
@@ -191,7 +193,7 @@ export default function RoundsPage() {
                   {/* Course + date */}
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold truncate" style={{ color: '#152644' }}>
-                      {r.course_name}
+                      {r.course_name ?? config.club_name}
                     </p>
                     <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>
                       {formatDate(r.played_at)}
