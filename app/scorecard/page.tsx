@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from '../components/BottomNav'
 import { supabase } from '@/lib/supabase'
+import { useClubConfig } from '../components/ClubConfigProvider'
 
 // ── Course Data ──────────────────────────────────────────────────────────────
 const HOLES = [
@@ -71,6 +72,7 @@ function scoreClass(score: number, par: number) {
 
 export default function ScorecardPage() {
   const router = useRouter()
+  const config = useClubConfig()
   const [user,    setUser]    = useState<any>(null)
   const [players, setPlayers] = useState<Player[]>([
     { id: 0, name: 'Guest', handicap: null, avatarColor: AVATAR_COLORS[0], isUser: true }
@@ -232,7 +234,7 @@ export default function ScorecardPage() {
     const localRound = {
       id:          crypto.randomUUID(),
       played_at:   new Date().toISOString(),
-      course_name: 'LeBaron Hills CC',
+      course_name: config.club_name,
       gross:       total0,
       par_total:   HOLES.reduce((a, h) => a + h.par, 0),
       holes_played: holeScores.length,
@@ -291,9 +293,9 @@ export default function ScorecardPage() {
         <div className="flex justify-between items-start mb-1">
           <div>
             <p className="text-[10px] uppercase tracking-widest mb-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
-              {roundActive ? 'Round in Progress' : 'LeBaron Hills CC'}
+              {roundActive ? 'Round in Progress' : config.club_name}
             </p>
-            <h1 className="text-xl font-bold text-white">LeBaron Hills CC</h1>
+            <h1 className="text-xl font-bold text-white">{config.club_name}</h1>
             <p className="text-[11px] mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
               {teeData.label} Tees · Par 72 · {teeData.yds.reduce((a,v)=>a+v,0).toLocaleString()} yds · {teeData.rating}/{teeData.slope}
             </p>
@@ -668,7 +670,7 @@ export default function ScorecardPage() {
               onClick={async () => {
                 const vspar = shareGross - 72
                 const label = vspar === 0 ? 'E' : vspar > 0 ? `+${vspar}` : String(vspar)
-                const text = `Shot ${shareGross} (${label}) at LeBaron Hills CC via Clubhouse \uD83C\uDFC7`
+                const text = `Shot ${shareGross} (${label}) at ${config.club_name} via Clubhouse \uD83C\uDFC7`
                 if (navigator.share) {
                   try { await navigator.share({ text }) } catch {}
                 } else {

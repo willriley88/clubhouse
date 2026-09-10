@@ -2,6 +2,7 @@
 import { useState, useEffect, Fragment } from 'react'
 import { supabase } from '@/lib/supabase'
 import BottomNav from '../components/BottomNav'
+import { useClubConfig } from '../components/ClubConfigProvider'
 
 type ClubEvent = {
   id: string
@@ -101,6 +102,7 @@ function ChevronRight({ rotated }: { rotated: boolean }) {
 }
 
 export default function Events() {
+  const config = useClubConfig()
   const [tab,         setTab]         = useState<Tab>('calendar')
   const [events,      setEvents]      = useState<ClubEvent[]>([])
   const [loading,     setLoading]     = useState(true)
@@ -203,7 +205,7 @@ export default function Events() {
 
       {/* ── HEADER ── */}
       <div className="bg-[#152644] px-4 pt-[max(48px,env(safe-area-inset-top))] pb-4">
-        <p className="text-white/40 text-xs uppercase tracking-widest mb-1">LeBaron Hills CC</p>
+        <p className="text-white/40 text-xs uppercase tracking-widest mb-1">{config.club_name}</p>
         <h1 className="text-white text-2xl font-bold">Events</h1>
       </div>
 
@@ -488,7 +490,7 @@ export default function Events() {
         {tab === 'leaderboard' && (
           <div>
             <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#94a3b8' }}>
-              Season Leaderboard · LeBaron Hills CC
+              Season Leaderboard · {config.club_name}
             </p>
             <div className="bg-white rounded-2xl overflow-hidden">
               {loadingLb ? (

@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import BottomNav from '../components/BottomNav'
+import { useClubConfig } from '../components/ClubConfigProvider'
 
 type TeeSlot = {
   id: string
@@ -54,6 +55,7 @@ function avatarColor(initials: string): string {
 
 export default function Club() {
   const router = useRouter()
+  const config = useClubConfig()
   const [teeSheet,      setTeeSheet]      = useState<TeeSlot[]>([])
   const [user,          setUser]          = useState<any>(null)
   const [joiningId,     setJoiningId]     = useState<string | null>(null)
@@ -156,11 +158,17 @@ export default function Club() {
   }
 
   async function openMenu() {
-    // HEAD check first — if PDF is missing, show a toast instead of a blank tab
+    const pdfPath = config.menu_pdf_path
+    // HEAD check first — if PDF is missing or no path configured, show a toast
+    if (!pdfPath) {
+      setMenuToast(true)
+      setTimeout(() => setMenuToast(false), 3000)
+      return
+    }
     try {
-      const res = await fetch('/lebaron-menu.pdf', { method: 'HEAD' })
+      const res = await fetch(pdfPath, { method: 'HEAD' })
       if (res.ok) {
-        window.open('/lebaron-menu.pdf', '_blank')
+        window.open(pdfPath, '_blank')
       } else {
         setMenuToast(true)
         setTimeout(() => setMenuToast(false), 3000)
@@ -226,8 +234,14 @@ export default function Club() {
       {/* ── HEADER ── */}
       <div className="bg-[#152644] px-4 pt-[max(48px,env(safe-area-inset-top))] pb-4">
         <p className="text-white/40 text-xs uppercase tracking-widest mb-1">Members Only</p>
-        <h1 className="text-white text-2xl font-bold">LeBaron Hills CC</h1>
-        <p className="text-white/40 text-xs mt-1">Lakeville, MA · Par 72 · 6,803 yds</p>
+        <h1 className="text-white text-2xl font-bold">{config.club_name}</h1>
+        <p className="text-white/40 text-xs mt-1">
+          {[
+            config.location,
+            config.course_par ? `Par ${config.course_par}` : null,
+            config.course_yardage,
+          ].filter(Boolean).join(' · ')}
+        </p>
       </div>
 
       <div className="px-4 mt-4 space-y-4">
@@ -235,14 +249,16 @@ export default function Club() {
         {/* ── QUICK LINKS ── */}
         <div className="grid grid-cols-2 gap-3">
 
-          <button
-            onClick={() => window.open('https://lebaronhills.cps.golf/onlineresweb/search-teetime?TeeOffTimeMin=0&TeeOffTimeMax=23.999722222222225', '_blank')}
-            className="bg-white rounded-2xl p-4 text-left"
-          >
-            <div className="text-2xl mb-2">🕐</div>
-            <div className="text-sm font-semibold text-[#152644]">Tee Times</div>
-            <div className="text-xs text-gray-400 mt-0.5">Book online</div>
-          </button>
+          {config.tee_sheet_url && (
+            <button
+              onClick={() => window.open(config.tee_sheet_url!, '_blank')}
+              className="bg-white rounded-2xl p-4 text-left"
+            >
+              <div className="text-2xl mb-2">🕐</div>
+              <div className="text-sm font-semibold text-[#152644]">Tee Times</div>
+              <div className="text-xs text-gray-400 mt-0.5">Book online</div>
+            </button>
+          )}
 
           {/* Menu — HEAD-checks PDF first, shows toast if missing */}
           <div className="bg-white rounded-2xl p-4 relative">
@@ -254,8 +270,9 @@ export default function Club() {
               <div className="text-sm font-semibold text-[#152644]">Menu</div>
               <div className="text-xs text-gray-400 mt-0.5">Sunset Grille</div>
             </button>
+            {config.phone && (
             <button
-              onClick={e => { e.stopPropagation(); window.location.href = 'tel:5089235712' }}
+              onClick={e => { e.stopPropagation(); window.location.href = `tel:${config.phone}` }}
               className="absolute bottom-3 right-3 flex items-center justify-center"
               aria-label="Call the club"
             >
@@ -264,25 +281,30 @@ export default function Club() {
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.32h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.13 6.13l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
               </svg>
             </button>
+            )}
           </div>
 
-          <button
-            onClick={() => window.open('https://secure.east.prophetservices.com/LebaronHillsBilling/', '_blank')}
-            className="bg-white rounded-2xl p-4 text-left"
-          >
-            <div className="text-2xl mb-2">📄</div>
-            <div className="text-sm font-semibold text-[#152644]">Member Statements</div>
-            <div className="text-xs text-gray-400 mt-0.5">View billing</div>
-          </button>
+          {config.billing_url && (
+            <button
+              onClick={() => window.open(config.billing_url!, '_blank')}
+              className="bg-white rounded-2xl p-4 text-left"
+            >
+              <div className="text-2xl mb-2">📄</div>
+              <div className="text-sm font-semibold text-[#152644]">Member Statements</div>
+              <div className="text-xs text-gray-400 mt-0.5">View billing</div>
+            </button>
+          )}
 
+          {config.staff_info_url && (
           <button
-            onClick={() => window.open('https://www.lebaronhills.com/about-us', '_blank')}
+            onClick={() => window.open(config.staff_info_url!, '_blank')}
             className="bg-white rounded-2xl p-4 text-left"
           >
             <div className="text-2xl mb-2">👤</div>
             <div className="text-sm font-semibold text-[#152644]">Staff Info</div>
             <div className="text-xs text-gray-400 mt-0.5">Contact staff</div>
           </button>
+          )}
 
         </div>
 

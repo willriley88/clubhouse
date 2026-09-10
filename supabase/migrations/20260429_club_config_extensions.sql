@@ -1,21 +1,44 @@
--- Extends club_config with universal link columns and a nav_links jsonb column.
--- Schema rule: well-known universal links get dedicated columns so queries are
--- typed and indexable; variable per-club marketing nav lives in nav_links jsonb.
-ALTER TABLE club_config
-  ADD COLUMN IF NOT EXISTS tee_sheet_url  text,
-  ADD COLUMN IF NOT EXISTS billing_url    text,
-  ADD COLUMN IF NOT EXISTS staff_info_url text,
-  ADD COLUMN IF NOT EXISTS website_url    text,
-  ADD COLUMN IF NOT EXISTS menu_pdf_path  text,
-  ADD COLUMN IF NOT EXISTS nav_links      jsonb DEFAULT '[]'::jsonb;
+-- ============================================================
+-- Club Config extensions — external links, course metadata, nav links
+-- Adds the columns multi-club deployment needs so pages can stop
+-- hardcoding LeBaron strings/URLs/PDF paths.
+-- Schema rule: well-known universal links get dedicated columns so
+-- queries are typed and indexable; variable per-club marketing nav
+-- lives in nav_links jsonb.
+-- Idempotent: safe to re-run.
+-- ============================================================
 
--- Seed LeBaron Hills CC with known values
-UPDATE club_config
-SET
-  tee_sheet_url  = 'https://www.cpsgolf.com/cps-golf/pub/teesheet/index.html',
-  billing_url    = 'https://prophetsystems.com',
-  staff_info_url = 'https://www.lebaronhills.com/about-us',
-  website_url    = 'https://www.lebaronhills.com',
-  menu_pdf_path  = '/lebaron-menu.pdf',
-  nav_links      = '[]'::jsonb
-WHERE course_id = 'b0000000-0000-0000-0000-000000000001';
+alter table club_config
+  add column if not exists club_name_long  text,
+  add column if not exists phone           text,
+  add column if not exists website_url     text,
+  add column if not exists tee_sheet_url   text,
+  add column if not exists billing_url     text,
+  add column if not exists staff_info_url  text,
+  add column if not exists menu_pdf_path   text,
+  add column if not exists course_par      integer,
+  add column if not exists course_yardage  text,
+  add column if not exists nav_links       jsonb not null default '[]'::jsonb;
+
+-- Backfill LeBaron Hills CC with real values
+update club_config
+set
+  club_name_long  = 'LeBaron Hills Country Club',
+  phone           = '5089235712',
+  website_url     = 'https://www.lebaronhills.com',
+  tee_sheet_url   = 'https://lebaronhills.cps.golf/onlineresweb/search-teetime?TeeOffTimeMin=0&TeeOffTimeMax=23.999722222222225',
+  billing_url     = 'https://secure.east.prophetservices.com/LebaronHillsBilling/',
+  staff_info_url  = 'https://www.lebaronhills.com/about-us',
+  menu_pdf_path   = '/lebaron-menu.pdf',
+  course_par      = 72,
+  course_yardage  = '6,803 yds',
+  nav_links       = '[
+    {"label":"Membership Info","href":"https://www.lebaronhills.com/membership"},
+    {"label":"Golf Amenities","href":"https://www.lebaronhills.com/golf/golf-amenities"},
+    {"label":"Golf Outings","href":"https://www.lebaronhills.com/golf/golf-outings"},
+    {"label":"Course Layout","href":"https://www.lebaronhills.com/golf/course-layout"},
+    {"label":"Course Gallery","href":"https://www.lebaronhills.com/golf/course-gallery"},
+    {"label":"Golf Personnel","href":"https://www.lebaronhills.com/golf/golf-personnel"},
+    {"label":"Contact Info","href":"https://www.lebaronhills.com/contact"}
+  ]'::jsonb
+where club_name = 'LeBaron Hills CC';

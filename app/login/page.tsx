@@ -2,9 +2,11 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { useClubConfig } from '../components/ClubConfigProvider'
 
 export default function LoginPage() {
   const router = useRouter()
+  const config = useClubConfig()
   const [email,   setEmail]   = useState('')
   const [code,    setCode]    = useState('')
   const [step,    setStep]    = useState<1 | 2>(1)
@@ -86,7 +88,7 @@ export default function LoginPage() {
 
         {/* Branding */}
         <h1 className="text-2xl font-bold mb-1" style={{ color: '#152644' }}>Clubhouse</h1>
-        <p className="text-sm text-gray-500 mb-6">LeBaron Hills CC</p>
+        <p className="text-sm text-gray-500 mb-6">{config.club_name}</p>
 
         {step === 1 ? (
           <>

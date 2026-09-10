@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from '../components/BottomNav'
 import { supabase } from '../../lib/supabase'
-import { useClubConfig } from '../../lib/use-club-config'
+import { useClubConfig } from '../components/ClubConfigProvider'
 
 type LocalRound = {
   id: string
@@ -60,7 +60,7 @@ export default function RoundsPage() {
                 ? (coursesRaw as { name: string }).name
                 : Array.isArray(coursesRaw) && coursesRaw.length > 0
                 ? (coursesRaw[0] as { name: string }).name
-                : null
+                : config.club_name
 
             const scoresArr = Array.isArray(r.scores) ? r.scores : []
             const holeScores = scoresArr.map((s) => {
