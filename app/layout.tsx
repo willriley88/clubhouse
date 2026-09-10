@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import { Geist } from "next/font/google"
 import "./globals.css"
 import { getClubConfig } from "@/lib/club-config"
+import { ClubConfigProvider } from "./components/ClubConfigProvider"
 
 const geist = Geist({ subsets: ["latin"] })
 
@@ -20,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: config.club_name,
     description: `${config.club_name} Member App`,
-    manifest: "/manifest.json",
+    manifest: "/manifest.webmanifest",
     appleWebApp: {
       capable: true,
       statusBarStyle: "black-translucent",
@@ -29,18 +30,21 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const config = await getClubConfig()
   return (
     <html lang="en">
       <head>
-        <link rel="apple-touch-icon" href="/lebaron-logo-transparent-gold.png" />
+        <link rel="apple-touch-icon" href={config.logo_path} />
       </head>
       <body className={geist.className}>
-        {children}
+        <ClubConfigProvider config={config}>
+          {children}
+        </ClubConfigProvider>
       </body>
     </html>
   )

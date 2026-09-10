@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
 import BottomNav from '../components/BottomNav'
+import { useClubConfig } from '../components/ClubConfigProvider'
 
 const HOLES = [
   { hole: 1, front: { lat: 41.867697, lng: -70.971383 }, center: { lat: 41.867797, lng: -70.971508 }, back: { lat: 41.867936, lng: -70.971600 } },
@@ -40,6 +41,7 @@ type GPSState =
   | { status: 'active'; lat: number; lng: number; accuracy: number }
 
 export default function GPSPage() {
+  const config = useClubConfig()
   const [selectedHole, setSelectedHole] = useState(1)
   const [gps, setGps] = useState<GPSState>({ status: 'idle' })
   const [watchId, setWatchId] = useState<number | null>(null)
@@ -76,7 +78,7 @@ export default function GPSPage() {
     <main className="min-h-screen pb-24 flex flex-col" style={{ background: '#f1f5f9' }}>
       <div className="px-4 pt-12 pb-6" style={{ background: '#152644' }}>
         <h1 className="text-white text-2xl font-bold">GPS</h1>
-        <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>LeBaron Hills CC</p>
+        <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>{config.club_name}</p>
       </div>
 
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-sm overflow-hidden">

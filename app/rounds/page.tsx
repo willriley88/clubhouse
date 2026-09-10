@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from '../components/BottomNav'
 import { supabase } from '../../lib/supabase'
+import { useClubConfig } from '../components/ClubConfigProvider'
 
 type LocalRound = {
   id: string
@@ -28,6 +29,7 @@ function scoreToPar(gross: number, parTotal: number): string {
 
 export default function RoundsPage() {
   const router = useRouter()
+  const config = useClubConfig()
   const [rounds, setRounds] = useState<LocalRound[]>([])
   const [loaded, setLoaded] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -58,7 +60,7 @@ export default function RoundsPage() {
                 ? (coursesRaw as { name: string }).name
                 : Array.isArray(coursesRaw) && coursesRaw.length > 0
                 ? (coursesRaw[0] as { name: string }).name
-                : 'LeBaron Hills CC'
+                : config.club_name
 
             const scoresArr = Array.isArray(r.scores) ? r.scores : []
             const holeScores = scoresArr.map((s) => {

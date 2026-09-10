@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from './components/BottomNav'
 import { supabase } from '@/lib/supabase'
+import { useClubConfig } from './components/ClubConfigProvider'
 
 type AnnouncementPost = {
   id: string
@@ -49,6 +50,7 @@ function formatEventDate(start: string, end: string | null): string {
 
 export default function HomePage() {
   const router = useRouter()
+  const config = useClubConfig()
   const [user,         setUser]         = useState<any>(null)
   const [profile,      setProfile]      = useState<any>(null)
   const [lastRound,    setLastRound]    = useState<Round | null>(null)
@@ -174,7 +176,7 @@ export default function HomePage() {
           </button>
 
           {/* Club name — Playfair italic */}
-          <img src="/lebaron-logo-transparent-gold.png" alt="LeBaron Hills" className="h-40 object-contain" />          {/* Avatar */}
+          <img src={config.logo_path} alt={config.club_name} className="h-40 object-contain" />          {/* Avatar */}
           <button
             onClick={() => user ? router.push('/profile') : router.push('/login')}
             className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2"
@@ -216,7 +218,7 @@ export default function HomePage() {
           </div>
 
           <p className="text-xs mb-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
-            Member · LeBaron Hills Country Club
+            Member · {config.club_name_long ?? config.club_name}
           </p>
 
           {/* Stats row */}
@@ -270,7 +272,7 @@ export default function HomePage() {
             {/* Card header */}
             <div className="px-4 py-3 border-b border-slate-100 flex justify-between items-center">
               <div>
-                <p className="text-sm font-bold text-slate-700">LeBaron Hills CC</p>
+                <p className="text-sm font-bold text-slate-700">{config.club_name}</p>
                 <p className="text-xs text-slate-400">
                   {lastRound
                     ? new Date(lastRound.played_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
@@ -457,7 +459,7 @@ export default function HomePage() {
       >
         {/* Logo */}
         <div className="px-5 pt-12 pb-4">
-          <img src="/lebaron-logo-transparent-gold.png" alt="LeBaron Hills" className="h-20 object-contain" />
+          <img src={config.logo_path} alt={config.club_name} className="h-20 object-contain" />
         </div>
 
         {/* Divider */}
@@ -491,27 +493,21 @@ export default function HomePage() {
         {/* Divider */}
         <div style={{ height: 1, background: 'rgba(255,255,255,0.1)', margin: '0 20px' }} />
 
-        {/* Club & course links — always visible */}
-        <nav className="py-2">
-          {[
-            { label: 'Membership Info',  href: 'https://www.lebaronhills.com/membership'          },
-            { label: 'Golf Amenities',   href: 'https://www.lebaronhills.com/golf/golf-amenities'  },
-            { label: 'Golf Outings',     href: 'https://www.lebaronhills.com/golf/golf-outings'    },
-            { label: 'Course Layout',    href: 'https://www.lebaronhills.com/golf/course-layout'   },
-            { label: 'Course Gallery',   href: 'https://www.lebaronhills.com/golf/course-gallery'  },
-            { label: 'Golf Personnel',   href: 'https://www.lebaronhills.com/golf/golf-personnel'  },
-            { label: 'Contact Info',     href: 'https://www.lebaronhills.com/contact'               },
-          ].map(item => (
-            <button
-              key={item.label}
-              onClick={() => { setDrawerOpen(false); window.open(item.href, '_blank') }}
-              className="w-full text-left px-5 py-3 text-sm font-medium"
-              style={{ color: '#c9a84c' }}
-            >
-              {item.label}
-            </button>
-          ))}
-        </nav>
+        {/* Club & course links — sourced from club_config.nav_links */}
+        {config.nav_links.length > 0 && (
+          <nav className="py-2">
+            {config.nav_links.map(item => (
+              <button
+                key={item.label}
+                onClick={() => { setDrawerOpen(false); window.open(item.href, '_blank') }}
+                className="w-full text-left px-5 py-3 text-sm font-medium"
+                style={{ color: '#c9a84c' }}
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
+        )}
 
         {/* Divider + member-only links */}
         {user && (

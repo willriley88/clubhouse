@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import BottomNav from '../components/BottomNav'
+import { useClubConfig } from '../components/ClubConfigProvider'
 
 type Profile = {
   full_name: string | null
@@ -51,6 +52,7 @@ function scoreToParColor(gross: number, parTotal: number): string {
 
 export default function ProfilePage() {
   const router = useRouter()
+  const config = useClubConfig()
   const [profile,         setProfile]         = useState<Profile | null>(null)
   const [rounds,          setRounds]          = useState<RoundSummary[]>([])
   const [allRounds,       setAllRounds]       = useState<RoundSummary[]>([])
@@ -122,7 +124,7 @@ export default function ProfilePage() {
         return {
           id:           r.id,
           played_at:    r.played_at,
-          course_name:  r.courses?.[0]?.name ?? 'LeBaron Hills CC',
+          course_name:  r.courses?.[0]?.name ?? config.club_name,
           gross,
           par_total,
           holes_played: scores.length,
@@ -208,7 +210,7 @@ export default function ProfilePage() {
               {displayName}
             </h1>
             <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
-              Member · LeBaron Hills Country Club
+              Member · {config.club_name_long ?? config.club_name}
             </p>
           </div>
         </div>
