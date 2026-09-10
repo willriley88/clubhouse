@@ -245,3 +245,14 @@ npm run lint   # eslint check
 - Commit after each task; do not batch multiple tasks into one commit
 - No redesigns beyond what is specified — do not add features, refactor adjacent code, or "improve" things not mentioned in the task
 - `public/lebaron-menu.pdf` must exist — if missing the menu button shows a toast instead of a broken link
+
+---
+
+## Agent Context
+
+- Hermes Agent is the orchestration layer running via Discord (JARVIS bot)
+- Mission Control dashboard is running at localhost:3000
+- Claude Code is the primary coding agent for this project
+- Workspace path: /mnt/c/Users/WillR/OneDrive/Projects/clubhouse
+- All agents should read CLAUDE.md before making changes
+- Do not commit changes without explicit approval
