@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server'
 
 const PROTECTED = ['/club']
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const response = NextResponse.next({ request })
 
   const supabase = createServerClient(
