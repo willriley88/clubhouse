@@ -42,8 +42,6 @@ export default function LoginPage() {
     if (code.length !== 6) return
     setLoading(true)
     setError(null)
-    // Log exactly what's being sent so we can diagnose any mismatch server-side
-    console.log('verifyOtp attempt:', { email, token: code.trim() })
     const { error } = await supabase.auth.verifyOtp({
       email,
       token: code.trim(),
