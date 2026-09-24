@@ -23,4 +23,5 @@ set
     "green": {"rating": 69.8, "slope": 124},
     "gold":  {"rating": 68.1, "slope": 118}
   }'::jsonb
-where course_id = 'b0000000-0000-0000-0000-000000000001';
+-- Match on club_name: older DBs still have the pre-rename club_id column
+where club_name = 'LeBaron Hills CC';
