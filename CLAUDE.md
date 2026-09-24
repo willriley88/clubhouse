@@ -73,6 +73,7 @@ supabase/migrations/
   20260412_holes_gps_coords.sql       # adds front/center/back lat/lng cols to holes; LeBaron coords seeded
   20260412_profiles_is_admin.sql      # adds is_admin boolean default false to profiles
   20260429_club_config_extensions.sql # club_name_long, phone, website_url, tee_sheet_url, billing_url, staff_info_url, menu_pdf_path, course_par, course_yardage, nav_links
+  20260924_club_config_ratings.sql    # course_rating, course_slope, tee_ratings (jsonb) for WHS math
 
 middleware.ts           # Auth: only /club requires login; scorecard/rounds/GPS are open to all
 ```
@@ -136,7 +137,7 @@ The splash screen only shows on first visit (sessionStorage). If BottomNav is in
 
 **tournament_scores** — `id`, `entry_id`, `hole_number` 1–18, `strokes`
 
-**club_config** — `id`, `course_id` uuid (FK→courses, unique), `club_name` text, `club_name_long` text, `primary_color`, `secondary_color`, `logo_path`, `location`, `phone`, `website_url`, `tee_sheet_url`, `billing_url`, `staff_info_url`, `menu_pdf_path`, `course_par` integer, `course_yardage` text, `nav_links` jsonb (default `'[]'`, array of `{label, href}` for the home drawer's club/course nav)
+**club_config** — `id`, `course_id` uuid (FK→courses, unique), `club_name` text, `club_name_long` text, `primary_color`, `secondary_color`, `logo_path`, `location`, `phone`, `website_url`, `tee_sheet_url`, `billing_url`, `staff_info_url`, `menu_pdf_path`, `course_par` integer, `course_yardage` text, `course_rating` numeric (default-tee WHS rating), `course_slope` integer, `tee_ratings` jsonb (default `'{}'`, `{teeId: {rating, slope}}` — scorecard per-tee differentials), `nav_links` jsonb (default `'[]'`, array of `{label, href}` for the home drawer's club/course nav)
 
 **messages** — `id`, `profile_id` uuid (FK→auth.users), `author_name`, `author_initials`, `message` text, `channel` text (default `'general'`), `created_at`; realtime-enabled; authenticated read/insert; indexed on `channel`
 
@@ -184,7 +185,7 @@ GPS coordinates now live in the `holes` table (`front_lat/lng`, `center_lat/lng`
 - Tee sheet deprioritized — no API integration path without club system access (CPS Golf). Keep in UI but do not invest further until a real API or webhook is available.
 - Multi-club: `club_config` + `getClubConfig()` (server) + `useClubConfig()` (via `app/components/ClubConfigProvider.tsx`) are in place; all pages wired to config — see Multi-Club Architecture section
 - Schema rule for `club_config`: well-known universal links (`tee_sheet_url`, `billing_url`, `staff_info_url`, `website_url`, `menu_pdf_path`) get dedicated columns so they are typed and queryable; variable per-club marketing nav lives in `nav_links` jsonb
-- Profile + scorecard hardcode LeBaron's WHS rating (`73.4`) and slope (`136`) for handicap/differential calc — should be moved to `club_config` (as `course_rating numeric`, `course_slope int`) before adding a second club
+- WHS rating/slope now come from `club_config` (`course_rating`/`course_slope` in profile, `tee_ratings` per tee in scorecard); scorecard tee yardages + labels still live in the local `TEE_DATA` table
 
 ### Known Issues
 - Round detail page previously showed no hole data — fixed April 2026 (holes table missing RLS SELECT policy + hcp_index column name mismatch)
@@ -204,7 +205,8 @@ In Supabase dashboard → SQL Editor, run in order:
 9. `20260412_holes_gps_coords.sql` — adds front/center/back lat/lng cols to holes; LeBaron 18-hole GPS seeded
 10. `20260412_profiles_is_admin.sql` — adds `is_admin boolean default false` to profiles
 11. `20260429_club_config_extensions.sql` — adds club_name_long, phone, website_url, tee_sheet_url, billing_url, staff_info_url, menu_pdf_path, course_par, course_yardage, nav_links (jsonb) to club_config; backfills LeBaron values
-12. **`20260406_demo_refresh.sql`** — run EVERY TIME before demo: reseeds tee sheet with today's date, fixes tournament scores, adds O'Brien + Connelly entries
+12. `20260924_club_config_ratings.sql` — adds course_rating, course_slope, tee_ratings to club_config; backfills LeBaron (Blue 73.4/136 default)
+13. **`20260406_demo_refresh.sql`** — run EVERY TIME before demo: reseeds tee sheet with today's date, fixes tournament scores, adds O'Brien + Connelly entries
 
 > Note: `20260407_club_config.sql` and `20260407_chat_gin.sql` are superseded by the 20260409 files — skip them. `20260409_gin.sql` is an orphan (gin_requests table, no UI yet) — leave in place.
 
@@ -217,12 +219,10 @@ In Supabase dashboard → SQL Editor, run in order:
 - All pages with previously-hardcoded LeBaron strings now read from `useClubConfig()` (home, club, scorecard, profile, login, gps, tournament, rounds).
 - **External links schema**: well-known links every club has (`tee_sheet_url`, `billing_url`, `staff_info_url`, `website_url`, `menu_pdf_path`) are first-class columns on `club_config` so consuming pages can null-check and conditionally render. The variable-length list of marketing/info links shown in the home drawer lives in `nav_links` (jsonb array of `{label, href}`) — clubs add as many as they want without schema changes. Don't promote `nav_links` items to columns unless they become universal across clubs.
 - To add a second club: insert a row into `courses` and a matching row into `club_config` with all branding/URLs/nav_links populated. Then route subdomain → `course_id` in middleware (not yet built).
-- **Not yet config-driven**: WHS rating/slope (still hardcoded in profile + scorecard); GPS coordinates (still hardcoded in `app/gps/page.tsx` despite the `holes` table existing).
+- **Not yet config-driven**: scorecard tee yardages/labels (`TEE_DATA`); GPS coordinates (still hardcoded in `app/gps/page.tsx` despite the `holes` table existing).
 
 ## Immediate Priorities
-1. Replace `public/lebaron-menu.pdf` placeholder with real PDF (copy from `~/lebaron-menu-4/9.pdf`)
-2. Move course rating + slope into `club_config`; refactor handicap math in profile + scorecard to read them
-3. Refactor `app/gps/page.tsx` to fetch hole coordinates from the `holes` table (the seed migration is already in place)
+1. Refactor `app/gps/page.tsx` to fetch hole coordinates from the `holes` table (the seed migration is already in place)
 
 ## Longer-Term
 - Beta test with bag room staff

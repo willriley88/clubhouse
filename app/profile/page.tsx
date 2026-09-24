@@ -53,6 +53,7 @@ function scoreToParColor(gross: number, parTotal: number): string {
 export default function ProfilePage() {
   const router = useRouter()
   const config = useClubConfig()
+  const { course_rating, course_slope } = config
   const [profile,         setProfile]         = useState<Profile | null>(null)
   const [rounds,          setRounds]          = useState<RoundSummary[]>([])
   const [allRounds,       setAllRounds]       = useState<RoundSummary[]>([])
@@ -139,7 +140,7 @@ export default function ProfilePage() {
       if (rc >= 6) {
         const complete = summaries.filter(r => r.holes_played === 18 && r.gross > 0 && r.par_total > 0)
         if (complete.length >= 6) {
-          const diffs = complete.map(r => ((r.gross - 73.4) * 113) / 136).sort((a, b) => a - b)
+          const diffs = complete.map(r => ((r.gross - course_rating) * 113) / course_slope).sort((a, b) => a - b)
           const lowest6 = diffs.slice(0, 6)
           const avg = lowest6.reduce((a: number, v) => a + v, 0) / 6
           const hcp = Math.round(avg * 0.96 * 10) / 10
@@ -153,7 +154,7 @@ export default function ProfilePage() {
     }
 
     load()
-  }, [router])
+  }, [router, course_rating, course_slope])
 
   const bestRound = rounds.length > 0
     ? rounds.reduce((best, r) => r.gross > 0 && r.gross < best.gross ? r : best, rounds[0])
@@ -172,7 +173,7 @@ export default function ProfilePage() {
   async function recalcHandicap() {
     const complete = allRounds.filter(r => r.holes_played === 18 && r.gross > 0 && r.par_total > 0)
     if (complete.length < 6 || !userId) return
-    const diffs = complete.map(r => ((r.gross - 73.4) * 113) / 136).sort((a, b) => a - b)
+    const diffs = complete.map(r => ((r.gross - course_rating) * 113) / course_slope).sort((a, b) => a - b)
     const lowest6 = diffs.slice(0, 6)
     const avg = lowest6.reduce((a: number, v) => a + v, 0) / 6
     const hcp = Math.round(avg * 0.96 * 10) / 10
@@ -250,7 +251,7 @@ export default function ProfilePage() {
         {!loading && rounds.filter(r => r.gross > 0 && r.par_total > 0).length >= 2 && (() => {
           // Reverse to chronological order (oldest left), compute WHS differentials
           const completed = rounds.filter(r => r.gross > 0 && r.par_total > 0).slice().reverse()
-          const diffs = completed.map(r => ((r.gross - 73.4) * 113) / 136)
+          const diffs = completed.map(r => ((r.gross - course_rating) * 113) / course_slope)
           const min = Math.min(...diffs)
           const max = Math.max(...diffs)
           const range = max - min || 1
