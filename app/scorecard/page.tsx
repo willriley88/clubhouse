@@ -146,7 +146,9 @@ export default function ScorecardPage() {
     if (scores[0].some(s => s !== null)) setRoundActive(true)
   }, [scores])
 
-  const teeData = TEE_DATA[tee]
+  // Rating/slope come from club_config so differentials stay correct per club; yardages still local
+  const teeRating = config.tee_ratings[tee]
+  const teeData = teeRating ? { ...TEE_DATA[tee], ...teeRating } : TEE_DATA[tee]
   const filled  = scores[0].filter(s => s !== null).length
   const total0  = scores[0].reduce((a: number, v) => a + (v ?? 0), 0)
   const parSoFar = HOLES.slice(0, filled).reduce((a, h) => a + h.par, 0)
