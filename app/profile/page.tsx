@@ -45,7 +45,7 @@ function scoreToPar(gross: number, parTotal: number): string {
 
 function scoreToParColor(gross: number, parTotal: number): string {
   const diff = gross - parTotal
-  if (diff < 0) return '#c9a84c'
+  if (diff < 0) return 'var(--club-accent)'
   if (diff === 0) return '#15803d'
   return '#475569'
 }
@@ -184,7 +184,7 @@ export default function ProfilePage() {
     <main className="min-h-screen pb-[max(96px,env(safe-area-inset-bottom))]" style={{ background: '#f1f5f9' }}>
 
       {/* Header */}
-      <div className="px-4 pt-[max(48px,env(safe-area-inset-top))] pb-6" style={{ background: '#152644' }}>
+      <div className="px-4 pt-[max(48px,env(safe-area-inset-top))] pb-6" style={{ background: 'var(--club-primary)' }}>
         <button
           onClick={() => router.push('/')}
           className="flex items-center gap-1 mb-5"
@@ -201,7 +201,7 @@ export default function ProfilePage() {
         <div className="flex items-center gap-4">
           <div
             className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold flex-shrink-0"
-            style={{ background: '#c9a84c', color: '#152644' }}
+            style={{ background: 'var(--club-accent)', color: 'var(--club-on-accent)' }}
           >
             {displayName.charAt(0).toUpperCase()}
           </div>
@@ -218,7 +218,7 @@ export default function ProfilePage() {
         {/* Stats row */}
         <div className="flex gap-6 mt-5">
           <div>
-            <div className="text-2xl font-bold" style={{ color: '#c9a84c', fontFamily: 'Georgia, serif' }}>
+            <div className="text-2xl font-bold" style={{ color: 'var(--club-accent)', fontFamily: 'Georgia, serif' }}>
               {profile?.handicap ?? '—'}
             </div>
             <div className="text-[10px] uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>
@@ -273,17 +273,17 @@ export default function ProfilePage() {
               <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: 40 }}>
                 <defs>
                   <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#c9a84c" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="#c9a84c" stopOpacity="0" />
+                    <stop offset="0%" stopColor="var(--club-accent)" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="var(--club-accent)" stopOpacity="0" />
                   </linearGradient>
                 </defs>
                 {/* Gradient fill under the line */}
                 <path d={area} fill="url(#sparkGrad)" />
                 {/* The line itself */}
-                <polyline points={points} fill="none" stroke="#c9a84c" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+ <polyline style={{ stroke: 'var(--club-accent)' }} points={points} fill="none" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
                 {/* Dots at each data point */}
                 {diffs.map((v, i) => (
-                  <circle key={i} cx={x(i)} cy={y(v)} r="3" fill="#c9a84c" />
+ <circle style={{ fill: 'var(--club-accent)' }} key={i} cx={x(i)} cy={y(v)} r="3" />
                 ))}
               </svg>
               <div className="flex justify-between mt-1">
@@ -309,24 +309,24 @@ export default function ProfilePage() {
                     value={handicapInput}
                     onChange={e => setHandicapInput(e.target.value)}
                     className="flex-1 border rounded-xl px-3 py-2 text-sm outline-none"
-                    style={{ borderColor: '#152644', color: '#152644' }}
+                    style={{ borderColor: 'var(--club-primary)', color: 'var(--club-primary)' }}
                     autoFocus
                   />
                   <button onClick={saveManualHandicap} disabled={savingHandicap}
                     className="px-4 py-2 rounded-xl text-sm font-bold"
-                    style={{ background: '#152644', color: '#c9a84c' }}>
+                    style={{ background: 'var(--club-primary)', color: 'var(--club-accent)' }}>
                     {savingHandicap ? '…' : 'Save'}
                   </button>
                   <button onClick={() => setEditingHandicap(false)} className="text-slate-400 text-sm">Cancel</button>
                 </div>
               ) : (
                 <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold" style={{ color: profile?.handicap != null ? '#c9a84c' : '#94a3b8', fontFamily: 'Georgia, serif' }}>
+                  <span className="text-2xl font-bold" style={{ color: profile?.handicap != null ? 'var(--club-accent)' : '#94a3b8', fontFamily: 'Georgia, serif' }}>
                     {profile?.handicap ?? '—'}
                   </span>
                   <button onClick={() => setEditingHandicap(true)}
                     className="text-xs font-semibold px-3 py-1.5 rounded-xl"
-                    style={{ background: '#f1f5f9', color: '#152644' }}>
+                    style={{ background: '#f1f5f9', color: 'var(--club-primary)' }}>
                     Enter Index
                   </button>
                 </div>
@@ -342,7 +342,7 @@ export default function ProfilePage() {
             <div className="bg-white rounded-2xl shadow-sm px-4 py-4">
               <p className="text-[10px] uppercase tracking-widest mb-2" style={{ color: '#94a3b8' }}>Handicap Index</p>
               <div className="flex items-center justify-between">
-                <span className="text-2xl font-bold" style={{ color: profile?.handicap != null ? '#c9a84c' : '#94a3b8', fontFamily: 'Georgia, serif' }}>
+                <span className="text-2xl font-bold" style={{ color: profile?.handicap != null ? 'var(--club-accent)' : '#94a3b8', fontFamily: 'Georgia, serif' }}>
                   {profile?.handicap ?? '—'}
                 </span>
               </div>
@@ -359,11 +359,11 @@ export default function ProfilePage() {
                 <p className="text-[10px] uppercase tracking-widest" style={{ color: '#94a3b8' }}>Handicap Index</p>
                 <button onClick={recalcHandicap}
                   className="text-[10px] font-semibold px-2.5 py-1 rounded-lg"
-                  style={{ background: '#f1f5f9', color: '#152644' }}>
+                  style={{ background: '#f1f5f9', color: 'var(--club-primary)' }}>
                   Recalculate
                 </button>
               </div>
-              <span className="text-2xl font-bold" style={{ color: '#c9a84c', fontFamily: 'Georgia, serif' }}>
+              <span className="text-2xl font-bold" style={{ color: 'var(--club-accent)', fontFamily: 'Georgia, serif' }}>
                 {profile?.handicap ?? '—'}
               </span>
               <p className="text-xs mt-1" style={{ color: '#94a3b8' }}>
@@ -383,14 +383,14 @@ export default function ProfilePage() {
 
         {!loading && rounds.length === 0 && (
           <div className="bg-white rounded-2xl px-4 py-10 text-center shadow-sm">
-            <p className="text-sm font-semibold mb-1" style={{ color: '#152644' }}>No rounds yet</p>
+            <p className="text-sm font-semibold mb-1" style={{ color: 'var(--club-primary)' }}>No rounds yet</p>
             <p className="text-xs mb-4" style={{ color: '#94a3b8' }}>
               Complete a round on the scorecard to see your history
             </p>
             <button
               onClick={() => router.push('/scorecard')}
               className="px-5 py-2 rounded-xl text-sm font-bold"
-              style={{ background: '#152644', color: '#c9a84c' }}
+              style={{ background: 'var(--club-primary)', color: 'var(--club-accent)' }}
             >
               Start a Round
             </button>
@@ -407,7 +407,7 @@ export default function ProfilePage() {
                   className="w-14 h-14 rounded-xl flex flex-col items-center justify-center flex-shrink-0"
                   style={{ background: '#f8fafc', border: '1px solid #e2e8f0' }}
                 >
-                  <span className="text-2xl font-bold leading-none" style={{ color: '#152644' }}>
+                  <span className="text-2xl font-bold leading-none" style={{ color: 'var(--club-primary)' }}>
                     {r.gross || '—'}
                   </span>
                   <span className="text-[9px] uppercase tracking-widest mt-0.5" style={{ color: '#94a3b8' }}>
@@ -415,7 +415,7 @@ export default function ProfilePage() {
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold truncate" style={{ color: '#152644' }}>
+                  <p className="text-sm font-bold truncate" style={{ color: 'var(--club-primary)' }}>
                     {r.course_name}
                   </p>
                   <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>
@@ -446,7 +446,7 @@ export default function ProfilePage() {
           <button
             onClick={() => router.push('/rounds')}
             className="w-full py-3 text-sm font-semibold rounded-2xl"
-            style={{ background: 'white', color: '#152644' }}
+            style={{ background: 'white', color: 'var(--club-primary)' }}
           >
             View All Rounds →
           </button>

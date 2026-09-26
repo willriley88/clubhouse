@@ -69,7 +69,7 @@ export default function RoundDetailPage() {
     <main className="min-h-screen pb-[max(96px,env(safe-area-inset-bottom))]" style={{ background: '#f1f5f9' }}>
 
       {/* Header */}
-      <div className="px-4 pt-[max(48px,env(safe-area-inset-top))] pb-5" style={{ background: '#152644' }}>
+      <div className="px-4 pt-[max(48px,env(safe-area-inset-top))] pb-5" style={{ background: 'var(--club-primary)' }}>
         <button
           onClick={() => router.push('/rounds')}
           className="flex items-center gap-1 mb-4"
@@ -121,13 +121,13 @@ export default function RoundDetailPage() {
                   <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
                     <th className="text-left pl-3 py-2 text-[10px] font-bold uppercase tracking-wide text-slate-400">Hole</th>
                     {front9.map(s => (
-                      <th key={s.hole_number} className="text-center py-2 text-xs font-bold" style={{ color: '#152644' }}>
+                      <th key={s.hole_number} className="text-center py-2 text-xs font-bold" style={{ color: 'var(--club-primary)' }}>
                         {s.hole_number}
                       </th>
                     ))}
                     <th className="text-center py-2 text-[10px] font-bold uppercase text-slate-400">Out</th>
                     {back9.map(s => (
-                      <th key={s.hole_number} className="text-center py-2 text-xs font-bold" style={{ color: '#152644' }}>
+                      <th key={s.hole_number} className="text-center py-2 text-xs font-bold" style={{ color: 'var(--club-primary)' }}>
                         {s.hole_number}
                       </th>
                     ))}
@@ -158,17 +158,17 @@ export default function RoundDetailPage() {
                     <td className="pl-3 py-2 text-[10px] font-semibold text-slate-400 uppercase">Score</td>
                     {front9.map(s => (
                       <td key={s.hole_number} className="text-center py-1.5">
-                        <span className="text-xs font-bold" style={{ color: '#152644' }}>{s.strokes}</span>
+                        <span className="text-xs font-bold" style={{ color: 'var(--club-primary)' }}>{s.strokes}</span>
                       </td>
                     ))}
-                    <td className="text-center text-xs py-1.5 font-bold" style={{ color: '#152644' }}>{frontGross}</td>
+                    <td className="text-center text-xs py-1.5 font-bold" style={{ color: 'var(--club-primary)' }}>{frontGross}</td>
                     {back9.map(s => (
                       <td key={s.hole_number} className="text-center py-1.5">
-                        <span className="text-xs font-bold" style={{ color: '#152644' }}>{s.strokes}</span>
+                        <span className="text-xs font-bold" style={{ color: 'var(--club-primary)' }}>{s.strokes}</span>
                       </td>
                     ))}
                     {back9.length > 0 && (
-                      <td className="text-center text-xs py-1.5 font-bold" style={{ color: '#152644' }}>{backGross}</td>
+                      <td className="text-center text-xs py-1.5 font-bold" style={{ color: 'var(--club-primary)' }}>{backGross}</td>
                     )}
                   </tr>
 
@@ -181,7 +181,7 @@ export default function RoundDetailPage() {
                       return (
                         <td key={s.hole_number} className="text-center py-1.5">
                           <span className="inline-flex items-center justify-center w-7 h-5 rounded text-[10px] font-bold"
-                            style={{ background: '#f8fafc', color: '#152644' }}>
+                            style={{ background: '#f8fafc', color: 'var(--club-primary)' }}>
                             {str}
                           </span>
                         </td>
@@ -189,7 +189,7 @@ export default function RoundDetailPage() {
                     })}
                     <td className="text-center py-1.5">
                       <span className="inline-flex items-center justify-center rounded px-1.5 py-0.5 text-[10px] font-bold"
-                        style={{ background: '#f8fafc', color: '#152644' }}>
+                        style={{ background: '#f8fafc', color: 'var(--club-primary)' }}>
                         {frontGross - frontPar === 0 ? 'E' : frontGross - frontPar > 0 ? `+${frontGross - frontPar}` : frontGross - frontPar}
                       </span>
                     </td>
@@ -199,7 +199,7 @@ export default function RoundDetailPage() {
                       return (
                         <td key={s.hole_number} className="text-center py-1.5">
                           <span className="inline-flex items-center justify-center w-7 h-5 rounded text-[10px] font-bold"
-                            style={{ background: '#f8fafc', color: '#152644' }}>
+                            style={{ background: '#f8fafc', color: 'var(--club-primary)' }}>
                             {str}
                           </span>
                         </td>
@@ -208,7 +208,7 @@ export default function RoundDetailPage() {
                     {back9.length > 0 && (
                       <td className="text-center py-1.5">
                         <span className="inline-flex items-center justify-center rounded px-1.5 py-0.5 text-[10px] font-bold"
-                          style={{ background: '#f8fafc', color: '#152644' }}>
+                          style={{ background: '#f8fafc', color: 'var(--club-primary)' }}>
                           {backGross - backPar === 0 ? 'E' : backGross - backPar > 0 ? `+${backGross - backPar}` : backGross - backPar}
                         </span>
                       </td>
@@ -230,14 +230,14 @@ export default function RoundDetailPage() {
                 { label: 'Doubles+', val: doubles },
               ].map(stat => (
                 <div key={stat.label} className="rounded-xl p-3 text-center" style={{ background: '#f8fafc' }}>
-                  <div className="text-xl font-bold" style={{ color: '#152644' }}>{stat.val}</div>
+                  <div className="text-xl font-bold" style={{ color: 'var(--club-primary)' }}>{stat.val}</div>
                   <div className="text-[10px] text-slate-400 mt-0.5">{stat.label}</div>
                 </div>
               ))}
             </div>
             {puttCount > 0 && (
               <div className="mt-3 rounded-xl p-3 text-center" style={{ background: '#f8fafc' }}>
-                <div className="text-xl font-bold" style={{ color: '#152644' }}>{totalPutts}</div>
+                <div className="text-xl font-bold" style={{ color: 'var(--club-primary)' }}>{totalPutts}</div>
                 <div className="text-[10px] text-slate-400 mt-0.5">Total Putts</div>
               </div>
             )}
@@ -247,14 +247,14 @@ export default function RoundDetailPage() {
 
       {loaded && !round && (
         <div className="mx-4 mt-8 bg-white rounded-2xl p-8 text-center shadow-sm">
-          <p className="text-sm font-semibold mb-2" style={{ color: '#152644' }}>Round not found</p>
+          <p className="text-sm font-semibold mb-2" style={{ color: 'var(--club-primary)' }}>Round not found</p>
           <p className="text-xs mb-5" style={{ color: '#94a3b8' }}>
             This round may have been deleted or saved on another device.
           </p>
           <button
             onClick={() => router.push('/rounds')}
             className="px-5 py-2 rounded-xl text-sm font-bold"
-            style={{ background: '#152644', color: '#c9a84c' }}>
+            style={{ background: 'var(--club-primary)', color: 'var(--club-accent)' }}>
             ← Back to History
           </button>
         </div>

@@ -123,7 +123,7 @@ export default function RoundsPage() {
     <main className="min-h-screen pb-[max(96px,env(safe-area-inset-bottom))]" style={{ background: '#f1f5f9' }}>
 
       {/* Header */}
-      <div className="px-4 pt-[max(48px,env(safe-area-inset-top))] pb-5" style={{ background: '#152644' }}>
+      <div className="px-4 pt-[max(48px,env(safe-area-inset-top))] pb-5" style={{ background: 'var(--club-primary)' }}>
         <button
           onClick={() => router.push('/')}
           className="flex items-center gap-1 mb-4"
@@ -151,14 +151,14 @@ export default function RoundsPage() {
 
         {loaded && rounds.length === 0 && (
           <div className="bg-white rounded-2xl px-4 py-12 text-center shadow-sm">
-            <p className="text-sm font-semibold mb-1" style={{ color: '#152644' }}>No rounds recorded yet</p>
+            <p className="text-sm font-semibold mb-1" style={{ color: 'var(--club-primary)' }}>No rounds recorded yet</p>
             <p className="text-xs mb-5" style={{ color: '#94a3b8' }}>
               Complete a round on the scorecard to see it here
             </p>
             <button
               onClick={() => router.push('/scorecard')}
               className="px-5 py-2 rounded-xl text-sm font-bold"
-              style={{ background: '#152644', color: '#c9a84c' }}
+              style={{ background: 'var(--club-primary)', color: 'var(--club-accent)' }}
             >
               Start a Round
             </button>
@@ -182,7 +182,7 @@ export default function RoundsPage() {
                     className="w-14 h-14 rounded-xl flex flex-col items-center justify-center flex-shrink-0"
                     style={{ background: '#f8fafc', border: '1px solid #e2e8f0' }}
                   >
-                    <span className="text-2xl font-bold leading-none" style={{ color: '#152644' }}>
+                    <span className="text-2xl font-bold leading-none" style={{ color: 'var(--club-primary)' }}>
                       {r.gross || '—'}
                     </span>
                     <span className="text-[9px] uppercase tracking-widest mt-0.5" style={{ color: '#94a3b8' }}>
@@ -192,7 +192,7 @@ export default function RoundsPage() {
 
                   {/* Course + date */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold truncate" style={{ color: '#152644' }}>
+                    <p className="text-sm font-bold truncate" style={{ color: 'var(--club-primary)' }}>
                       {r.course_name ?? config.club_name}
                     </p>
                     <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>
@@ -209,7 +209,7 @@ export default function RoundsPage() {
                 {/* Score vs par */}
                 {hasScore && (
                   <div className="text-right flex-shrink-0">
-                    <span className="text-lg font-bold" style={{ color: '#152644' }}>
+                    <span className="text-lg font-bold" style={{ color: 'var(--club-primary)' }}>
                       {scoreToPar(r.gross, r.par_total)}
                     </span>
                     <p className="text-[10px] uppercase tracking-widest mt-0.5" style={{ color: '#94a3b8' }}>

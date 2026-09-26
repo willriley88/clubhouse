@@ -11,7 +11,7 @@ const NAV_ITEMS = [
     path: '/gps',
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-        stroke={active ? '#c9a84c' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        stroke={active ? 'var(--club-accent)' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="3"/>
         <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
         <circle cx="12" cy="12" r="9" strokeOpacity="0.3"/>
@@ -23,7 +23,7 @@ const NAV_ITEMS = [
     path: '/scorecard',
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-        stroke={active ? '#c9a84c' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        stroke={active ? 'var(--club-accent)' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="5" y="2" width="14" height="20" rx="2"/>
         <line x1="9" y1="7" x2="15" y2="7"/>
         <line x1="9" y1="11" x2="15" y2="11"/>
@@ -36,7 +36,7 @@ const NAV_ITEMS = [
     path: '/',
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-        stroke={active ? '#c9a84c' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        stroke={active ? 'var(--club-accent)' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
         <path d="M9 21V12h6v9"/>
       </svg>
@@ -47,7 +47,7 @@ const NAV_ITEMS = [
     path: '/tournament',
     icon: (active: boolean) => (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-        stroke={active ? '#c9a84c' : '#94a3b8'} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        stroke={active ? 'var(--club-accent)' : '#94a3b8'} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="4" width="18" height="18" rx="2"/>
         <line x1="16" y1="2" x2="16" y2="6"/>
         <line x1="8" y1="2" x2="8" y2="6"/>
@@ -60,7 +60,7 @@ const NAV_ITEMS = [
     path: '/club',
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-        stroke={active ? '#c9a84c' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        stroke={active ? 'var(--club-accent)' : '#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="9" cy="7" r="4"/>
         <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
         <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
@@ -117,12 +117,12 @@ export default function BottomNav() {
                 {showBadge && (
                   <span
                     className="absolute top-0 right-0 w-2 h-2 rounded-full"
-                    style={{ background: '#c9a84c', transform: 'translate(25%, -25%)' }}
+                    style={{ background: 'var(--club-accent)', transform: 'translate(25%, -25%)' }}
                   />
                 )}
               </span>
               <span className="text-[10px] font-medium"
-                style={{ color: active ? '#c9a84c' : '#94a3b8' }}>
+                style={{ color: active ? 'var(--club-accent)' : '#94a3b8' }}>
                 {item.label}
               </span>
             </button>

@@ -1,26 +1,103 @@
 @import "tailwindcss";
 
+/* ── Club theme tokens ────────────────────────────────────────────────────
+   Real values are injected per-club onto <html> by app/layout.tsx from
+   club_config. These defaults exist only so the app renders sanely if the
+   DB is unreachable — they are LeBaron's palette, the original pilot.
+   Never hardcode a brand hex in a component; use these vars.            */
 :root {
-  --background: #ffffff;
+  --club-primary: #152644;
+  --club-on-primary: #ffffff;
+  --club-accent: #c9a84c;
+  --club-on-accent: #0f172a;
+  --club-primary-deep: #0f1b31;
+  --club-primary-soft: #e8eaee;
+  --club-surface: #f1f5f9;
+  --club-card: #ffffff;
+  --club-muted: #94a3b8;
+  --club-border: #e2e8f0;
+
+  --background: var(--club-surface);
   --foreground: #171717;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  /* Expose club tokens as Tailwind utilities: bg-club-primary, text-club-accent… */
+  --color-club-primary: var(--club-primary);
+  --color-club-on-primary: var(--club-on-primary);
+  --color-club-accent: var(--club-accent);
+  --color-club-on-accent: var(--club-on-accent);
+  --color-club-primary-deep: var(--club-primary-deep);
+  --color-club-primary-soft: var(--club-primary-soft);
+  --color-club-surface: var(--club-surface);
+  --color-club-card: var(--club-card);
+  --color-club-muted: var(--club-muted);
+  --color-club-border: var(--club-border);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+body {
+  background: var(--club-surface);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Stop iOS Safari from inflating text in landscape inside the PWA shell. */
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ── Native-app feel in standalone PWA mode ───────────────────────────────
+   A member who installs this to their home screen should not be able to
+   text-select the UI chrome or trigger the rubber-band overscroll that
+   makes a web app feel like a web app.                                   */
+@media (display-mode: standalone) {
+  body {
+    overscroll-behavior-y: none;
+  }
+  button,
+  nav,
+  header {
+    -webkit-user-select: none;
+    user-select: none;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Kill the grey tap flash on iOS; components supply their own press states. */
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Respect users who ask for reduced motion — required for accessibility
+   review and trivially cheap to honor. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Consistent focus ring for keyboard users across the whole app. */
+:focus-visible {
+  outline: 2px solid var(--club-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skeleton shimmer used by loading states. */
+@keyframes club-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+.club-skeleton {
+  animation: club-pulse 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background: var(--club-border);
+  border-radius: 8px;
 }

@@ -68,7 +68,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center relative"
-      style={{ backgroundColor: '#152644' }}>
+      style={{ backgroundColor: 'var(--club-primary)' }}>
 
       {/* Back arrow — shown when redirected here from a protected route */}
       <button
@@ -85,7 +85,7 @@ export default function LoginPage() {
       <div className="bg-white rounded-2xl p-8 w-80 shadow-xl">
 
         {/* Branding */}
-        <h1 className="text-2xl font-bold mb-1" style={{ color: '#152644' }}>Clubhouse</h1>
+        <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--club-primary)' }}>Clubhouse</h1>
         <p className="text-sm text-gray-500 mb-6">{config.club_name}</p>
 
         {step === 1 ? (
@@ -101,7 +101,7 @@ export default function LoginPage() {
               onChange={e => setEmail(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') handleSendCode() }}
               className="w-full border rounded-lg px-4 py-3 mb-4 text-sm outline-none placeholder:opacity-50"
-              style={{ borderColor: '#152644', color: '#152644', backgroundColor: 'white' }}
+              style={{ borderColor: 'var(--club-primary)', color: 'var(--club-primary)', backgroundColor: 'white' }}
             />
 
             {error && <p className="text-red-500 text-xs mb-3">{error}</p>}
@@ -111,8 +111,8 @@ export default function LoginPage() {
               disabled={loading || !email.trim()}
               className="w-full py-3 rounded-lg font-semibold"
               style={{
-                backgroundColor: '#c9a84c',
-                color: '#152644',
+                backgroundColor: 'var(--club-accent)',
+                color: 'var(--club-primary)',
                 opacity: loading || !email.trim() ? 0.6 : 1,
               }}
             >
@@ -122,7 +122,7 @@ export default function LoginPage() {
         ) : (
           <>
             <p className="text-sm text-gray-500 mb-0.5">Code sent to</p>
-            <p className="text-sm font-semibold mb-4" style={{ color: '#152644' }}>{email}</p>
+            <p className="text-sm font-semibold mb-4" style={{ color: 'var(--club-primary)' }}>{email}</p>
 
             {/* Numeric-only input, centered with wide tracking for 6-digit readability */}
             <input
@@ -133,7 +133,7 @@ export default function LoginPage() {
               onChange={e => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
               onKeyDown={e => { if (e.key === 'Enter') handleVerify() }}
               className="w-full border rounded-lg px-4 py-3 mb-4 text-sm outline-none text-center font-mono tracking-widest placeholder:opacity-50"
-              style={{ borderColor: '#152644', color: '#152644', backgroundColor: 'white' }}
+              style={{ borderColor: 'var(--club-primary)', color: 'var(--club-primary)', backgroundColor: 'white' }}
               autoFocus
             />
 
@@ -144,8 +144,8 @@ export default function LoginPage() {
               disabled={loading || code.length !== 6}
               className="w-full py-3 rounded-lg font-semibold mb-3"
               style={{
-                backgroundColor: '#c9a84c',
-                color: '#152644',
+                backgroundColor: 'var(--club-accent)',
+                color: 'var(--club-primary)',
                 opacity: loading || code.length !== 6 ? 0.6 : 1,
               }}
             >

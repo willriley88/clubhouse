@@ -36,7 +36,7 @@ const TEE_DATA: Record<string, { label: string; rating: number; slope: number; y
 }
 
 const COURSE_ID_FALLBACK = 'b0000000-0000-0000-0000-000000000001'
-const AVATAR_COLORS = ['#152644', '#c9a84c', '#2d6a4f', '#7b2d8b']
+const AVATAR_COLORS = ['var(--club-primary)', 'var(--club-accent)', '#2d6a4f', '#7b2d8b']
 
 type Player = { id: number; name: string; handicap: number | null; avatarColor: string; isUser: boolean }
 
@@ -289,7 +289,7 @@ export default function ScorecardPage() {
     <main className="min-h-screen pb-[max(240px,env(safe-area-inset-bottom))]" style={{ background: '#f1f5f9' }}>
 
       {/* ── HEADER ── */}
-      <div className="sticky top-0 z-40 px-4 pt-[max(48px,env(safe-area-inset-top))] pb-3" style={{ background: '#152644' }}>
+      <div className="sticky top-0 z-40 px-4 pt-[max(48px,env(safe-area-inset-top))] pb-3" style={{ background: 'var(--club-primary)' }}>
         <div className="flex justify-between items-start mb-1">
           <div>
             <p className="text-[10px] uppercase tracking-widest mb-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
@@ -377,8 +377,8 @@ export default function ScorecardPage() {
                   <th className="text-center py-1.5">
                     <button onClick={addPlayer} className="flex flex-col items-center gap-0.5 w-full">
                       <div className="w-7 h-7 rounded-full border-2 border-dashed flex items-center justify-center text-lg font-light mx-auto"
-                        style={{ borderColor: '#c9a84c', color: '#c9a84c' }}>+</div>
-                      <span className="text-[9px] font-semibold" style={{ color: '#c9a84c' }}>Add</span>
+                        style={{ borderColor: 'var(--club-accent)', color: 'var(--club-accent)' }}>+</div>
+                      <span className="text-[9px] font-semibold" style={{ color: 'var(--club-accent)' }}>Add</span>
                     </button>
                   </th>
                 )}
@@ -390,11 +390,11 @@ export default function ScorecardPage() {
                 <React.Fragment key={hole.h}>
                     {i === 9 && (
                     <tr key="out" style={{ background: '#f0f4f8', borderTop: '1px solid #dde3ea', borderBottom: '1px solid #dde3ea' }}>
-                      <td className="pl-2.5 py-2 text-xs font-bold" style={{ color: '#152644' }}>Out</td>
-                      <td className="text-center text-xs font-bold" style={{ color: '#152644' }}>36</td>
+                      <td className="pl-2.5 py-2 text-xs font-bold" style={{ color: 'var(--club-primary)' }}>Out</td>
+                      <td className="text-center text-xs font-bold" style={{ color: 'var(--club-primary)' }}>36</td>
                       <td className="text-center text-xs text-slate-400">{teeData.frontYds.toLocaleString()}</td>
                       {players.map((_, pIdx) => (
-                        <td key={pIdx} className="text-center text-xs font-bold" style={{ color: '#152644' }}>
+                        <td key={pIdx} className="text-center text-xs font-bold" style={{ color: 'var(--club-primary)' }}>
                           {anyFilled(pIdx, 0, 9) ? sub(pIdx, 0, 9) : '—'}
                         </td>
                       ))}
@@ -404,7 +404,7 @@ export default function ScorecardPage() {
 
                   <tr key={hole.h} style={{ background: i % 2 === 0 ? 'white' : '#fafbfc', borderBottom: '1px solid #f8fafc' }}>
                     <td className="pl-2.5 py-2.5">
-                      <div className="text-sm font-bold" style={{ color: '#152644' }}>{hole.h}</div>
+                      <div className="text-sm font-bold" style={{ color: 'var(--club-primary)' }}>{hole.h}</div>
                       <div className="text-[10px] text-slate-400">H{hole.hcp}</div>
                     </td>
                     <td className="text-center text-sm font-semibold text-slate-600">{hole.par}</td>
@@ -429,11 +429,11 @@ export default function ScorecardPage() {
 
               {/* IN subtotal */}
               <tr style={{ background: '#f0f4f8', borderTop: '1px solid #dde3ea', borderBottom: '1px solid #dde3ea' }}>
-                <td className="pl-2.5 py-2 text-xs font-bold" style={{ color: '#152644' }}>In</td>
-                <td className="text-center text-xs font-bold" style={{ color: '#152644' }}>36</td>
+                <td className="pl-2.5 py-2 text-xs font-bold" style={{ color: 'var(--club-primary)' }}>In</td>
+                <td className="text-center text-xs font-bold" style={{ color: 'var(--club-primary)' }}>36</td>
                 <td className="text-center text-xs text-slate-400">{teeData.backYds.toLocaleString()}</td>
                 {players.map((_, pIdx) => (
-                  <td key={pIdx} className="text-center text-xs font-bold" style={{ color: '#152644' }}>
+                  <td key={pIdx} className="text-center text-xs font-bold" style={{ color: 'var(--club-primary)' }}>
                     {anyFilled(pIdx, 9, 18) ? sub(pIdx, 9, 18) : '—'}
                   </td>
                 ))}
@@ -441,15 +441,15 @@ export default function ScorecardPage() {
               </tr>
 
               {/* TOTAL */}
-              <tr style={{ background: '#152644' }}>
-                <td className="pl-2.5 py-2.5 text-xs font-bold" style={{ color: '#c9a84c' }}>Tot</td>
-                <td className="text-center text-xs font-bold" style={{ color: '#c9a84c' }}>72</td>
+              <tr style={{ background: 'var(--club-primary)' }}>
+                <td className="pl-2.5 py-2.5 text-xs font-bold" style={{ color: 'var(--club-accent)' }}>Tot</td>
+                <td className="text-center text-xs font-bold" style={{ color: 'var(--club-accent)' }}>72</td>
                 <td />
                 {players.map((_, pIdx) => {
                   const t = scores[pIdx]?.reduce((a: number, v) => a + (v ?? 0), 0) ?? 0
                   const f = scores[pIdx]?.filter(v => v !== null).length ?? 0
                   return (
-                    <td key={pIdx} className="text-center text-sm font-bold" style={{ color: '#c9a84c' }}>
+                    <td key={pIdx} className="text-center text-sm font-bold" style={{ color: 'var(--club-accent)' }}>
                       {f > 0 ? t : '—'}
                     </td>
                   )
@@ -465,7 +465,7 @@ export default function ScorecardPage() {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-4 pt-2 pb-20 z-30">
         <button onClick={finishRound} disabled={saving}
           className="w-full py-3.5 rounded-2xl text-white font-bold text-base mb-1"
-          style={{ background: '#c9a84c' }}>
+          style={{ background: 'var(--club-accent)' }}>
           {saving ? 'Saving...' : 'Finish Round'}
         </button>
         {roundActive && (
@@ -490,17 +490,17 @@ export default function ScorecardPage() {
               <button onClick={prevHole}
                 className="w-10 h-10 flex items-center justify-center rounded-full active:scale-90"
                 style={{ background: '#f1f5f9' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#152644" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+ <svg style={{ stroke: 'var(--club-primary)' }} width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M15 18l-6-6 6-6"/>
                 </svg>
               </button>
-              <span className="text-base font-bold" style={{ color: '#152644' }}>
+              <span className="text-base font-bold" style={{ color: 'var(--club-primary)' }}>
                 Hole {sheetHole + 1} · Par {par}
               </span>
               <button onClick={nextHole}
                 className="w-10 h-10 flex items-center justify-center rounded-full active:scale-90"
                 style={{ background: '#f1f5f9' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#152644" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+ <svg style={{ stroke: 'var(--club-primary)' }} width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M9 18l6-6-6-6"/>
                 </svg>
               </button>
@@ -522,13 +522,13 @@ export default function ScorecardPage() {
                 return (
                   <button key={diff} onClick={() => setSelScore(v)}
                     className="py-4 rounded-2xl flex items-center justify-center active:scale-95 transition-transform"
-                    style={{ background: isSelected ? '#152644' : '#f1f5f9' }}>
+                    style={{ background: isSelected ? 'var(--club-primary)' : '#f1f5f9' }}>
                     <span
                       className={`w-9 h-9 flex items-center justify-center text-lg font-bold ${shapeClass}`}
                       style={{
-                        color:        isSelected ? '#c9a84c' : '#152644',
-                        outlineColor: isSelected ? '#c9a84c' : '#152644',
-                        borderColor:  isSelected ? '#c9a84c' : '#152644',
+                        color:        isSelected ? 'var(--club-accent)' : 'var(--club-primary)',
+                        outlineColor: isSelected ? 'var(--club-accent)' : 'var(--club-primary)',
+                        borderColor:  isSelected ? 'var(--club-accent)' : 'var(--club-primary)',
                       }}>
                       {v}
                     </span>
@@ -545,7 +545,7 @@ export default function ScorecardPage() {
                 return (
                   <button key={i} onClick={() => setSelPutt(isSel ? null : val)}
                     className="flex-1 py-2.5 rounded-xl font-bold text-sm"
-                    style={{ background: isSel ? '#152644' : '#f1f5f9', color: isSel ? 'white' : '#152644' }}>
+                    style={{ background: isSel ? 'var(--club-primary)' : '#f1f5f9', color: isSel ? 'white' : 'var(--club-primary)' }}>
                     {v}
                   </button>
                 )
@@ -563,7 +563,7 @@ export default function ScorecardPage() {
                         onClick={() => setSelFairway(selFairway === opt.val ? null : opt.val)}
                         className="flex-1 py-2.5 rounded-xl text-base font-bold"
                         style={{
-                          background: selFairway === opt.val ? (opt.val === 'hit' ? '#152644' : '#fee2e2') : '#f1f5f9',
+                          background: selFairway === opt.val ? (opt.val === 'hit' ? 'var(--club-primary)' : '#fee2e2') : '#f1f5f9',
                           color: selFairway === opt.val ? (opt.val === 'hit' ? 'white' : '#ef4444') : '#94a3b8',
                         }}>
                         {opt.label}
@@ -580,7 +580,7 @@ export default function ScorecardPage() {
                       onClick={() => setSelGir(selGir === opt.val ? null : opt.val)}
                       className="flex-1 py-2.5 rounded-xl text-base font-bold"
                       style={{
-                        background: selGir === opt.val ? (opt.val === 'hit' ? '#152644' : '#fee2e2') : '#f1f5f9',
+                        background: selGir === opt.val ? (opt.val === 'hit' ? 'var(--club-primary)' : '#fee2e2') : '#f1f5f9',
                         color: selGir === opt.val ? (opt.val === 'hit' ? 'white' : '#ef4444') : '#94a3b8',
                       }}>
                       {opt.label}
@@ -593,7 +593,7 @@ export default function ScorecardPage() {
             {/* Finish Hole → commits score and advances to next hole */}
             <button onClick={nextHole}
               className="w-full py-4 rounded-2xl font-bold text-base"
-              style={{ background: '#152644', color: '#c9a84c' }}>
+              style={{ background: 'var(--club-primary)', color: 'var(--club-accent)' }}>
               Finish Hole →
             </button>
 
@@ -607,13 +607,13 @@ export default function ScorecardPage() {
           onClick={e => { if (e.target === e.currentTarget) setProfileOpen(false) }}>
           <div className="bg-white w-full max-w-sm rounded-3xl px-5 pt-6 pb-8">
             <div className="flex justify-between items-center mb-5">
-              <h2 className="text-lg font-bold" style={{ color: '#152644' }}>Edit Profile</h2>
+              <h2 className="text-lg font-bold" style={{ color: 'var(--club-primary)' }}>Edit Profile</h2>
               <button onClick={() => setProfileOpen(false)} className="text-slate-400 text-2xl leading-none">×</button>
             </div>
 
             <div className="flex justify-center mb-5">
               <div className="w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-bold"
-                style={{ background: '#152644' }}>
+                style={{ background: 'var(--club-primary)' }}>
                 {editName.charAt(0).toUpperCase()}
               </div>
             </div>
@@ -639,7 +639,7 @@ export default function ScorecardPage() {
 
             <button onClick={saveProfile}
               className="w-full py-4 rounded-2xl text-white font-bold text-base mb-3"
-              style={{ background: '#c9a84c' }}>
+              style={{ background: 'var(--club-accent)' }}>
               Save
             </button>
           </div>
@@ -652,15 +652,15 @@ export default function ScorecardPage() {
           style={{ background: 'rgba(0,0,0,0.5)' }}>
           <div className="bg-white rounded-t-3xl w-full max-w-lg p-6 pb-10">
             <div className="w-10 h-1 rounded-full bg-gray-200 mx-auto mb-6" />
-            <h2 className="text-2xl font-bold text-center mb-1" style={{ color: '#152644' }}>Round Complete</h2>
+            <h2 className="text-2xl font-bold text-center mb-1" style={{ color: 'var(--club-primary)' }}>Round Complete</h2>
             <p className="text-center text-sm text-slate-400 mb-6">Nice round — here&apos;s your summary</p>
             <div className="flex justify-center gap-8 mb-6">
               <div className="text-center">
-                <div className="text-4xl font-bold" style={{ color: '#152644' }}>{shareGross}</div>
+                <div className="text-4xl font-bold" style={{ color: 'var(--club-primary)' }}>{shareGross}</div>
                 <div className="text-xs text-slate-400 mt-1 uppercase tracking-widest">Gross</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold" style={{ color: '#c9a84c' }}>
+                <div className="text-4xl font-bold" style={{ color: 'var(--club-accent)' }}>
                   {shareDiff >= 0 ? `+${shareDiff.toFixed(1)}` : shareDiff.toFixed(1)}
                 </div>
                 <div className="text-xs text-slate-400 mt-1 uppercase tracking-widest">Differential</div>
@@ -680,12 +680,12 @@ export default function ScorecardPage() {
                 }
               }}
               className="w-full py-4 rounded-2xl text-white font-bold text-base mb-3"
-              style={{ background: '#152644' }}
+              style={{ background: 'var(--club-primary)' }}
             >
               {copied ? 'Copied!' : 'Share Score'}
             </button>
             <button onClick={() => { setShowShare(false); router.push('/') }}
-              className="w-full py-3 text-sm font-semibold text-center" style={{ color: '#152644' }}>
+              className="w-full py-3 text-sm font-semibold text-center" style={{ color: 'var(--club-primary)' }}>
               Done
             </button>
           </div>

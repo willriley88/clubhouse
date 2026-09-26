@@ -1,0 +1,4465 @@
+[
+  {
+    "slug": "ma-foxborough-cc",
+    "club_name": "Foxborough Country Club",
+    "club_name_long": "Foxborough Country Club",
+    "state": "MA",
+    "city": "Foxborough",
+    "location": "Foxborough, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#000018",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-foxborough-cc.png",
+    "logo_treatment": "plate",
+    "phone": "5085434661",
+    "website_url": "https://www.foxboroughcc.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.foxboroughcc.com/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.foxboroughcc.com/about"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.foxboroughcc.com/club/scripts/view/view_directions.asp"
+      }
+    ],
+    "radius_rank": 1
+  },
+  {
+    "slug": "ma-norton-cc",
+    "club_name": "Norton Country Club",
+    "club_name_long": "Norton Country Club",
+    "state": "MA",
+    "city": "Norton",
+    "location": "Norton, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#183018",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-norton-cc.png",
+    "logo_treatment": "plate",
+    "phone": "5082852400",
+    "website_url": "https://nortoncountryclub.com/",
+    "tee_sheet_url": "https://secure.east.prophetservices.com/NortonCCV3",
+    "tee_sheet_vendor": null,
+    "billing_url": "https://secure.east.prophetservices.com/NortonCCV3",
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://nortoncountryclub.com/membership-request-information/"
+      },
+      {
+        "label": "About Us",
+        "href": "https://nortoncountryclub.com/history/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://nortoncountryclub.com/contact/"
+      }
+    ],
+    "radius_rank": 3
+  },
+  {
+    "slug": "ma-sharon-cc",
+    "club_name": "Sharon Country Club",
+    "club_name_long": "Sharon Country Club",
+    "state": "MA",
+    "city": "Sharon",
+    "location": "Sharon, MA",
+    "club_type": "Private",
+    "primary_color": "#901830",
+    "secondary_color": "#006030",
+    "logo_path": "/demo-clubs/ma-sharon-cc.jpg",
+    "logo_treatment": "plate",
+    "phone": "7817843878",
+    "website_url": "https://www.sharoncountryclub.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://www.sharoncountryclub.com/about/overview/staff",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.sharoncountryclub.com/membership/become-a-member/membership-process"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.sharoncountryclub.com/about/overview/staff"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.sharoncountryclub.com/about/overview/welcome"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.sharoncountryclub.com/contact"
+      }
+    ],
+    "radius_rank": 10
+  },
+  {
+    "slug": "ma-royal-crest-cc",
+    "club_name": "Royal Crest Country Club",
+    "club_name_long": "Royal Crest Country Club",
+    "state": "MA",
+    "city": "Walpole",
+    "location": "Walpole, MA",
+    "club_type": "Private",
+    "primary_color": "#781818",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-royal-crest-cc.png",
+    "logo_treatment": "plate",
+    "phone": "5088500003",
+    "website_url": "https://royalcrestcc.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Contact Info",
+        "href": "https://royalcrestcc.com/contact"
+      }
+    ],
+    "radius_rank": 11
+  },
+  {
+    "slug": "ma-walpole-cc",
+    "club_name": "Walpole Country Club",
+    "club_name_long": "Walpole Country Club",
+    "state": "MA",
+    "city": "Walpole",
+    "location": "Walpole, MA",
+    "club_type": "Private",
+    "primary_color": "#180000",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-walpole-cc.png",
+    "logo_treatment": "plate",
+    "phone": "5086687184",
+    "website_url": "https://www.walpolecc.com/",
+    "tee_sheet_url": "https://www.jonasclub.com",
+    "tee_sheet_vendor": "Jonas",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.walpolecc.com/Membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.walpolecc.com/About"
+      }
+    ],
+    "radius_rank": 11
+  },
+  {
+    "slug": "ma-crestwood-cc",
+    "club_name": "Crestwood Country Club",
+    "club_name_long": "Crestwood Country Club",
+    "state": "MA",
+    "city": "Rehoboth",
+    "location": "Rehoboth, MA",
+    "club_type": "Private",
+    "primary_color": "#607830",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-crestwood-cc.png",
+    "logo_treatment": "plate",
+    "phone": "5083364418",
+    "website_url": "https://www.crestwoodcc.com/",
+    "tee_sheet_url": "https://www.jonasclub.com",
+    "tee_sheet_vendor": "Jonas",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.crestwoodcc.com/Membership"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.crestwoodcc.com/CONTACT-US"
+      }
+    ],
+    "radius_rank": 19
+  },
+  {
+    "slug": "ma-the-milton-hoosic-club",
+    "club_name": "The Milton-Hoosic Club",
+    "club_name_long": "The Milton-Hoosic Club",
+    "state": "MA",
+    "city": "Canton",
+    "location": "Canton, MA",
+    "club_type": "Private",
+    "primary_color": "#184878",
+    "secondary_color": "#d8a800",
+    "logo_path": "/demo-clubs/ma-the-milton-hoosic-club.png",
+    "logo_treatment": "bare",
+    "phone": "7818289717",
+    "website_url": "https://www.miltonhoosicclub.com/",
+    "tee_sheet_url": "https://www.jonasclub.com",
+    "tee_sheet_vendor": "Jonas",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.miltonhoosicclub.com/Membership"
+      }
+    ],
+    "radius_rank": 21
+  },
+  {
+    "slug": "ma-brockton-cc",
+    "club_name": "Brockton Country Club",
+    "club_name_long": "Brockton Country Club",
+    "state": "MA",
+    "city": "Brockton",
+    "location": "Brockton, MA",
+    "club_type": "Private",
+    "primary_color": "#183018",
+    "secondary_color": "#004890",
+    "logo_path": "/demo-clubs/ma-brockton-cc.png",
+    "logo_treatment": "plate",
+    "phone": "5085888439",
+    "website_url": "https://www.brocktoncc.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.brocktoncc.com/membership"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.brocktoncc.com/contact"
+      }
+    ],
+    "radius_rank": 23
+  },
+  {
+    "slug": "ma-thorny-lea-gc",
+    "club_name": "Thorny Lea Golf Club",
+    "club_name_long": "Thorny Lea Golf Club",
+    "state": "MA",
+    "city": "Brockton",
+    "location": "Brockton, MA",
+    "club_type": "Private",
+    "primary_color": "#004830",
+    "secondary_color": "#d80060",
+    "logo_path": "/demo-clubs/ma-thorny-lea-gc.png",
+    "logo_treatment": "plate",
+    "phone": "5085862171",
+    "website_url": "https://www.thornyleagc.com/",
+    "tee_sheet_url": "https://www.jonasclub.com/privacy-policy/",
+    "tee_sheet_vendor": "Jonas",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.thornyleagc.com/club/scripts/section/section.asp?GRP=31218&NS=PMEM"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.thornyleagc.com/club/scripts/contact/contact_info.asp?GRP=31218&NS=PMEM&FCODE=MEMINFO"
+      }
+    ],
+    "radius_rank": 23
+  },
+  {
+    "slug": "ma-hopkinton-cc",
+    "club_name": "Hopkinton Country Club",
+    "club_name_long": "Hopkinton Country Club",
+    "state": "MA",
+    "city": "Hopkinton",
+    "location": "Hopkinton, MA",
+    "club_type": "Private",
+    "primary_color": "#304848",
+    "secondary_color": "#48a8d8",
+    "logo_path": "/demo-clubs/ma-hopkinton-cc.jpg",
+    "logo_treatment": "plate",
+    "phone": "5084354630",
+    "website_url": "https://www.hopkintoncc.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.hopkintoncc.com/membership/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.hopkintoncc.com/contact"
+      }
+    ],
+    "radius_rank": 29
+  },
+  {
+    "slug": "ma-allendale-cc",
+    "club_name": "Allendale Country Club",
+    "club_name_long": "Allendale Country Club",
+    "state": "MA",
+    "city": "North Dartmouth",
+    "location": "North Dartmouth, MA",
+    "club_type": "Private",
+    "primary_color": "#001860",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-allendale-cc.png",
+    "logo_treatment": "plate",
+    "phone": "5089928682",
+    "website_url": "https://allendalecc.net/",
+    "tee_sheet_url": "https://golfhub.golfgenius.com/clubs/0253ff5b-7687-4d9a-a062-22697864c034?_gl=1*59awcw*_ga*MjAzOTEzMTU0Mi4xNzcwOTEzODg4*_ga_F4RE5398BV*czE3ODgyODUxMTkkbzMzMSRnMSR0MTc4ODI5OTM1NiRqMTgkbDAkaDA.",
+    "tee_sheet_vendor": "Golf Genius",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://allendalecc.net/becomeamember/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://allendalecc.net/contact-us/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-amherst-gc",
+    "club_name": "Amherst Golf Club",
+    "club_name_long": "Amherst Golf Club",
+    "state": "MA",
+    "city": "Amherst",
+    "location": "Amherst, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#001818",
+    "secondary_color": "#a8c0d8",
+    "logo_path": "/demo-clubs/ma-amherst-gc.jpg",
+    "logo_treatment": "plate",
+    "phone": "4132566894",
+    "website_url": "https://amherstgolfclub.org/",
+    "tee_sheet_url": "https://www.chronogolf.com/club/19528/widget",
+    "tee_sheet_vendor": "Chronogolf",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://amherstgolfclub.org/2026-fall-membership-special/"
+      },
+      {
+        "label": "About Us",
+        "href": "https://amherstgolfclub.org/course/about/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://amherstgolfclub.org/pro-shop/contact/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-bay-pointe-cc",
+    "club_name": "Bay Pointe Country Club",
+    "club_name_long": "Bay Pointe Country Club",
+    "state": "MA",
+    "city": "Onset",
+    "location": "Onset, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#00a830",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-bay-pointe-cc.svg",
+    "logo_treatment": "plate",
+    "phone": "5087598802",
+    "website_url": "https://www.chronogolf.com/",
+    "tee_sheet_url": "https://www.chronogolf.com/",
+    "tee_sheet_vendor": "Chronogolf",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "About Us",
+        "href": "https://www.chronogolf.com/club/chanticlair-golf-club"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-bellevue-gc",
+    "club_name": "Bellevue Golf Club",
+    "club_name_long": "Bellevue Golf Club",
+    "state": "MA",
+    "city": "Melrose",
+    "location": "Melrose, MA",
+    "club_type": "Private",
+    "primary_color": "#006030",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-bellevue-gc.png",
+    "logo_treatment": "bare",
+    "phone": "7816659733",
+    "website_url": "https://bellevuegolfclub.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://bellevuegolfclub.com/web/pages/meet-the-bellevue-staff",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://bellevuegolfclub.com/web/pages/membership"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://bellevuegolfclub.com/web/pages/meet-the-bellevue-staff"
+      },
+      {
+        "label": "About Us",
+        "href": "https://bellevuegolfclub.com/web/pages/about"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-belmont-cc",
+    "club_name": "Belmont Country Club",
+    "club_name_long": "Belmont Country Club",
+    "state": "MA",
+    "city": "Belmont",
+    "location": "Belmont, MA",
+    "club_type": "Private",
+    "primary_color": "#003018",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-belmont-cc.png",
+    "logo_treatment": "plate",
+    "phone": "6174841390",
+    "website_url": "https://www.belmontcc.org/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://www.belmontcc.org/about-us/login",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.belmontcc.org/join-the-team"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.belmontcc.org/about-us/login"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.belmontcc.org/about-us"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.belmontcc.org/about-us/directions"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-beverly-golf-and-tennis-club",
+    "club_name": "Beverly Golf & Tennis Club",
+    "club_name_long": "Beverly Golf & Tennis Club",
+    "state": "MA",
+    "city": "Beverly",
+    "location": "Beverly, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#000090",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-beverly-golf-and-tennis-club.png",
+    "logo_treatment": "bare",
+    "phone": "9789229072",
+    "website_url": "https://beverlygolfandtennis.com/",
+    "tee_sheet_url": "https://beverlygolf.cps.golf",
+    "tee_sheet_vendor": "CPS",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://beverlygolfandtennis.com/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://beverlygolfandtennis.com/about"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://beverlygolfandtennis.com/contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-birchwood-cc",
+    "club_name": "Birchwood Country Club",
+    "club_name_long": "Birchwood Country Club",
+    "state": "CT",
+    "city": "Westport",
+    "location": "Westport, CT",
+    "club_type": "Private",
+    "primary_color": "#004878",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-birchwood-cc.svg",
+    "logo_treatment": "plate",
+    "phone": "2032213280",
+    "website_url": "http://www.birchwoodcc.org",
+    "tee_sheet_url": "https://www.clubessential.com",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": "https://www.birchwoodcc.org/about-us",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.birchwoodcc.org/membership"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.birchwoodcc.org/about-us"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.birchwoodcc.org/history"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.birchwoodcc.org/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-blue-rock-gc",
+    "club_name": "Blue Rock Golf Course",
+    "club_name_long": "Blue Rock Golf Course",
+    "state": "MA",
+    "city": "South Yarmouth",
+    "location": "South Yarmouth, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#18a860",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-blue-rock-gc.png",
+    "logo_treatment": "bare",
+    "phone": "5083989295",
+    "website_url": "https://bluerockgolfcourse.com/",
+    "tee_sheet_url": "https://www.chronogolf.com/club/blue-rock-golf-course",
+    "tee_sheet_vendor": "Chronogolf",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://bluerockgolfcourse.com/golf-membership-rates/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://bluerockgolfcourse.com/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-brownson-cc",
+    "club_name": "Brownson Country Club",
+    "club_name_long": "Brownson Country Club",
+    "state": "CT",
+    "city": "Huntington",
+    "location": "Huntington, CT",
+    "club_type": "Private",
+    "primary_color": "#184818",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-brownson-cc.jpg",
+    "logo_treatment": "plate",
+    "phone": "2039290555",
+    "website_url": "http://www.brownsoncc.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://www.brownsoncc.com/golf/meet-the-staff",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.brownsoncc.com/join"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.brownsoncc.com/golf/meet-the-staff"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.brownsoncc.com/club-information/history"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.brownsoncc.com/join"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-bull-s-bridge-gc",
+    "club_name": "Bull's Bridge Golf Club",
+    "club_name_long": "Bull's Bridge Golf Club",
+    "state": "CT",
+    "city": "Kent",
+    "location": "Kent, CT",
+    "club_type": "Private",
+    "primary_color": "#181800",
+    "secondary_color": "#909060",
+    "logo_path": "/demo-clubs/ct-bull-s-bridge-gc.png",
+    "logo_treatment": "plate",
+    "phone": "8609277135",
+    "website_url": "http://www.bullsbridgegolfclub.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://bullsbridgegolfclub.com/web/pages/membership-request"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://bullsbridgegolfclub.com/web/pages/contact-information-directions"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-butter-brook-gc",
+    "club_name": "Butter Brook Golf Club",
+    "club_name_long": "Butter Brook Golf Club",
+    "state": "MA",
+    "city": "Westford",
+    "location": "Westford, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#009048",
+    "secondary_color": "#904818",
+    "logo_path": "/demo-clubs/ma-butter-brook-gc.png",
+    "logo_treatment": "bare",
+    "phone": "9786926860",
+    "website_url": "https://www.butterbrookgc.com/",
+    "tee_sheet_url": "https://butterbrook.cps.golf/",
+    "tee_sheet_vendor": "CPS",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Contact Info",
+        "href": "https://www.butterbrookgc.com/contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-candlewood-lake-club",
+    "club_name": "Candlewood Lake Club",
+    "club_name_long": "Candlewood Lake Club",
+    "state": "CT",
+    "city": "Brookfield",
+    "location": "Brookfield, CT",
+    "club_type": "Private",
+    "primary_color": "#006030",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-candlewood-lake-club.png",
+    "logo_treatment": "plate",
+    "phone": "8603544004",
+    "website_url": "http://www.candlewoodlakeclub.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-charter-oak-cc",
+    "club_name": "Charter Oak Country Club",
+    "club_name_long": "Charter Oak Country Club",
+    "state": "MA",
+    "city": "Hudson",
+    "location": "Hudson, MA",
+    "club_type": "Private",
+    "primary_color": "#186048",
+    "secondary_color": "#a87860",
+    "logo_path": "/demo-clubs/ma-charter-oak-cc.png",
+    "logo_treatment": "bare",
+    "phone": "9785620800",
+    "website_url": "https://www.charteroakcc.com/",
+    "tee_sheet_url": "https://www.jonasclub.com/privacy-policy/",
+    "tee_sheet_vendor": "Jonas",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.charteroakcc.com/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.charteroakcc.com/public"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-chippanee-cc",
+    "club_name": "Chippanee Country Club",
+    "club_name_long": "Chippanee Country Club",
+    "state": "CT",
+    "city": "Bristol",
+    "location": "Bristol, CT",
+    "club_type": "Private",
+    "primary_color": "#006030",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-chippanee-cc.png",
+    "logo_treatment": "bare",
+    "phone": "8605895645",
+    "website_url": "http://www.chippanee.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.chippanee.com/Membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.chippanee.com/ABOUT_US"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.chippanee.com/CONTACT_US"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-clinton-cc",
+    "club_name": "Clinton Country Club",
+    "club_name_long": "Clinton Country Club",
+    "state": "CT",
+    "city": "Clinton",
+    "location": "Clinton, CT",
+    "club_type": "Private",
+    "primary_color": "#781830",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-clinton-cc.png",
+    "logo_treatment": "plate",
+    "phone": "8606696587",
+    "website_url": "http://www.clintoncc.org",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.clintoncc.org/Become_A_Member"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.clintoncc.org/About_Our_Club"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.clintoncc.org/Contact_Us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-cohasset-gc",
+    "club_name": "Cohasset Golf Club",
+    "club_name_long": "Cohasset Golf Club",
+    "state": "MA",
+    "city": "Cohasset",
+    "location": "Cohasset, MA",
+    "club_type": "Private",
+    "primary_color": "#90d8d8",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-cohasset-gc.gif",
+    "logo_treatment": "plate",
+    "phone": "7813839636",
+    "website_url": "https://www.cohassetgc.org/",
+    "tee_sheet_url": "http://clubessential.com",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": "https://www.cohassetgc.org/club/contact",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.cohassetgc.org/membership"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.cohassetgc.org/club/contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-connecticut-gc",
+    "club_name": "Connecticut Golf Club",
+    "club_name_long": "Connecticut Golf Club",
+    "state": "CT",
+    "city": "Easton",
+    "location": "Easton, CT",
+    "club_type": "Private",
+    "primary_color": "#004830",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-connecticut-gc.png",
+    "logo_treatment": "plate",
+    "phone": "2032612544",
+    "website_url": "https://ctgolfclub.com",
+    "tee_sheet_url": "https://www.clubessential.com",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://ctgolfclub.com/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://ctgolfclub.com/history"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://ctgolfclub.com/contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-country-club-of-fairfield",
+    "club_name": "Country Club of Fairfield",
+    "club_name_long": "Country Club of Fairfield",
+    "state": "CT",
+    "city": "Fairfield",
+    "location": "Fairfield, CT",
+    "club_type": "Private",
+    "primary_color": "#004830",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-country-club-of-fairfield.png",
+    "logo_treatment": "plate",
+    "phone": "2032591601",
+    "website_url": "http://www.ccfairfield.com",
+    "tee_sheet_url": "https://www.jonasclub.com",
+    "tee_sheet_vendor": "Jonas",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Contact Info",
+        "href": "https://www.ccfairfield.com/Contact_Us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-country-club-of-farmington",
+    "club_name": "Country Club of Farmington",
+    "club_name_long": "Country Club of Farmington",
+    "state": "CT",
+    "city": "Farmington",
+    "location": "Farmington, CT",
+    "club_type": "Private",
+    "primary_color": "#001800",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-country-club-of-farmington.png",
+    "logo_treatment": "bare",
+    "phone": "8606771681",
+    "website_url": "http://www.farmingtoncountryclub.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.farmingtoncountryclub.com/membership-inquiries"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.farmingtoncountryclub.com/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-country-club-of-greenfield",
+    "club_name": "Country Club of Greenfield",
+    "club_name_long": "Country Club of Greenfield",
+    "state": "MA",
+    "city": "Greenfield",
+    "location": "Greenfield, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#c09048",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-country-club-of-greenfield.jpg",
+    "logo_treatment": "plate",
+    "phone": "4137737530",
+    "website_url": "https://www.countryclubofgreenfield.net/",
+    "tee_sheet_url": "https://www.countryclubofgreenfield.net/p/2/Tournament-Results-and-Tee-Times",
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.countryclubofgreenfield.net/p/28/Membership-and-200-CLUB-INFO"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.countryclubofgreenfield.net/contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-country-club-of-new-bedford",
+    "club_name": "Country Club of New Bedford",
+    "club_name_long": "Country Club of New Bedford",
+    "state": "MA",
+    "city": "North Dartmouth",
+    "location": "North Dartmouth, MA",
+    "club_type": "Private",
+    "primary_color": "#181800",
+    "secondary_color": "#789048",
+    "logo_path": "/demo-clubs/ma-country-club-of-new-bedford.png",
+    "logo_treatment": "plate",
+    "phone": "5089933453",
+    "website_url": "https://www.ccnb.golf/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://www.ccnb.golf/about-us",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.ccnb.golf/membership"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.ccnb.golf/about-us"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.ccnb.golf/history"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.ccnb.golf/contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-country-club-of-new-canaan",
+    "club_name": "Country Club of New Canaan",
+    "club_name_long": "Country Club of New Canaan",
+    "state": "CT",
+    "city": "New Canaan",
+    "location": "New Canaan, CT",
+    "club_type": "Private",
+    "primary_color": "#006030",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-country-club-of-new-canaan.svg",
+    "logo_treatment": "plate",
+    "phone": "2039663513",
+    "website_url": "http://www.ccofnewcanaan.org",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Contact Info",
+        "href": "https://ccofnewcanaan.org/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-country-club-of-waterbury",
+    "club_name": "Country Club of Waterbury",
+    "club_name_long": "Country Club of Waterbury",
+    "state": "CT",
+    "city": "Waterbury",
+    "location": "Waterbury, CT",
+    "club_type": "Private",
+    "primary_color": "#184830",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-country-club-of-waterbury.png",
+    "logo_treatment": "plate",
+    "phone": "2037534171",
+    "website_url": "http://www.ccwaterbury.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://ccwaterbury.com/web/pages/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://ccwaterbury.com/web/pages/history"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://ccwaterbury.com/web/pages/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-crestview-cc",
+    "club_name": "Crestview Country Club",
+    "club_name_long": "Crestview Country Club",
+    "state": "MA",
+    "city": "Agawam",
+    "location": "Agawam, MA",
+    "club_type": "Private",
+    "primary_color": "#003000",
+    "secondary_color": "#789090",
+    "logo_path": "/demo-clubs/ma-crestview-cc.png",
+    "logo_treatment": "bare",
+    "phone": "4137860917",
+    "website_url": "https://www.crestviewcc.org/",
+    "tee_sheet_url": "https://www.crestviewcc.org/tee-times/",
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.crestviewcc.org/golf-memberships/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.crestviewcc.org/contact/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-crumpin-fox-club",
+    "club_name": "Crumpin-Fox Club",
+    "club_name_long": "Crumpin-Fox Club",
+    "state": "MA",
+    "city": "Bernardston",
+    "location": "Bernardston, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#186048",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-crumpin-fox-club.webp",
+    "logo_treatment": "bare",
+    "phone": "4136489101",
+    "website_url": "https://www.crumpinfox.com/",
+    "tee_sheet_url": "https://members.chronogolf.com/",
+    "tee_sheet_vendor": "Chronogolf",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.crumpinfox.com/join-the-team/"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.crumpinfox.com/about/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.crumpinfox.com/contact/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-cummaquid-gc",
+    "club_name": "Cummaquid Golf Club",
+    "club_name_long": "Cummaquid Golf Club",
+    "state": "MA",
+    "city": "Yarmouth Port",
+    "location": "Yarmouth Port, MA",
+    "club_type": "Private",
+    "primary_color": "#000060",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-cummaquid-gc.gif",
+    "logo_treatment": "bare",
+    "phone": "5083622022",
+    "website_url": "https://cummaquidgolf.com/",
+    "tee_sheet_url": "https://www.clubessential.com?pageRef=zcf8oVXa%2f2RT8AdK10bfKl3WyYNmm2Otaxw91Ach5cfHtzglUtANEXCejpcaaPsSDsk8zZ5fijWdHtg4su3zmVpfietW63b7",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://cummaquidgolf.com/membership-inquiry"
+      },
+      {
+        "label": "About Us",
+        "href": "https://cummaquidgolf.com/about-the-club"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://cummaquidgolf.com/contact-us/employment"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-duxbury-yacht-club",
+    "club_name": "Duxbury Yacht Club",
+    "club_name_long": "Duxbury Yacht Club",
+    "state": "MA",
+    "city": "Duxbury",
+    "location": "Duxbury, MA",
+    "club_type": "Private",
+    "primary_color": "#003060",
+    "secondary_color": "#c00018",
+    "logo_path": "/demo-clubs/ma-duxbury-yacht-club.png",
+    "logo_treatment": "bare",
+    "phone": "7819342578",
+    "website_url": "https://www.duxburyyachtclub.org/",
+    "tee_sheet_url": "https://www.duxburyyachtclub.org/default.aspx?p=TrackHyperlink&URL=default.aspx%3fp%3ddynamicmodule%26pageid%3d399573%26tt%3dbooking%26ssid%3d322898%26vnf%3d1&ssid=139928251321&fid=14202180316",
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.duxburyyachtclub.org/membership"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.duxburyyachtclub.org/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-edgartown-gc",
+    "club_name": "Edgartown Golf Club",
+    "club_name_long": "Edgartown Golf Club",
+    "state": "MA",
+    "city": "Edgartown",
+    "location": "Edgartown, MA",
+    "club_type": "Private",
+    "primary_color": "#181860",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-edgartown-gc.jpg",
+    "logo_treatment": "plate",
+    "phone": "5086275343",
+    "website_url": "https://edgartowngolfclub.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://edgartowngolfclub.com/imgpages/Document4.dotx",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Golf Personnel",
+        "href": "https://edgartowngolfclub.com/imgpages/Document4.dotx"
+      },
+      {
+        "label": "About Us",
+        "href": "https://edgartowngolfclub.com/page.php/2/History/History---1926-to-2012"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://edgartowngolfclub.com/page.php/7/Club-Information/Contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-ellington-ridge-cc",
+    "club_name": "Ellington Ridge Country Club",
+    "club_name_long": "Ellington Ridge Country Club",
+    "state": "CT",
+    "city": "Ellington",
+    "location": "Ellington, CT",
+    "club_type": "Private",
+    "primary_color": "#006030",
+    "secondary_color": "#c09000",
+    "logo_path": "/demo-clubs/ct-ellington-ridge-cc.png",
+    "logo_treatment": "bare",
+    "phone": "8608729133",
+    "website_url": "http://www.ellingtonridge.org",
+    "tee_sheet_url": "https://ellingtonridge.org/group/pages/teetime",
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://ellingtonridge.org/web/pages/membership"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://ellingtonridge.org/web/pages/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-ellinwood-cc",
+    "club_name": "Ellinwood Country Club",
+    "club_name_long": "Ellinwood Country Club",
+    "state": "MA",
+    "city": "Athol",
+    "location": "Athol, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#909078",
+    "secondary_color": "#907878",
+    "logo_path": "/demo-clubs/ma-ellinwood-cc.webp",
+    "logo_treatment": "plate",
+    "phone": "9782497460",
+    "website_url": "https://www.ellinwoodgolf.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-fairview-cc",
+    "club_name": "Fairview Country Club",
+    "club_name_long": "Fairview Country Club",
+    "state": "CT",
+    "city": "Greenwich",
+    "location": "Greenwich, CT",
+    "club_type": "Private",
+    "primary_color": "#486048",
+    "secondary_color": "#607878",
+    "logo_path": "/demo-clubs/ct-fairview-cc.png",
+    "logo_treatment": "plate",
+    "phone": "2035316200",
+    "website_url": "http://www.fairviewcountryclub.org",
+    "tee_sheet_url": "https://www.jonasclub.com",
+    "tee_sheet_vendor": "Jonas",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.fairviewcountryclub.org/Membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.fairviewcountryclub.org/inactive"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.fairviewcountryclub.org/About_Us/Contact_Us_Directions"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-fall-river-cc",
+    "club_name": "Fall River Country Club",
+    "club_name_long": "Fall River Country Club",
+    "state": "MA",
+    "city": "Fall River",
+    "location": "Fall River, MA",
+    "club_type": "Private",
+    "primary_color": "#001830",
+    "secondary_color": "#d83030",
+    "logo_path": "/demo-clubs/ma-fall-river-cc.png",
+    "logo_treatment": "bare",
+    "phone": "5086789374",
+    "website_url": "https://www.fallrivercc.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://www.fallrivercc.com/about-us",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.fallrivercc.com/membership/forms/membership-inquiry"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.fallrivercc.com/about-us"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.fallrivercc.com/about-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-farmington-woods-gc",
+    "club_name": "Farmington Woods Golf Club",
+    "club_name_long": "Farmington Woods Golf Club",
+    "state": "CT",
+    "city": "Avon",
+    "location": "Avon, CT",
+    "club_type": "Private",
+    "primary_color": "#187848",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-farmington-woods-gc.png",
+    "logo_treatment": "bare",
+    "phone": "8606736193",
+    "website_url": "http://farmingtonwoods.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://farmingtonwoods.com/GOLF/Professional_Staff",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Golf Personnel",
+        "href": "https://farmingtonwoods.com/GOLF/Professional_Staff"
+      },
+      {
+        "label": "About Us",
+        "href": "https://farmingtonwoods.com/Home/History"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://farmingtonwoods.com/Home/Contact_Us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-four-oaks-cc",
+    "club_name": "Four Oaks Country Club",
+    "club_name_long": "Four Oaks Country Club",
+    "state": "MA",
+    "city": "Dracut",
+    "location": "Dracut, MA",
+    "club_type": "Private",
+    "primary_color": "#a89048",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-four-oaks-cc.png",
+    "logo_treatment": "bare",
+    "phone": "9784550054",
+    "website_url": "https://www.fouroakscountryclub.com/",
+    "tee_sheet_url": "https://fouroaks.cps.golf/onlineresweb/search-teetime?TeeOffTimeMin=0&TeeOffTimeMax=23.999722222222225",
+    "tee_sheet_vendor": "CPS",
+    "billing_url": null,
+    "staff_info_url": "https://www.fouroakscountryclub.com/home-page/personnel",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.fouroakscountryclub.com/home-page/personnel"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.fouroakscountryclub.com/public"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.fouroakscountryclub.com/public/directions"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-framingham-cc",
+    "club_name": "Framingham Country Club",
+    "club_name_long": "Framingham Country Club",
+    "state": "MA",
+    "city": "Framingham",
+    "location": "Framingham, MA",
+    "club_type": "Private",
+    "primary_color": "#484860",
+    "secondary_color": "#486060",
+    "logo_path": "/demo-clubs/ma-framingham-cc.png",
+    "logo_treatment": "plate",
+    "phone": "5088729790",
+    "website_url": "https://www.framinghamcc.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://www.framinghamcc.com/about-us/directions",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.framinghamcc.com/membership"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.framinghamcc.com/about-us/directions"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.framinghamcc.com/about-us"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.framinghamcc.com/about-us/directions"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-great-neck-cc",
+    "club_name": "Great Neck Country Club",
+    "club_name_long": "Great Neck Country Club",
+    "state": "CT",
+    "city": "Waterford",
+    "location": "Waterford, CT",
+    "club_type": "Private",
+    "primary_color": "#486018",
+    "secondary_color": "#0090c0",
+    "logo_path": "/demo-clubs/ct-great-neck-cc.png",
+    "logo_treatment": "bare",
+    "phone": "8604436864",
+    "website_url": "http://www.greatneckgolf.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://www.greatneckgolf.com/contact/staff",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.greatneckgolf.com/golf/membership"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.greatneckgolf.com/contact/staff"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.greatneckgolf.com/contact/directions"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-greenwich-cc",
+    "club_name": "Greenwich Country Club",
+    "club_name_long": "Greenwich Country Club",
+    "state": "CT",
+    "city": "Greenwich",
+    "location": "Greenwich, CT",
+    "club_type": "Private",
+    "primary_color": "#184890",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-greenwich-cc.svg",
+    "logo_treatment": "plate",
+    "phone": "2038691000",
+    "website_url": "http://www.greenwichcountryclub.org",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.greenwichcountryclub.org/Default.aspx?p=dynamicmodule&pageid=436366&ssid=391842&vnf=1"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.greenwichcountryclub.org/Default.aspx?p=dynamicmodule&pageid=436365&ssid=391841&vnf=1"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.greenwichcountryclub.org/Default.aspx?p=dynamicmodule&pageid=436402&ssid=391876&vnf=1"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-hartford-gc",
+    "club_name": "Hartford Golf Club",
+    "club_name_long": "Hartford Golf Club",
+    "state": "CT",
+    "city": "West Hartford",
+    "location": "West Hartford, CT",
+    "club_type": "Private",
+    "primary_color": "#003000",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-hartford-gc.ico",
+    "logo_treatment": "plate",
+    "phone": "8605235229",
+    "website_url": "http://www.hartfordgolfclub.org/club/scripts/home/home.asp",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.hartfordgolfclub.org/club/page_navig.asp?GRP=34238&NS=PM"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.hartfordgolfclub.org/club/page_navig.asp?GRP=34236&NS=PA"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-haverhill-cc",
+    "club_name": "Haverhill Country Club",
+    "club_name_long": "Haverhill Country Club",
+    "state": "MA",
+    "city": "Haverhill",
+    "location": "Haverhill, MA",
+    "club_type": "Private",
+    "primary_color": "#001848",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-haverhill-cc.png",
+    "logo_treatment": "plate",
+    "phone": "9783748522",
+    "website_url": "https://www.haverhillcc.com/",
+    "tee_sheet_url": "https://www.jonasclub.com",
+    "tee_sheet_vendor": "Jonas",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.haverhillcc.com/Membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.haverhillcc.com/Membership/About_the_Club"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.haverhillcc.com/Contact_Directions"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-highland-gc",
+    "club_name": "Highland Golf Club",
+    "club_name_long": "Highland Golf Club",
+    "state": "CT",
+    "city": "Shelton",
+    "location": "Shelton, CT",
+    "club_type": "Private",
+    "primary_color": "#607830",
+    "secondary_color": "#304848",
+    "logo_path": "/demo-clubs/ct-highland-gc.jpg",
+    "logo_treatment": "plate",
+    "phone": "2039248658",
+    "website_url": "http://www.highlandgolfclub.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "http://www.highlandgolfclub.com/memberships.html"
+      },
+      {
+        "label": "About Us",
+        "href": "http://www.highlandgolfclub.com/history.html"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-holyoke-cc",
+    "club_name": "Holyoke Country Club",
+    "club_name_long": "Holyoke Country Club",
+    "state": "MA",
+    "city": "Holyoke",
+    "location": "Holyoke, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#306030",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-holyoke-cc.jpg",
+    "logo_treatment": "plate",
+    "phone": "4135341933",
+    "website_url": "https://holyokecountryclub.square.site/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-hopedale-cc",
+    "club_name": "Hopedale Country Club",
+    "club_name_long": "Hopedale Country Club",
+    "state": "MA",
+    "city": "Hopedale",
+    "location": "Hopedale, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#006030",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-hopedale-cc.png",
+    "logo_treatment": "plate",
+    "phone": "5084739876",
+    "website_url": "https://hopedalecc.com/",
+    "tee_sheet_url": "https://foreupsoftware.com/index.php/booking/20992/6404#teetimes",
+    "tee_sheet_vendor": "ForeUP",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://hopedalecc.com/updated-memberships/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://hopedalecc.com/updated-contact/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-hyannisport-club",
+    "club_name": "Hyannisport Club",
+    "club_name_long": "Hyannisport Club",
+    "state": "MA",
+    "city": "Hyannis Port",
+    "location": "Hyannis Port, MA",
+    "club_type": "Private",
+    "primary_color": "#001848",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-hyannisport-club.png",
+    "logo_treatment": "plate",
+    "phone": "5087752978",
+    "website_url": "https://www.hyannisportclub.com/",
+    "tee_sheet_url": "https://www.jonasclub.com",
+    "tee_sheet_vendor": "Jonas",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.hyannisportclub.com/Membership"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.hyannisportclub.com/Contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-indian-meadows-gc",
+    "club_name": "Indian Meadows Golf Club",
+    "club_name_long": "Indian Meadows Golf Club",
+    "state": "MA",
+    "city": "Westborough",
+    "location": "Westborough, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#600018",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-indian-meadows-gc.png",
+    "logo_treatment": "plate",
+    "phone": "5088365460",
+    "website_url": "https://www.indianmeadowsgolfclub.com/",
+    "tee_sheet_url": "https://apimanager-cc31.clubcaddie.com/webapi/view/jjedabab",
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-indian-pond-cc",
+    "club_name": "Indian Pond Country Club",
+    "club_name_long": "Indian Pond Country Club",
+    "state": "MA",
+    "city": "Kingston",
+    "location": "Kingston, MA",
+    "club_type": "Private",
+    "primary_color": "#607860",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-indian-pond-cc.png",
+    "logo_treatment": "plate",
+    "phone": "7815850555",
+    "website_url": "https://www.indianpondcountryclub.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "About Us",
+        "href": "https://www.indianpondcountryclub.com/club/scripts/public/public.asp?NS=PUBLIC"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.indianpondcountryclub.com/club/scripts/view/view_directions.asp?NS=PCON"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-indian-ridge-cc",
+    "club_name": "Indian Ridge Country Club",
+    "club_name_long": "Indian Ridge Country Club",
+    "state": "MA",
+    "city": "Andover",
+    "location": "Andover, MA",
+    "club_type": "Private",
+    "primary_color": "#907878",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-indian-ridge-cc.png",
+    "logo_treatment": "bare",
+    "phone": "9784759484",
+    "website_url": "https://www.indianridgecountryclub.us/",
+    "tee_sheet_url": "https://www.jonasclub.com",
+    "tee_sheet_vendor": "Jonas",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.indianridgecountryclub.us/Membership"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.indianridgecountryclub.us/Contact-Us---Directions"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-innis-arden-gc",
+    "club_name": "Innis Arden Golf Club",
+    "club_name_long": "Innis Arden Golf Club",
+    "state": "CT",
+    "city": "Old Greenwich",
+    "location": "Old Greenwich, CT",
+    "club_type": "Private",
+    "primary_color": "#001848",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-innis-arden-gc.png",
+    "logo_treatment": "plate",
+    "phone": "2036376900",
+    "website_url": "http://www.innisardengolfclub.com",
+    "tee_sheet_url": "https://www.clubessential.com?pageRef=ZmFGJ4p9LOdak6q%2bNkVSLr%2bmlctwbthr%2fUbIya37RnkVE2oaUsB91Fh3npDIIGv2sYTebTGCNr9QHNd2I%2bBW4TXsoFkhtQcLcH11nh83Dro%3d",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.innisardengolfclub.com/membership"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.innisardengolfclub.com/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-kernwood-cc",
+    "club_name": "Kernwood Country Club",
+    "club_name_long": "Kernwood Country Club",
+    "state": "MA",
+    "city": "Salem",
+    "location": "Salem, MA",
+    "club_type": "Private",
+    "primary_color": "#000060",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-kernwood-cc.png",
+    "logo_treatment": "plate",
+    "phone": "9787448011",
+    "website_url": "https://www.kernwood.org/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://www.kernwood.org/about-us/guest-information",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.kernwood.org/membership"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.kernwood.org/about-us/guest-information"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.kernwood.org/about-us/directions"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.kernwood.org/about-us/directions"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-kettle-brook-gc",
+    "club_name": "Kettle Brook Golf Club",
+    "club_name_long": "Kettle Brook Golf Club",
+    "state": "MA",
+    "city": "Paxton",
+    "location": "Paxton, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#c09018",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-kettle-brook-gc.png",
+    "logo_treatment": "bare",
+    "phone": "5087994653",
+    "website_url": "https://kettlebrookgolfclub.com/",
+    "tee_sheet_url": "http://wcc-kettlebrookcupstandings.golfgenius.com",
+    "tee_sheet_vendor": "Golf Genius",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://kettlebrookgolfclub.com/memberships/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://kettlebrookgolfclub.com/contact-us/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-kings-way-gc",
+    "club_name": "Kings Way Golf Club",
+    "club_name_long": "Kings Way Golf Club",
+    "state": "MA",
+    "city": "Yarmouth Port",
+    "location": "Yarmouth Port, MA",
+    "club_type": "Private",
+    "primary_color": "#187830",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-kings-way-gc.png",
+    "logo_treatment": "bare",
+    "phone": "5083628870",
+    "website_url": "https://www.kingswaygc.com/",
+    "tee_sheet_url": "https://kings-way-golf-club.book.teeitup.com/",
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.kingswaygc.com/join-e-club/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.kingswaygc.com/contact-us/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-lake-waramaug-cc",
+    "club_name": "Lake Waramaug Country Club",
+    "club_name_long": "Lake Waramaug Country Club",
+    "state": "CT",
+    "city": "New Preston",
+    "location": "New Preston, CT",
+    "club_type": "Private",
+    "primary_color": "#004830",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-lake-waramaug-cc.png",
+    "logo_treatment": "plate",
+    "phone": "8608682333",
+    "website_url": "http://www.lakewaramaugcc.com",
+    "tee_sheet_url": "https://www.clubessential.com?pageRef=RyisN9vFRD6HwzVl4iN%2bKJVPUMImP0X0bTVAPV628iRiSjhaYDs4JxJMO8MpBTxyQpZVkU9s%2fwRM0EiC6ly9KH3Xz9teFKWaZMNoDHvcSR8%3d",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.lakewaramaugcc.com/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.lakewaramaugcc.com/history"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.lakewaramaugcc.com/contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-larry-gannon-municipal-gc",
+    "club_name": "Larry Gannon Municipal Golf Course",
+    "club_name_long": "Larry Gannon Municipal Golf Course",
+    "state": "MA",
+    "city": "Lynn",
+    "location": "Lynn, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#a83000",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-larry-gannon-municipal-gc.png",
+    "logo_treatment": "bare",
+    "phone": "7815928238",
+    "website_url": "https://gannongolfclub.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "About Us",
+        "href": "https://gannongolfclub.com/history/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://gannongolfclub.com/contact/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-lionheart-cc",
+    "club_name": "Lionheart Country Club",
+    "club_name_long": "Lionheart Country Club",
+    "state": "CT",
+    "city": "Avon",
+    "location": "Avon, CT",
+    "club_type": "Semi-Private",
+    "primary_color": "#000030",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-lionheart-cc.png",
+    "logo_treatment": "bare",
+    "phone": "8606781679",
+    "website_url": "https://lionheartcountryclub.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Contact Info",
+        "href": "https://lionheartcountryclub.com/web/pages/contact-us1"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-litchfield-cc",
+    "club_name": "Litchfield Country Club",
+    "club_name_long": "Litchfield Country Club",
+    "state": "CT",
+    "city": "Litchfield",
+    "location": "Litchfield, CT",
+    "club_type": "Private",
+    "primary_color": "#004818",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-litchfield-cc.png",
+    "logo_treatment": "plate",
+    "phone": "8605678383",
+    "website_url": "http://www.litchfield.club",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.litchfield.club/MEMBERSHIP"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.litchfield.club/CONTACT_US"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-longmeadow-cc",
+    "club_name": "Longmeadow Country Club",
+    "club_name_long": "Longmeadow Country Club",
+    "state": "MA",
+    "city": "Longmeadow",
+    "location": "Longmeadow, MA",
+    "club_type": "Private",
+    "primary_color": "#786048",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-longmeadow-cc.png",
+    "logo_treatment": "plate",
+    "phone": "4135678412",
+    "website_url": "https://www.longmeadowcc.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "About Us",
+        "href": "https://www.longmeadowcc.com/history"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.longmeadowcc.com/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-ludlow-cc",
+    "club_name": "Ludlow Country Club",
+    "club_name_long": "Ludlow Country Club",
+    "state": "MA",
+    "city": "Ludlow",
+    "location": "Ludlow, MA",
+    "club_type": "Private",
+    "primary_color": "#d8a818",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-ludlow-cc.png",
+    "logo_treatment": "bare",
+    "phone": "4135833434",
+    "website_url": "https://ludlowcountryclub.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://ludlowcountryclub.com/p/16/Become-a-Member"
+      },
+      {
+        "label": "About Us",
+        "href": "https://ludlowcountryclub.com/p/22/History-of-Ludlow-Country-Club"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://ludlowcountryclub.com/contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-madison-cc",
+    "club_name": "Madison Country Club",
+    "club_name_long": "Madison Country Club",
+    "state": "CT",
+    "city": "Madison",
+    "location": "Madison, CT",
+    "club_type": "Private",
+    "primary_color": "#003078",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-madison-cc.png",
+    "logo_treatment": "plate",
+    "phone": "2032451407",
+    "website_url": "http://www.madisoncountryclub.org",
+    "tee_sheet_url": "https://www.jonasclub.com",
+    "tee_sheet_vendor": "Jonas",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.madisoncountryclub.org/Membership_Opportunities"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.madisoncountryclub.org/Home/About_Us"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.madisoncountryclub.org/Contact_Us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-manchester-cc",
+    "club_name": "Manchester Country Club",
+    "club_name_long": "Manchester Country Club",
+    "state": "CT",
+    "city": "Manchester",
+    "location": "Manchester, CT",
+    "club_type": "Semi-Private",
+    "primary_color": "#006048",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-manchester-cc.png",
+    "logo_treatment": "plate",
+    "phone": "8606460103",
+    "website_url": "http://www.mancc.com",
+    "tee_sheet_url": "https://www.mancc.com/book-tee-times-members/",
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.mancc.com/membership-information-rates/"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.mancc.com/golf-simulators/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.mancc.com/club-contacts/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-marlborough-cc",
+    "club_name": "Marlborough Country Club",
+    "club_name_long": "Marlborough Country Club",
+    "state": "MA",
+    "city": "Marlborough",
+    "location": "Marlborough, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#001860",
+    "secondary_color": "#487830",
+    "logo_path": "/demo-clubs/ma-marlborough-cc.png",
+    "logo_treatment": "bare",
+    "phone": "5084815340",
+    "website_url": "https://marlboroughcc.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://marlboroughcc.com/web/pages/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://marlboroughcc.com/web/pages/about"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://marlboroughcc.com/web/pages/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-merrimack-gc",
+    "club_name": "Merrimack Golf Course",
+    "club_name_long": "Merrimack Golf Course",
+    "state": "MA",
+    "city": "Methuen",
+    "location": "Methuen, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#a87800",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-merrimack-gc.gif",
+    "logo_treatment": "bare",
+    "phone": "9786859717",
+    "website_url": "https://merrimackvalleygolfclub.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://merrimackvalleygolfclub.com/memberships.html"
+      },
+      {
+        "label": "About Us",
+        "href": "https://merrimackvalleygolfclub.com/about.html"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://merrimackvalleygolfclub.com/contact.html"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-milbrook-club",
+    "club_name": "Milbrook Club",
+    "club_name_long": "Milbrook Club",
+    "state": "CT",
+    "city": "Greenwich",
+    "location": "Greenwich, CT",
+    "club_type": "Private",
+    "primary_color": "#004890",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-milbrook-club.svg",
+    "logo_treatment": "plate",
+    "phone": "2038694540",
+    "website_url": "http://www.milbrookclub.com",
+    "tee_sheet_url": "https://www.clubessential.com?pageRef=gxjOxRAagTUdhc63xUbnJ2ZqDfWAVoYUs13kNOXYPCDQXeJDY7yj3ud9oFXadRQHeSW2jo3KXMtlL37oRTClqY8xQIJJnxKj",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.milbrookclub.com/membership"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.milbrookclub.com/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-mink-meadows-gc",
+    "club_name": "Mink Meadows Golf Club",
+    "club_name_long": "Mink Meadows Golf Club",
+    "state": "MA",
+    "city": "Vineyard Haven",
+    "location": "Vineyard Haven, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#183000",
+    "secondary_color": "#607890",
+    "logo_path": "/demo-clubs/ma-mink-meadows-gc.jpg",
+    "logo_treatment": "plate",
+    "phone": "5086930600",
+    "website_url": "https://www.minkmeadowsgc.com/",
+    "tee_sheet_url": "https://foreupsoftware.com/index.php/booking/20035/3294#teetimes",
+    "tee_sheet_vendor": "ForeUP",
+    "billing_url": null,
+    "staff_info_url": "https://www.minkmeadowsgc.com/about-mink-meadows-golf-club/staff/",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.minkmeadowsgc.com/become-member/type-of-memberships/"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.minkmeadowsgc.com/about-mink-meadows-golf-club/staff/"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.minkmeadowsgc.com/about-mink-meadows-golf-club/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.minkmeadowsgc.com/contact/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-mt-pleasant-gc",
+    "club_name": "Mt. Pleasant Golf Club",
+    "club_name_long": "Mt. Pleasant Golf Club",
+    "state": "MA",
+    "city": "Lowell",
+    "location": "Lowell, MA",
+    "club_type": "Private",
+    "primary_color": "#1890d8",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-mt-pleasant-gc.png",
+    "logo_treatment": "plate",
+    "phone": "9784532949",
+    "website_url": "https://mpgc.net/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://mpgc.net/pro-shop-staff/",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://mpgc.net/guests/membership-info/"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://mpgc.net/pro-shop-staff/"
+      },
+      {
+        "label": "About Us",
+        "href": "https://mpgc.net/history/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://mpgc.net/guests/contact-us/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-nashawtuc-cc",
+    "club_name": "Nashawtuc Country Club",
+    "club_name_long": "Nashawtuc Country Club",
+    "state": "MA",
+    "city": "Concord",
+    "location": "Concord, MA",
+    "club_type": "Private",
+    "primary_color": "#306078",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-nashawtuc-cc.png",
+    "logo_treatment": "plate",
+    "phone": "9783693457",
+    "website_url": "https://www.nashawtuc.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.nashawtuc.com/clubhouse/nashawtuc-employment-openings"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.nashawtuc.com/golf"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-needham-gc",
+    "club_name": "Needham Golf Club",
+    "club_name_long": "Needham Golf Club",
+    "state": "MA",
+    "city": "Needham",
+    "location": "Needham, MA",
+    "club_type": "Private",
+    "primary_color": "#186030",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-needham-gc.png",
+    "logo_treatment": "plate",
+    "phone": "7814449692",
+    "website_url": "https://www.needhamgolfclub.com/",
+    "tee_sheet_url": "https://needham-golf-club.book.teeitup.com/",
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://www.needhamgolfclub.com/web/pages/about-us",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.needhamgolfclub.com/web/pages/membership"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.needhamgolfclub.com/web/pages/about-us"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.needhamgolfclub.com/web/pages/about-us"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.needhamgolfclub.com/web/pages/contact-form"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-new-haven-cc",
+    "club_name": "New Haven Country Club",
+    "club_name_long": "New Haven Country Club",
+    "state": "CT",
+    "city": "Hamden",
+    "location": "Hamden, CT",
+    "club_type": "Private",
+    "primary_color": "#907800",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-new-haven-cc.svg",
+    "logo_treatment": "plate",
+    "phone": "2032484488",
+    "website_url": "http://www.newhavencc.com",
+    "tee_sheet_url": "https://www.clubessential.com?pageRef=z4qjQBL6YlVSyfnbfdEUj3lV5ZMzn4ckMkaWJlcNWHv0nov78HyZL%2fPkGtd2ZQP6FTNjWqGc9C1YbQJE4D3zyDGg8lCFOZlC",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.newhavencc.com/join-our-club"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.newhavencc.com/our-story"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-newtown-cc",
+    "club_name": "Newtown Country Club",
+    "club_name_long": "Newtown Country Club",
+    "state": "CT",
+    "city": "Newtown",
+    "location": "Newtown, CT",
+    "club_type": "Private",
+    "primary_color": "#304878",
+    "secondary_color": "#a87830",
+    "logo_path": "/demo-clubs/ct-newtown-cc.webp",
+    "logo_treatment": "bare",
+    "phone": "2034269311",
+    "website_url": "http://www.newtowncountryclub.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://newtowncountryclub.com/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://newtowncountryclub.com/our-story"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://newtowncountryclub.com/contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-nichols-college-gc",
+    "club_name": "Nichols College Golf Club",
+    "club_name_long": "Nichols College Golf Club",
+    "state": "MA",
+    "city": "Dudley",
+    "location": "Dudley, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#007860",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-nichols-college-gc.png",
+    "logo_treatment": "plate",
+    "phone": "5089434538",
+    "website_url": "https://dudleyhillgolf.com/",
+    "tee_sheet_url": "https://dudleylinks.teesnap.net/",
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://dudleyhillgolf.com/membership-overview/"
+      },
+      {
+        "label": "About Us",
+        "href": "https://dudleyhillgolf.com/course-history/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://dudleyhillgolf.com/contact/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-northampton-cc",
+    "club_name": "Northampton Country Club",
+    "club_name_long": "Northampton Country Club",
+    "state": "MA",
+    "city": "Leeds",
+    "location": "Leeds, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#60a830",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-northampton-cc.jpg",
+    "logo_treatment": "plate",
+    "phone": "4135861898",
+    "website_url": "https://hampgolf.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://hampgolf.com/membership/"
+      },
+      {
+        "label": "About Us",
+        "href": "https://hampgolf.com/about-hamp-golf/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-northfield-gc",
+    "club_name": "Northfield Golf Club",
+    "club_name_long": "Northfield Golf Club",
+    "state": "MA",
+    "city": "Northfield",
+    "location": "Northfield, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#480030",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-northfield-gc.png",
+    "logo_treatment": "plate",
+    "phone": "4134982432",
+    "website_url": "https://northfieldgolfcourse.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://northfieldgolfcourse.com/membership/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://northfieldgolfcourse.com/contact/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-oakley-cc",
+    "club_name": "Oakley Country Club",
+    "club_name_long": "Oakley Country Club",
+    "state": "MA",
+    "city": "Watertown",
+    "location": "Watertown, MA",
+    "club_type": "Private",
+    "primary_color": "#006030",
+    "secondary_color": "#784830",
+    "logo_path": "/demo-clubs/ma-oakley-cc.png",
+    "logo_treatment": "plate",
+    "phone": "6174847748",
+    "website_url": "https://oakleycountryclub.org/",
+    "tee_sheet_url": "https://www.clubessential.com",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://oakleycountryclub.org/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://oakleycountryclub.org/default.aspx?p=TrackHyperlink&URL=club-history&ssid=112360865896&fid=14222200114"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://oakleycountryclub.org/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-old-lyme-cc",
+    "club_name": "Old Lyme Country Club",
+    "club_name_long": "Old Lyme Country Club",
+    "state": "CT",
+    "city": "Old Lyme",
+    "location": "Old Lyme, CT",
+    "club_type": "Private",
+    "primary_color": "#303018",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-old-lyme-cc.png",
+    "logo_treatment": "plate",
+    "phone": "8604341639",
+    "website_url": "https://oldlymecc.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Contact Info",
+        "href": "https://oldlymecc.com/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-old-newbury-gc",
+    "club_name": "Old Newbury Golf Club",
+    "club_name_long": "Old Newbury Golf Club",
+    "state": "MA",
+    "city": "Newbury",
+    "location": "Newbury, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#4860a8",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-old-newbury-gc.png",
+    "logo_treatment": "bare",
+    "phone": "9784659888",
+    "website_url": "https://ouldnewbury.com/",
+    "tee_sheet_url": "https://foreupsoftware.com/index.php/booking/19969#/teetimes",
+    "tee_sheet_vendor": "ForeUP",
+    "billing_url": null,
+    "staff_info_url": "https://ouldnewbury.com/about-us/",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://ouldnewbury.com/memberships/"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://ouldnewbury.com/about-us/"
+      },
+      {
+        "label": "About Us",
+        "href": "https://ouldnewbury.com/about-us/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://ouldnewbury.com/contact/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-pembroke-cc",
+    "club_name": "Pembroke Country Club",
+    "club_name_long": "Pembroke Country Club",
+    "state": "MA",
+    "city": "Pembroke",
+    "location": "Pembroke, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#a89030",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-pembroke-cc.png",
+    "logo_treatment": "bare",
+    "phone": "7818265191",
+    "website_url": "https://pembrokegolf.com/",
+    "tee_sheet_url": "https://foreupsoftware.com/index.php/booking/22650#/teetimes",
+    "tee_sheet_vendor": "ForeUP",
+    "billing_url": null,
+    "staff_info_url": "https://pembrokegolf.com/golf-shop-and-staff/",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://pembrokegolf.com/memberships/"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://pembrokegolf.com/golf-shop-and-staff/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://pembrokegolf.com/contact/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-pine-brook-cc",
+    "club_name": "Pine Brook Country Club",
+    "club_name_long": "Pine Brook Country Club",
+    "state": "MA",
+    "city": "Weston",
+    "location": "Weston, MA",
+    "club_type": "Private",
+    "primary_color": "#304848",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-pine-brook-cc.png",
+    "logo_treatment": "plate",
+    "phone": "7818934820",
+    "website_url": "https://www.pbccma.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.pbccma.com/join-our-team"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.pbccma.com/about"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.pbccma.com/club/scripts/view/view_directions.asp"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-pocasset-gc",
+    "club_name": "Pocasset Golf Club",
+    "club_name_long": "Pocasset Golf Club",
+    "state": "MA",
+    "city": "Pocasset",
+    "location": "Pocasset, MA",
+    "club_type": "Private",
+    "primary_color": "#306090",
+    "secondary_color": "#d81818",
+    "logo_path": "/demo-clubs/ma-pocasset-gc.png",
+    "logo_treatment": "bare",
+    "phone": "5085637171",
+    "website_url": "https://www.pocassetgolfclub.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://www.pocassetgolfclub.com/club/scripts/section/section.asp?NS=PD",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.pocassetgolfclub.com/club/scripts/section/section.asp?GRP=25702&NS=MEMBERSHIP"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.pocassetgolfclub.com/club/scripts/section/section.asp?NS=PD"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.pocassetgolfclub.com/club/scripts/view/view_directions.asp?NS=CD"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-quinnatisset-cc",
+    "club_name": "Quinnatisset Country Club",
+    "club_name_long": "Quinnatisset Country Club",
+    "state": "CT",
+    "city": "Thompson",
+    "location": "Thompson, CT",
+    "club_type": "Private",
+    "primary_color": "#001848",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-quinnatisset-cc.png",
+    "logo_treatment": "plate",
+    "phone": "8609287516",
+    "website_url": "http://www.quinnatisset.com",
+    "tee_sheet_url": "https://www.chronogolf.com/login",
+    "tee_sheet_vendor": "Chronogolf",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.quinnatisset.com/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.quinnatisset.com/our-history"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.quinnatisset.com"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-race-brook-cc",
+    "club_name": "Race Brook Country Club",
+    "club_name_long": "Race Brook Country Club",
+    "state": "CT",
+    "city": "Orange",
+    "location": "Orange, CT",
+    "club_type": "Private",
+    "primary_color": "#001818",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-race-brook-cc.png",
+    "logo_treatment": "plate",
+    "phone": "2033899521",
+    "website_url": "http://www.racebrook.org",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://racebrook.org/web/pages/pga-professionals",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://racebrook.org/web/pages/joinnow"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://racebrook.org/web/pages/pga-professionals"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://racebrook.org/web/pages/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-renaissance-cc",
+    "club_name": "Renaissance Country Club",
+    "club_name_long": "Renaissance Country Club",
+    "state": "MA",
+    "city": "Haverhill",
+    "location": "Haverhill, MA",
+    "club_type": "Private",
+    "primary_color": "#486078",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-renaissance-cc.svg",
+    "logo_treatment": "plate",
+    "phone": "9785560900",
+    "website_url": "https://renaissancema.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://renaissancema.com/membership/"
+      },
+      {
+        "label": "About Us",
+        "href": "https://renaissancema.com/about/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://renaissancema.com/contact/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-reservation-gc",
+    "club_name": "Reservation Golf Club",
+    "club_name_long": "Reservation Golf Club",
+    "state": "MA",
+    "city": "Mattapoisett",
+    "location": "Mattapoisett, MA",
+    "club_type": "Private",
+    "primary_color": "#a86060",
+    "secondary_color": "#a89060",
+    "logo_path": "/demo-clubs/ma-reservation-gc.png",
+    "logo_treatment": "plate",
+    "phone": "5087583792",
+    "website_url": "https://www.reservationgolfclub.com/",
+    "tee_sheet_url": "https://www.reservationgolfclub.com/member-portals/tee-times",
+    "tee_sheet_vendor": null,
+    "billing_url": "https://www.reservationgolfclub.com/member-portals/tee-times",
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.reservationgolfclub.com/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.reservationgolfclub.com/more-info/our-history"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.reservationgolfclub.com/more-info/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-ridgewood-cc",
+    "club_name": "Ridgewood Country Club",
+    "club_name_long": "Ridgewood Country Club",
+    "state": "CT",
+    "city": "Danbury",
+    "location": "Danbury, CT",
+    "club_type": "Private",
+    "primary_color": "#601818",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-ridgewood-cc.svg",
+    "logo_treatment": "plate",
+    "phone": "2037434491",
+    "website_url": "http://www.ridgewoodcc.com",
+    "tee_sheet_url": "https://www.clubessential.com?pageRef=fYeM5b5k4FAkUy1aMImD5gSRtZCrfbUB8V%2fjrsiNgYRNm2GE1v9CiLEob9w%2fjhUW1tKLssnkB4f3ChAXaTGqVVqd4b2%2fREvw",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.ridgewoodcc.com/discover-membership"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.ridgewoodcc.com/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-rock-ridge-cc",
+    "club_name": "Rock Ridge Country Club",
+    "club_name_long": "Rock Ridge Country Club",
+    "state": "CT",
+    "city": "Newtown",
+    "location": "Newtown, CT",
+    "club_type": "Private",
+    "primary_color": "#001800",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-rock-ridge-cc.png",
+    "logo_treatment": "plate",
+    "phone": "2034262106",
+    "website_url": "http://www.rockridgecc.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Contact Info",
+        "href": "https://rockridgecc.com/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-rockport-gc",
+    "club_name": "Rockport Golf Club",
+    "club_name_long": "Rockport Golf Club",
+    "state": "MA",
+    "city": "Rockport",
+    "location": "Rockport, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#004878",
+    "secondary_color": "#a81830",
+    "logo_path": "/demo-clubs/ma-rockport-gc.png",
+    "logo_treatment": "bare",
+    "phone": "9785463340",
+    "website_url": "https://rockportgolf.com/",
+    "tee_sheet_url": "https://foreupsoftware.com/index.php/booking/index/22999#/teetimes",
+    "tee_sheet_vendor": "ForeUP",
+    "billing_url": null,
+    "staff_info_url": "https://rockportgolf.com/about-us/",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://rockportgolf.com/membership/"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://rockportgolf.com/about-us/"
+      },
+      {
+        "label": "About Us",
+        "href": "https://rockportgolf.com/about-us/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://rockportgolf.com/contact-us/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-rolling-hills-cc",
+    "club_name": "Rolling Hills Country Club",
+    "club_name_long": "Rolling Hills Country Club",
+    "state": "CT",
+    "city": "Wilton",
+    "location": "Wilton, CT",
+    "club_type": "Private",
+    "primary_color": "#006018",
+    "secondary_color": "#90c060",
+    "logo_path": "/demo-clubs/ct-rolling-hills-cc.png",
+    "logo_treatment": "bare",
+    "phone": "2037624600",
+    "website_url": "http://www.rhcconline.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.rhcconline.com/club/scripts/section/section.asp?NS=PM"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.rhcconline.com/club/scripts/public/public.asp?NS=PUBLIC"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.rhcconline.com/club/scripts/view/view_directions.asp?NS=PC"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-round-hill-club",
+    "club_name": "Round Hill Club",
+    "club_name_long": "Round Hill Club",
+    "state": "CT",
+    "city": "Greenwich",
+    "location": "Greenwich, CT",
+    "club_type": "Private",
+    "primary_color": "#181860",
+    "secondary_color": "#c01830",
+    "logo_path": "/demo-clubs/ct-round-hill-club.png",
+    "logo_treatment": "plate",
+    "phone": "2038692350",
+    "website_url": "http://www.rhclub.org",
+    "tee_sheet_url": "https://clubessential.com/",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Contact Info",
+        "href": "https://www.rhclub.org/default.aspx?p=TrackHyperlink&URL=Default.aspx%3fp%3dDynamicModule%26pageid%3d402065%26ssid%3d328824%26vnf%3d1&ssid=140630550778&fid=14150277136"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-rowley-cc",
+    "club_name": "Rowley Country Club",
+    "club_name_long": "Rowley Country Club",
+    "state": "MA",
+    "city": "Rowley",
+    "location": "Rowley, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#907848",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-rowley-cc.webp",
+    "logo_treatment": "plate",
+    "phone": "9789482731",
+    "website_url": "https://www.rowleycountryclub.com/",
+    "tee_sheet_url": "https://www.tee-on.com/PubGolf/servlet/com.teeon.teesheet.servlets.golfersection.WebBookingAllTimesLanding?FromTrailSearch=true&FromCourseWebsite=true&CourseCode=ROWL&CourseGroupID=10378&Referrer=www.rowleycountryclub.com",
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://www.rowleycountryclub.com/about-us",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.rowleycountryclub.com/membership"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.rowleycountryclub.com/about-us"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.rowleycountryclub.com/about-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-sandwich-hollows-gc",
+    "club_name": "Sandwich Hollows Golf Club",
+    "club_name_long": "Sandwich Hollows Golf Club",
+    "state": "MA",
+    "city": "East Sandwich",
+    "location": "East Sandwich, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#001830",
+    "secondary_color": "#90c0d8",
+    "logo_path": "/demo-clubs/ma-sandwich-hollows-gc.png",
+    "logo_treatment": "plate",
+    "phone": "5088883384",
+    "website_url": "https://www.sandwichmass.org/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.sandwichmass.org/CivicAlerts.aspx?AID=930"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.sandwichmass.org/formcenter/Information-Technology-17/Contact-Sandwich-Town-Staff-73"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-sankaty-head-gc",
+    "club_name": "Sankaty Head Golf Club",
+    "club_name_long": "Sankaty Head Golf Club",
+    "state": "MA",
+    "city": "Siasconset",
+    "location": "Siasconset, MA",
+    "club_type": "Private",
+    "primary_color": "#c00018",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-sankaty-head-gc.png",
+    "logo_treatment": "bare",
+    "phone": "5082576655",
+    "website_url": "https://www.sankatyheadgc.com/",
+    "tee_sheet_url": "https://www.clubessential.com?pageRef=4K%2fxGmANTjMOmFvrabS2lGhCuxIzPEzo37IDgHIOZz2smOzMmb%2b%2f3z0D5%2bbkGbwMdywRarNKXu%2bFP7mUvuBqWeUErTK%2bbJoRigT2Zu4t7Kg%3d",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": "https://www.sankatyheadgc.com/about-us",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.sankatyheadgc.com/about-us"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.sankatyheadgc.com/about-us"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.sankatyheadgc.com/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-shaker-farms-cc",
+    "club_name": "Shaker Farms Country Club",
+    "club_name_long": "Shaker Farms Country Club",
+    "state": "MA",
+    "city": "Westfield",
+    "location": "Westfield, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#003000",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-shaker-farms-cc.png",
+    "logo_treatment": "bare",
+    "phone": "4135622770",
+    "website_url": "https://www.shakerfarmscc.com/",
+    "tee_sheet_url": "https://shakerfarms.cps.golf/",
+    "tee_sheet_vendor": "CPS",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.shakerfarmscc.com/memberships/"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.shakerfarmscc.com/our-history/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.shakerfarmscc.com/contact-us/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-sharon-cc",
+    "club_name": "Sharon Country Club",
+    "club_name_long": "Sharon Country Club",
+    "state": "CT",
+    "city": "Sharon",
+    "location": "Sharon, CT",
+    "club_type": "Private",
+    "primary_color": "#006030",
+    "secondary_color": "#901830",
+    "logo_path": "/demo-clubs/ct-sharon-cc.png",
+    "logo_treatment": "bare",
+    "phone": "8603645964",
+    "website_url": "http://www.sharoncountryclub.org",
+    "tee_sheet_url": "https://www.jonasclub.com",
+    "tee_sheet_vendor": "Jonas",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "About Us",
+        "href": "https://www.sharoncountryclub.org/About_Us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-shorehaven-gc",
+    "club_name": "Shorehaven Golf Club",
+    "club_name_long": "Shorehaven Golf Club",
+    "state": "CT",
+    "city": "East Norwalk",
+    "location": "East Norwalk, CT",
+    "club_type": "Private",
+    "primary_color": "#304878",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-shorehaven-gc.png",
+    "logo_treatment": "bare",
+    "phone": "2038665528",
+    "website_url": "http://www.shorehavengc.org",
+    "tee_sheet_url": "https://www.foretees.com/",
+    "tee_sheet_vendor": "Foretees",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.shorehavengc.org/about/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.shorehavengc.org/about"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.shorehavengc.org/about/contacts-and-directions"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-silver-spring-cc",
+    "club_name": "Silver Spring Country Club",
+    "club_name_long": "Silver Spring Country Club",
+    "state": "CT",
+    "city": "Ridgefield",
+    "location": "Ridgefield, CT",
+    "club_type": "Private",
+    "primary_color": "#183018",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-silver-spring-cc.png",
+    "logo_treatment": "plate",
+    "phone": "2034382671",
+    "website_url": "http://www.silverspringcc.org",
+    "tee_sheet_url": "http://www.clubessential.com?pageRef=R2AdWGHgRPFvNGU%2bbjldY71nfSvSQq0BB4kYBbOnQ5sy3eAHBtH%2ftMTm5asIPeMRGSpirIFIMKr5tIVdVxv4OfhGVhSPoyWuDjsVOqiiugc%3d",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.silverspringcc.org/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.silverspringcc.org/story"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.silverspringcc.org/contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-silvermine-gc",
+    "club_name": "Silvermine Golf Club",
+    "club_name_long": "Silvermine Golf Club",
+    "state": "CT",
+    "city": "Norwalk",
+    "location": "Norwalk, CT",
+    "club_type": "Private",
+    "primary_color": "#306030",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-silvermine-gc.jpg",
+    "logo_treatment": "plate",
+    "phone": "2038462552",
+    "website_url": "http://www.silverminegolf.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://www.silverminegolf.com/about-us/",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.silverminegolf.com/membership-inquiry/"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.silverminegolf.com/about-us/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-suffield-cc",
+    "club_name": "Suffield Country Club",
+    "club_name_long": "Suffield Country Club",
+    "state": "CT",
+    "city": "Suffield",
+    "location": "Suffield, CT",
+    "club_type": "Private",
+    "primary_color": "#181800",
+    "secondary_color": "#909030",
+    "logo_path": "/demo-clubs/ct-suffield-cc.jpg",
+    "logo_treatment": "plate",
+    "phone": "8606687260",
+    "website_url": "http://www.suffieldcc.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": "https://secure.east.prophetservices.com/SuffieldCCBilling",
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.suffieldcc.com/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.suffieldcc.com/history"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.suffieldcc.com/contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-tpc-river-highlands",
+    "club_name": "TPC River Highlands",
+    "club_name_long": "TPC River Highlands",
+    "state": "CT",
+    "city": "Cromwell",
+    "location": "Cromwell, CT",
+    "club_type": "Private",
+    "primary_color": "#001860",
+    "secondary_color": "#d83030",
+    "logo_path": "/demo-clubs/ct-tpc-river-highlands.png",
+    "logo_treatment": "bare",
+    "phone": "8606355000",
+    "website_url": "http://www.tpcriverhighlands.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://tpc.com/riverhighlands/membership/"
+      },
+      {
+        "label": "About Us",
+        "href": "https://tpc.com/riverhighlands/about/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://tpc.com/riverhighlands/contact-directions/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-taconic-gc",
+    "club_name": "Taconic Golf Club",
+    "club_name_long": "Taconic Golf Club",
+    "state": "MA",
+    "city": "Williamstown",
+    "location": "Williamstown, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#c0a800",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-taconic-gc.png",
+    "logo_treatment": "bare",
+    "phone": "4134583997",
+    "website_url": "https://taconicgolf.com/",
+    "tee_sheet_url": "https://www.golfgenius.com/ggid/nffhrc/customerdirectory/6896694869587167562",
+    "tee_sheet_vendor": "Golf Genius",
+    "billing_url": "https://taconicgolf.com/member-area",
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://taconicgolf.com/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://taconicgolf.com/more-info/our-history"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://taconicgolf.com/more-info/contact-us-directions"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-tatnuck-cc",
+    "club_name": "Tatnuck Country Club",
+    "club_name_long": "Tatnuck Country Club",
+    "state": "MA",
+    "city": "Worcester",
+    "location": "Worcester, MA",
+    "club_type": "Private",
+    "primary_color": "#304848",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-tatnuck-cc.png",
+    "logo_treatment": "plate",
+    "phone": "5087570231",
+    "website_url": "https://tatnuckcc.com/",
+    "tee_sheet_url": "https://golfhub.golfgenius.com/events/7a5a4020-89dc-4565-8c92-d5446c932e85?_gl=1*1i7t0ov*_ga*MjAyOTM0Njg1Ni4xNzQ0ODI3NDYx*_ga_F4RE5398BV*czE3NzYzNjUzNjgkbzQ3MiRnMSR0MTc3NjM2NTQyOSRqNjAkbDAkaDA",
+    "tee_sheet_vendor": "Golf Genius",
+    "billing_url": null,
+    "staff_info_url": "https://tatnuckcc.com/web/pages/about-us",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://tatnuckcc.com/web/pages/membership"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://tatnuckcc.com/web/pages/about-us"
+      },
+      {
+        "label": "About Us",
+        "href": "https://tatnuckcc.com/web/pages/about-us"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://tatnuckcc.com/web/pages/contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-the-blandford-club",
+    "club_name": "The Blandford Club",
+    "club_name_long": "The Blandford Club",
+    "state": "MA",
+    "city": "Blandford",
+    "location": "Blandford, MA",
+    "club_type": "Private",
+    "primary_color": "#183030",
+    "secondary_color": "#306018",
+    "logo_path": "/demo-clubs/ma-the-blandford-club.webp",
+    "logo_treatment": "plate",
+    "phone": "4138482443",
+    "website_url": "https://www.blandfordcountryclub.com/",
+    "tee_sheet_url": "https://www.blandfordcountryclub.com/contact-us",
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://www.blandfordcountryclub.com/about-us",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.blandfordcountryclub.com/membership"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.blandfordcountryclub.com/about-us"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.blandfordcountryclub.com/about-us"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.blandfordcountryclub.com/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-the-nantucket-gc",
+    "club_name": "The Nantucket Golf Club",
+    "club_name_long": "The Nantucket Golf Club",
+    "state": "MA",
+    "city": "Siasconset",
+    "location": "Siasconset, MA",
+    "club_type": "Private",
+    "primary_color": "#484890",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-the-nantucket-gc.png",
+    "logo_treatment": "bare",
+    "phone": "5082578520",
+    "website_url": "https://www.nantucketgolfclub.com/",
+    "tee_sheet_url": "https://www.jonasclub.com",
+    "tee_sheet_vendor": "Jonas",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-the-orchards",
+    "club_name": "The Orchards",
+    "club_name_long": "The Orchards",
+    "state": "MA",
+    "city": "South Hadley",
+    "location": "South Hadley, MA",
+    "club_type": "Private",
+    "primary_color": "#306048",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-the-orchards.ico",
+    "logo_treatment": "bare",
+    "phone": "4135343806",
+    "website_url": "https://www.orchardsgolf.com/",
+    "tee_sheet_url": "https://www.golfgenius.com/ggid/22tq88",
+    "tee_sheet_vendor": "Golf Genius",
+    "billing_url": null,
+    "staff_info_url": "https://www.orchardsgolf.com/club#Staff",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.orchardsgolf.com/membership"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.orchardsgolf.com/club#Staff"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.orchardsgolf.com/club"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-the-patterson-club",
+    "club_name": "The Patterson Club",
+    "club_name_long": "The Patterson Club",
+    "state": "CT",
+    "city": "Fairfield",
+    "location": "Fairfield, CT",
+    "club_type": "Private",
+    "primary_color": "#003000",
+    "secondary_color": "#a8a878",
+    "logo_path": "/demo-clubs/ct-the-patterson-club.png",
+    "logo_treatment": "plate",
+    "phone": "2032595244",
+    "website_url": "https://www.thepattersonclub.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://thepattersonclub.com/about-us",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://thepattersonclub.com/membership"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://thepattersonclub.com/about-us"
+      },
+      {
+        "label": "About Us",
+        "href": "https://thepattersonclub.com/about-us/our-history"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://thepattersonclub.com/about-us/contact-us-directions"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-the-stanwich-club",
+    "club_name": "The Stanwich Club",
+    "club_name_long": "The Stanwich Club",
+    "state": "CT",
+    "city": "Greenwich",
+    "location": "Greenwich, CT",
+    "club_type": "Private",
+    "primary_color": "#003018",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-the-stanwich-club.png",
+    "logo_treatment": "plate",
+    "phone": "2038690555",
+    "website_url": "http://www.stanwich.com",
+    "tee_sheet_url": "https://www.jonasclub.com",
+    "tee_sheet_vendor": "Jonas",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Contact Info",
+        "href": "https://www.stanwich.com/Contact_Us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-turner-hill-golf-and-racquet-club",
+    "club_name": "Turner Hill Golf and Racquet Club",
+    "club_name_long": "Turner Hill Golf and Racquet Club",
+    "state": "MA",
+    "city": "Ipswich",
+    "location": "Ipswich, MA",
+    "club_type": "Private",
+    "primary_color": "#000048",
+    "secondary_color": "#60a8a8",
+    "logo_path": "/demo-clubs/ma-turner-hill-golf-and-racquet-club.png",
+    "logo_treatment": "bare",
+    "phone": "9783560090",
+    "website_url": "https://www.turnerhill.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.turnerhill.com/Membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.turnerhill.com/inactive"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.turnerhill.com/About_Us/Contact_Us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-vineyard-valley-gc",
+    "club_name": "Vineyard Valley Golf Club",
+    "club_name_long": "Vineyard Valley Golf Club",
+    "state": "CT",
+    "city": "Pomfret",
+    "location": "Pomfret, CT",
+    "club_type": "Private",
+    "primary_color": "#309030",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-vineyard-valley-gc.png",
+    "logo_treatment": "bare",
+    "phone": "8609742100",
+    "website_url": "https://www.vineyardvalleygolf.com",
+    "tee_sheet_url": "https://www.vineyardvalleygolf.com/book-a-tee-time/",
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Contact Info",
+        "href": "https://www.vineyardvalleygolf.com/contact/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-wallingford-cc",
+    "club_name": "Wallingford Country Club",
+    "club_name_long": "Wallingford Country Club",
+    "state": "CT",
+    "city": "Wallingford",
+    "location": "Wallingford, CT",
+    "club_type": "Private",
+    "primary_color": "#183060",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-wallingford-cc.png",
+    "logo_treatment": "plate",
+    "phone": "2032699320",
+    "website_url": "http://www.wallingfordcc.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.wallingfordcc.com/Membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.wallingfordcc.com/getmedia/0712af17-9612-4181-8709-313bde2bc6bc/WCC_History.aspx"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.wallingfordcc.com/Contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-washington-club",
+    "club_name": "Washington Club",
+    "club_name_long": "Washington Club",
+    "state": "CT",
+    "city": "Washington",
+    "location": "Washington, CT",
+    "club_type": "Private",
+    "primary_color": "#183030",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-washington-club.svg",
+    "logo_treatment": "plate",
+    "phone": "8608680376",
+    "website_url": "http://www.washingtonclub.net",
+    "tee_sheet_url": "https://www.clubessential.com?pageRef=Hfj3Jgp6TxLKx%2fdba0ON5dgxF3dQo81VFauMmcEyuMZgIyVXKskT7llSRAErT9xnbmBbLkiKaShdrWnRNZt6s218bFPW%2fXFlu%2fS4r1tZZpk%3d",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.washingtonclub.net/default.aspx?p=TrackHyperlink&URL=%2fmembership%2fmembership-information&ssid=112385705275&fid=14151512926"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.washingtonclub.net/the-club/contact-and-directions"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-watertown-gc",
+    "club_name": "Watertown Golf Club",
+    "club_name_long": "Watertown Golf Club",
+    "state": "CT",
+    "city": "Watertown",
+    "location": "Watertown, CT",
+    "club_type": "Private",
+    "primary_color": "#009060",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ct-watertown-gc.png",
+    "logo_treatment": "bare",
+    "phone": "8602745486",
+    "website_url": "http://www.watertowngolfclub.org",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://watertowngolfclub.org/web/pages/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://watertowngolfclub.org/web/pages/about"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://watertowngolfclub.org/web/pages/contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-wedgewood-pines-cc",
+    "club_name": "Wedgewood Pines Country Club",
+    "club_name_long": "Wedgewood Pines Country Club",
+    "state": "MA",
+    "city": "Stow",
+    "location": "Stow, MA",
+    "club_type": "Private",
+    "primary_color": "#003018",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-wedgewood-pines-cc.webp",
+    "logo_treatment": "plate",
+    "phone": "9785620066",
+    "website_url": "https://www.wedgewoodpines.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.wedgewoodpines.com/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.wedgewoodpines.com/about"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-wee-burn-cc",
+    "club_name": "Wee Burn Country Club",
+    "club_name_long": "Wee Burn Country Club",
+    "state": "CT",
+    "city": "Darien",
+    "location": "Darien, CT",
+    "club_type": "Private",
+    "primary_color": "#a80030",
+    "secondary_color": "#0078c0",
+    "logo_path": "/demo-clubs/ct-wee-burn-cc.svg",
+    "logo_treatment": "plate",
+    "phone": "2036551477",
+    "website_url": "https://www.weeburn.com",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "About Us",
+        "href": "https://www.weeburn.com/web/pages/history"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.weeburn.com/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-westminster-cc",
+    "club_name": "Westminster Country Club",
+    "club_name_long": "Westminster Country Club",
+    "state": "MA",
+    "city": "Westminster",
+    "location": "Westminster, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#a89018",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-westminster-cc.png",
+    "logo_treatment": "plate",
+    "phone": "9788745938",
+    "website_url": "https://www.westminstergc.com/",
+    "tee_sheet_url": "https://westminster-golf-club-member.book.teeitup.com/",
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://www.westminstergc.com/about-us/",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.westminstergc.com/about-us/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.westminstergc.com/contact-us/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-weston-gc",
+    "club_name": "Weston Golf Club",
+    "club_name_long": "Weston Golf Club",
+    "state": "MA",
+    "city": "Weston",
+    "location": "Weston, MA",
+    "club_type": "Private",
+    "primary_color": "#003060",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-weston-gc.png",
+    "logo_treatment": "bare",
+    "phone": "7818949019",
+    "website_url": "https://www.westongolfclub.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Contact Info",
+        "href": "https://www.westongolfclub.com/contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-white-cliffs-cc",
+    "club_name": "White Cliffs Country Club",
+    "club_name_long": "White Cliffs Country Club",
+    "state": "MA",
+    "city": "Plymouth",
+    "location": "Plymouth, MA",
+    "club_type": "Private",
+    "primary_color": "#483030",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-white-cliffs-cc.svg",
+    "logo_treatment": "plate",
+    "phone": "5088882110",
+    "website_url": "https://www.whitecliffscc.com/",
+    "tee_sheet_url": "https://www.clubessential.com?pageRef=Kl3zWFovE%2bG9qzxsp6jDOT3IcPuy5GfhfcFN5loKXDukyec%2bqKR6TwVBO7TDzBbrbbmQ0xJ3JDaM%2fiONd%2bIj17UKvfs1X888%2f7l5zXe%2bXus%3d",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": "https://www.whitecliffscc.com/meet-the-team",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.whitecliffscc.com/default.aspx?p=TrackHyperlink&URL=Default.aspx%3fp%3ddynamicmodule%26pageid%3d407625%26ssid%3d334725%26vnf%3d1&ssid=141383764783&fid=14137301341"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.whitecliffscc.com/meet-the-team"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.whitecliffscc.com/default.aspx?p=TrackHyperlink&URL=Default.aspx%3fp%3dDynamicModule%26pageid%3d407624%26ssid%3d334724%26vnf%3d1&ssid=141383146888&fid=14137301341"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.whitecliffscc.com/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-whitinsville-gc",
+    "club_name": "Whitinsville Golf Club",
+    "club_name_long": "Whitinsville Golf Club",
+    "state": "MA",
+    "city": "Whitinsville",
+    "location": "Whitinsville, MA",
+    "club_type": "Private",
+    "primary_color": "#487848",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-whitinsville-gc.png",
+    "logo_treatment": "plate",
+    "phone": "5082346210",
+    "website_url": "https://whitinsvillegolf.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://whitinsvillegolf.com/membership/"
+      },
+      {
+        "label": "About Us",
+        "href": "https://whitinsvillegolf.com/history/"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://whitinsvillegolf.com/contact/"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-winchester-cc",
+    "club_name": "Winchester Country Club",
+    "club_name_long": "Winchester Country Club",
+    "state": "MA",
+    "city": "Winchester",
+    "location": "Winchester, MA",
+    "club_type": "Private",
+    "primary_color": "#004800",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-winchester-cc.png",
+    "logo_treatment": "bare",
+    "phone": "7817294085",
+    "website_url": "https://www.winchestercc.org/",
+    "tee_sheet_url": "http://www.clubessential.com?pageRef=iCM%2bIiuvforWR%2bJniwgIWgWmreYs1QW0MO2AU8F7r%2bWugFNM%2bWGNRR5EGgbS%2bOINg%2bHqC4yHZhXKmfb0caAGXF9qrxWNx%2fww",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "About Us",
+        "href": "https://www.winchestercc.org/about"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-winthrop-gc",
+    "club_name": "Winthrop Golf Club",
+    "club_name_long": "Winthrop Golf Club",
+    "state": "MA",
+    "city": "Winthrop",
+    "location": "Winthrop, MA",
+    "club_type": "Private",
+    "primary_color": "#184848",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-winthrop-gc.png",
+    "logo_treatment": "bare",
+    "phone": "6178469713",
+    "website_url": "https://winthropgolfclub.com/",
+    "tee_sheet_url": "https://foreupsoftware.com/index.php/booking/22088#/login",
+    "tee_sheet_vendor": "ForeUP",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://winthropgolfclub.com/join-wgc"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://winthropgolfclub.com/contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-wollaston-gc",
+    "club_name": "Wollaston Golf Club",
+    "club_name_long": "Wollaston Golf Club",
+    "state": "MA",
+    "city": "Milton",
+    "location": "Milton, MA",
+    "club_type": "Private",
+    "primary_color": "#184830",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-wollaston-gc.png",
+    "logo_treatment": "plate",
+    "phone": "6176980800",
+    "website_url": "https://www.wollastongc.org/",
+    "tee_sheet_url": "https://www.clubessential.com?pageRef=qGiyb3PfYiO9e3W7MAnDsH0p9o8w%2fHK88Ionf%2fkaGSfKdJLISsaf8kduk1QguCBiRyPM2lACvVJljJ7isIVG6IBDIACm5I4U",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.wollastongc.org/membership"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-woodland-gc",
+    "club_name": "Woodland Golf Club",
+    "club_name_long": "Woodland Golf Club",
+    "state": "MA",
+    "city": "Auburndale",
+    "location": "Auburndale, MA",
+    "club_type": "Private",
+    "primary_color": "#004830",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-woodland-gc.png",
+    "logo_treatment": "plate",
+    "phone": "6175271900",
+    "website_url": "https://www.woodlandgolfclub.com/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": "https://www.woodlandgolfclub.com/join-our-team",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.woodlandgolfclub.com/join-our-team"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.woodlandgolfclub.com/join-our-team"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.woodlandgolfclub.com/our-history"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.woodlandgolfclub.com/contact-us/guest-information"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-woods-hole-gc",
+    "club_name": "Woods Hole Golf Club",
+    "club_name_long": "Woods Hole Golf Club",
+    "state": "MA",
+    "city": "Falmouth",
+    "location": "Falmouth, MA",
+    "club_type": "Private",
+    "primary_color": "#184890",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-woods-hole-gc.svg",
+    "logo_treatment": "plate",
+    "phone": "5085482932",
+    "website_url": "https://www.woodsholegolfclub.com/",
+    "tee_sheet_url": "https://www.clubessential.com?pageRef=6FquSGAR26lRAUl%2fvaJ%2fPgh9AtAaZjguxOH4oj5YPLFMcxAXyMHxpz%2fG06u5ptdpJNkSJk61m%2fnXs%2f3mFpFWz%2fCbbiT%2fHT3gKa%2f2jd7%2b3As%3d",
+    "tee_sheet_vendor": "Clubessential",
+    "billing_url": null,
+    "staff_info_url": "https://www.woodsholegolfclub.com/tennis-staff",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.woodsholegolfclub.com/membership"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.woodsholegolfclub.com/tennis-staff"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.woodsholegolfclub.com/about"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.woodsholegolfclub.com/contact"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ct-woodway-cc",
+    "club_name": "Woodway Country Club",
+    "club_name_long": "Woodway Country Club",
+    "state": "CT",
+    "city": "Darien",
+    "location": "Darien, CT",
+    "club_type": "Private",
+    "primary_color": "#184830",
+    "secondary_color": "#483018",
+    "logo_path": "/demo-clubs/ct-woodway-cc.png",
+    "logo_treatment": "plate",
+    "phone": "2033221661",
+    "website_url": "http://www.woodway.org",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.woodway.org/about-membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.woodway.org/abouts-us"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.woodway.org/contact-us"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-worcester-cc",
+    "club_name": "Worcester Country Club",
+    "club_name_long": "Worcester Country Club",
+    "state": "MA",
+    "city": "Worcester",
+    "location": "Worcester, MA",
+    "club_type": "Private",
+    "primary_color": "#186000",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-worcester-cc.png",
+    "logo_treatment": "plate",
+    "phone": "5088535087",
+    "website_url": "https://www.worcestercc.org/",
+    "tee_sheet_url": "https://www.jonasclub.com",
+    "tee_sheet_vendor": "Jonas",
+    "billing_url": null,
+    "staff_info_url": "https://www.worcestercc.org/Staff_Contacts",
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.worcestercc.org/Membership"
+      },
+      {
+        "label": "Golf Personnel",
+        "href": "https://www.worcestercc.org/Staff_Contacts"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.worcestercc.org/History"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-worthington-gc",
+    "club_name": "Worthington Golf Club",
+    "club_name_long": "Worthington Golf Club",
+    "state": "MA",
+    "city": "Worthington",
+    "location": "Worthington, MA",
+    "club_type": "Semi-Private",
+    "primary_color": "#001818",
+    "secondary_color": "#78a8d8",
+    "logo_path": "/demo-clubs/ma-worthington-gc.jpg",
+    "logo_treatment": "plate",
+    "phone": "4132384464",
+    "website_url": "https://worthingtongolfclub.com/",
+    "tee_sheet_url": "https://foreupsoftware.com/index.php/booking/19842/2691#/teetimes",
+    "tee_sheet_vendor": "ForeUP",
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://worthingtongolfclub.com/membership"
+      }
+    ],
+    "radius_rank": null
+  },
+  {
+    "slug": "ma-wyantenuck-cc",
+    "club_name": "Wyantenuck Country Club",
+    "club_name_long": "Wyantenuck Country Club",
+    "state": "MA",
+    "city": "Great Barrington",
+    "location": "Great Barrington, MA",
+    "club_type": "Private",
+    "primary_color": "#900000",
+    "secondary_color": null,
+    "logo_path": "/demo-clubs/ma-wyantenuck-cc.png",
+    "logo_treatment": "bare",
+    "phone": "4135283229",
+    "website_url": "https://www.wyantenuck.org/",
+    "tee_sheet_url": null,
+    "tee_sheet_vendor": null,
+    "billing_url": null,
+    "staff_info_url": null,
+    "course_par": null,
+    "course_yardage": null,
+    "nav_links": [
+      {
+        "label": "Membership Info",
+        "href": "https://www.wyantenuck.org/web/pages/membership"
+      },
+      {
+        "label": "About Us",
+        "href": "https://www.wyantenuck.org/web/pages/our-history"
+      },
+      {
+        "label": "Contact Info",
+        "href": "https://www.wyantenuck.org/web/pages/contact-us"
+      }
+    ],
+    "radius_rank": null
+  }
+]

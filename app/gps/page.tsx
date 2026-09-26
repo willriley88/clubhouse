@@ -76,7 +76,7 @@ export default function GPSPage() {
 
   return (
     <main className="min-h-screen pb-24 flex flex-col" style={{ background: '#f1f5f9' }}>
-      <div className="px-4 pt-12 pb-6" style={{ background: '#152644' }}>
+      <div className="px-4 pt-12 pb-6" style={{ background: 'var(--club-primary)' }}>
         <h1 className="text-white text-2xl font-bold">GPS</h1>
         <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>{config.club_name}</p>
       </div>
@@ -86,23 +86,23 @@ export default function GPSPage() {
           <button onClick={prevHole} disabled={selectedHole === 1}
             className="w-10 h-10 rounded-xl flex items-center justify-center"
             style={{ background: '#f1f5f9', opacity: selectedHole === 1 ? 0.3 : 1 }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#152644" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+ <svg style={{ stroke: 'var(--club-primary)' }} width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
           <div className="text-center">
-            <div className="text-4xl font-bold" style={{ color: '#152644' }}>{selectedHole}</div>
+            <div className="text-4xl font-bold" style={{ color: 'var(--club-primary)' }}>{selectedHole}</div>
             <div className="text-[10px] uppercase tracking-widest mt-0.5" style={{ color: '#94a3b8' }}>Hole</div>
           </div>
           <button onClick={nextHole} disabled={selectedHole === 18}
             className="w-10 h-10 rounded-xl flex items-center justify-center"
             style={{ background: '#f1f5f9', opacity: selectedHole === 18 ? 0.3 : 1 }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#152644" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+ <svg style={{ stroke: 'var(--club-primary)' }} width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
           </button>
         </div>
         <div className="px-4 pb-4 flex gap-1.5 flex-wrap justify-center">
           {HOLES.map(h => (
             <button key={h.hole} onClick={() => setSelectedHole(h.hole)}
               className="w-7 h-7 rounded-lg text-[11px] font-bold"
-              style={{ background: selectedHole === h.hole ? '#152644' : '#f1f5f9', color: selectedHole === h.hole ? '#c9a84c' : '#94a3b8' }}>
+              style={{ background: selectedHole === h.hole ? 'var(--club-primary)' : '#f1f5f9', color: selectedHole === h.hole ? 'var(--club-accent)' : '#94a3b8' }}>
               {h.hole}
             </button>
           ))}
@@ -112,35 +112,35 @@ export default function GPSPage() {
       <div className="mx-4 mt-4">
         {gps.status === 'loading' && (
           <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
-            <div className="w-10 h-10 rounded-full border-2 mx-auto mb-3 animate-spin" style={{ borderColor: '#152644', borderTopColor: 'transparent' }}/>
-            <p className="text-sm font-medium" style={{ color: '#152644' }}>Acquiring GPS signal…</p>
+            <div className="w-10 h-10 rounded-full border-2 mx-auto mb-3 animate-spin" style={{ borderColor: 'var(--club-primary)', borderTopColor: 'transparent' }}/>
+            <p className="text-sm font-medium" style={{ color: 'var(--club-primary)' }}>Acquiring GPS signal…</p>
             <p className="text-xs mt-1" style={{ color: '#94a3b8' }}>Make sure location is enabled</p>
           </div>
         )}
         {gps.status === 'error' && (
           <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
-            <p className="text-sm font-semibold mb-1" style={{ color: '#152644' }}>GPS unavailable</p>
+            <p className="text-sm font-semibold mb-1" style={{ color: 'var(--club-primary)' }}>GPS unavailable</p>
             <p className="text-xs mb-4" style={{ color: '#94a3b8' }}>{gps.message}</p>
-            <button onClick={startGPS} className="px-5 py-2 rounded-xl text-sm font-bold" style={{ background: '#152644', color: '#c9a84c' }}>Try Again</button>
+            <button onClick={startGPS} className="px-5 py-2 rounded-xl text-sm font-bold" style={{ background: 'var(--club-primary)', color: 'var(--club-accent)' }}>Try Again</button>
           </div>
         )}
         {gps.status === 'idle' && (
           <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
-            <button onClick={startGPS} className="px-6 py-3 rounded-xl text-sm font-bold" style={{ background: '#152644', color: '#c9a84c' }}>Start GPS</button>
+            <button onClick={startGPS} className="px-6 py-3 rounded-xl text-sm font-bold" style={{ background: 'var(--club-primary)', color: 'var(--club-accent)' }}>Start GPS</button>
           </div>
         )}
         {gps.status === 'active' && (
           <>
-            <div className="bg-white rounded-2xl shadow-sm p-6 text-center mb-3" style={{ border: '2px solid #152644' }}>
+            <div className="bg-white rounded-2xl shadow-sm p-6 text-center mb-3" style={{ border: '2px solid var(--club-primary)' }}>
               <div className="text-[11px] uppercase tracking-widest mb-1" style={{ color: '#94a3b8' }}>Center</div>
-              <div className="text-6xl font-bold leading-none" style={{ color: '#152644' }}>{toCenter}</div>
+              <div className="text-6xl font-bold leading-none" style={{ color: 'var(--club-primary)' }}>{toCenter}</div>
               <div className="text-sm mt-1 font-medium" style={{ color: '#94a3b8' }}>yards</div>
             </div>
             <div className="grid grid-cols-2 gap-3 mb-3">
               {[{ label: 'Front', val: toFront }, { label: 'Back', val: toBack }].map(({ label, val }) => (
                 <div key={label} className="bg-white rounded-2xl shadow-sm p-5 text-center">
                   <div className="text-[10px] uppercase tracking-widest mb-1" style={{ color: '#94a3b8' }}>{label}</div>
-                  <div className="text-3xl font-bold" style={{ color: '#152644' }}>{val}</div>
+                  <div className="text-3xl font-bold" style={{ color: 'var(--club-primary)' }}>{val}</div>
                   <div className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>yds</div>
                 </div>
               ))}

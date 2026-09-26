@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from './supabase-server'
+import { getDemoClub, demoClubToConfig } from './demo-clubs'
 
 const COURSE_ID_FALLBACK = 'b0000000-0000-0000-0000-000000000001'
 
@@ -74,4 +75,29 @@ export async function getClubConfig(courseId?: string): Promise<ClubConfig> {
   } catch {
     return DEFAULT_CONFIG
   }
+}
+
+/**
+ * Resolve the config for a request, honoring the `?club=<slug>` demo override.
+ *
+ * Precedence is deliberate and one-directional:
+ *   1. a valid `?club=` slug  → static demo catalog (no DB write, no DB read)
+ *   2. otherwise              → `club_config` in Supabase (the real club)
+ *
+ * An unknown slug falls through to the real config rather than erroring, so a
+ * mistyped demo link degrades to the pilot instead of a broken page in front
+ * of a prospect.
+ */
+export async function resolveClubConfig(
+  clubSlug?: string | null
+): Promise<{ config: ClubConfig; isDemo: boolean; demoSlug: string | null }> {
+  const demo = getDemoClub(clubSlug)
+  if (demo) {
+    return {
+      config: demoClubToConfig(demo, COURSE_ID_FALLBACK),
+      isDemo: true,
+      demoSlug: demo.slug,
+    }
+  }
+  return { config: await getClubConfig(), isDemo: false, demoSlug: null }
 }

@@ -75,20 +75,20 @@ function eventStatus(e: ClubEvent): 'upcoming' | 'live' | 'finished' {
 
 function TypeBadge({ type }: { type: string }) {
   if (type === 'member')
-    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: '#c9a84c', color: '#152644' }}>Members</span>
+    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: 'var(--club-accent)', color: 'var(--club-on-accent)' }}>Members</span>
   if (type === 'hosting')
     return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 bg-gray-200 text-gray-600">Private</span>
   if (type === 'tournament')
-    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: '#152644', color: '#c9a84c' }}>Tournament</span>
+    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: 'var(--club-primary)', color: 'var(--club-accent)' }}>Tournament</span>
   return null
 }
 
 function StatusBadge({ status }: { status: 'upcoming' | 'live' | 'finished' }) {
   if (status === 'live')
-    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(201,168,76,0.15)', color: '#c9a84c', border: '1px solid rgba(201,168,76,0.3)' }}>Live</span>
+    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(201,168,76,0.15)', color: 'var(--club-accent)', border: '1px solid rgba(201,168,76,0.3)' }}>Live</span>
   if (status === 'finished')
     return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-200 text-gray-500">Finished</span>
-  return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: '#152644' }}>Upcoming</span>
+  return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: 'var(--club-primary)' }}>Upcoming</span>
 }
 
 function ChevronRight({ rotated }: { rotated: boolean }) {
@@ -204,7 +204,7 @@ export default function Events() {
     <main className="min-h-screen bg-gray-100 pb-[max(96px,env(safe-area-inset-bottom))]">
 
       {/* ── HEADER ── */}
-      <div className="bg-[#152644] px-4 pt-[max(48px,env(safe-area-inset-top))] pb-4">
+      <div className="bg-[var(--club-primary)] px-4 pt-[max(48px,env(safe-area-inset-top))] pb-4">
         <p className="text-white/40 text-xs uppercase tracking-widest mb-1">{config.club_name}</p>
         <h1 className="text-white text-2xl font-bold">Events</h1>
       </div>
@@ -224,8 +224,8 @@ export default function Events() {
               onClick={() => switchTab(t)}
               className="flex-shrink-0 py-2 px-3 rounded-full text-xs font-semibold"
               style={{
-                background: tab === t ? '#152644' : '#f1f5f9',
-                color:      tab === t ? '#c9a84c' : '#64748b',
+                background: tab === t ? 'var(--club-primary)' : '#f1f5f9',
+                color:      tab === t ? 'var(--club-accent)' : '#64748b',
               }}
             >
               {label}
@@ -242,16 +242,16 @@ export default function Events() {
               <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
                 <button onClick={goToPrevMonth} className="p-1 -ml-1">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                    stroke="#152644" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+ strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M15 18l-6-6 6-6"/>
                   </svg>
                 </button>
-                <span className="text-sm font-bold" style={{ color: '#152644' }}>
+                <span className="text-sm font-bold" style={{ color: 'var(--club-primary)' }}>
                   {MONTHS_LONG[viewMonth]} {viewYear}
                 </span>
                 <button onClick={goToNextMonth} className="p-1 -mr-1">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                    stroke="#152644" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+ strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M9 18l6-6-6-6"/>
                   </svg>
                 </button>
@@ -287,7 +287,7 @@ export default function Events() {
                       <div
                         className="w-7 h-7 flex items-center justify-center rounded-full text-xs font-medium flex-shrink-0"
                         style={{
-                          background: isToday    ? '#152644' :
+                          background: isToday    ? 'var(--club-primary)' :
                                       isSelected ? '#e2e8f0' : 'transparent',
                           color:      isToday ? 'white' : '#1e293b',
                           fontWeight: isToday || hasEvents ? 700 : 400,
@@ -299,8 +299,8 @@ export default function Events() {
                       <div className="w-full flex flex-col gap-0.5 mt-0.5 px-0.5">
                         {dayEvents.slice(0, 2).map(ev => (
                           <div key={ev.id} className="flex items-center gap-0.5 w-full min-w-0">
-                            <div className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: '#c9a84c' }} />
-                            <span className="text-[9px] leading-tight truncate" style={{ color: '#152644' }}>
+                            <div className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: 'var(--club-accent)' }} />
+                            <span className="text-[9px] leading-tight truncate" style={{ color: 'var(--club-primary)' }}>
                               {ev.title}
                             </span>
                           </div>
@@ -330,7 +330,7 @@ export default function Events() {
                   <div key={e.id}
                     className={`px-4 py-3 ${i < selectedEvents.length - 1 ? 'border-b border-gray-100' : ''}`}>
                     <div className="flex items-center gap-2 mb-0.5">
-                      <p className="text-sm font-semibold flex-1" style={{ color: '#152644' }}>{e.title}</p>
+                      <p className="text-sm font-semibold flex-1" style={{ color: 'var(--club-primary)' }}>{e.title}</p>
                       <TypeBadge type={e.type} />
                     </div>
                     {e.start_time && (
@@ -367,16 +367,16 @@ export default function Events() {
                     >
                       {/* Date badge */}
                       <div className="flex flex-col items-center justify-center w-11 h-11 rounded-xl flex-shrink-0"
-                        style={{ background: '#152644' }}>
+                        style={{ background: 'var(--club-primary)' }}>
                         <span className="text-[9px] font-bold uppercase leading-none" style={{ color: 'rgba(255,255,255,0.5)' }}>
                           {MONTHS_SHORT[mo - 1]}
                         </span>
-                        <span className="text-lg font-bold leading-tight" style={{ color: '#c9a84c' }}>{day}</span>
+                        <span className="text-lg font-bold leading-tight" style={{ color: 'var(--club-accent)' }}>{day}</span>
                       </div>
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
-                          <p className="text-sm font-semibold truncate flex-1" style={{ color: '#152644' }}>{e.title}</p>
+                          <p className="text-sm font-semibold truncate flex-1" style={{ color: 'var(--club-primary)' }}>{e.title}</p>
                           <TypeBadge type={e.type} />
                         </div>
                         <p className="text-xs text-gray-400 truncate">{e.description}</p>
@@ -405,7 +405,7 @@ export default function Events() {
                           <button
                             onClick={() => window.open(e.external_link!, '_blank')}
                             className="mt-2.5 text-xs font-bold px-3 py-1.5 rounded-lg"
-                            style={{ background: '#152644', color: '#c9a84c' }}
+                            style={{ background: 'var(--club-primary)', color: 'var(--club-accent)' }}
                           >
                             Learn More →
                           </button>
@@ -444,7 +444,7 @@ export default function Events() {
                     >
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                          <p className="text-sm font-semibold" style={{ color: '#152644' }}>{e.title}</p>
+                          <p className="text-sm font-semibold" style={{ color: 'var(--club-primary)' }}>{e.title}</p>
                           <StatusBadge status={status} />
                         </div>
                         <p className="text-xs text-gray-400">{dateDisplay}</p>
@@ -472,7 +472,7 @@ export default function Events() {
                           <button
                             onClick={() => window.open(e.external_link!, '_blank')}
                             className="mt-2.5 text-xs font-bold px-3 py-1.5 rounded-lg"
-                            style={{ background: '#152644', color: '#c9a84c' }}
+                            style={{ background: 'var(--club-primary)', color: 'var(--club-accent)' }}
                           >
                             Register →
                           </button>
@@ -512,7 +512,7 @@ export default function Events() {
                   {leaderboard.map((entry, i) => {
                     const toParStr = entry.toPar === 0 ? 'E' : entry.toPar > 0 ? `+${entry.toPar}` : String(entry.toPar)
                     // gold = under par, green = even, slate = over
-                    const toParColor = entry.toPar < 0 ? '#c9a84c' : entry.toPar === 0 ? '#15803d' : '#64748b'
+                    const toParColor = entry.toPar < 0 ? 'var(--club-accent)' : entry.toPar === 0 ? '#15803d' : '#64748b'
                     const { month, day } = parseDateParts(entry.playedAt)
                     const dateStr = `${MONTHS_SHORT[month - 1]} ${day}`
                     const isLast = i === leaderboard.length - 1
@@ -521,9 +521,9 @@ export default function Events() {
                       <div key={i}
                         className={`grid items-center px-4 py-3 ${!isLast ? 'border-b border-gray-100' : ''}`}
                         style={{ gridTemplateColumns: '32px 1fr 48px 48px 56px' }}>
-                        <span className="text-sm font-bold" style={{ color: i === 0 ? '#c9a84c' : '#94a3b8' }}>{entry.rank}</span>
-                        <span className="text-sm font-semibold truncate" style={{ color: '#152644' }}>{entry.playerName}</span>
-                        <span className="text-sm font-bold text-center" style={{ color: '#152644' }}>{entry.gross}</span>
+                        <span className="text-sm font-bold" style={{ color: i === 0 ? 'var(--club-accent)' : '#94a3b8' }}>{entry.rank}</span>
+                        <span className="text-sm font-semibold truncate" style={{ color: 'var(--club-primary)' }}>{entry.playerName}</span>
+                        <span className="text-sm font-bold text-center" style={{ color: 'var(--club-primary)' }}>{entry.gross}</span>
                         <span className="text-sm font-bold text-center" style={{ color: toParColor }}>{toParStr}</span>
                         <span className="text-xs text-right" style={{ color: '#94a3b8' }}>{dateStr}</span>
                       </div>

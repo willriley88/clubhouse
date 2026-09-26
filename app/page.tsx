@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from './components/BottomNav'
+import ClubLogo from './components/ClubLogo'
 import { supabase } from '@/lib/supabase'
 import { useClubConfig } from './components/ClubConfigProvider'
 
@@ -166,7 +167,7 @@ export default function HomePage() {
     <main className="min-h-screen pb-[max(96px,env(safe-area-inset-bottom))]" style={{ background: '#f1f5f9' }}>
 
       {/* ── HEADER ── */}
-      <div className="px-4 pt-2 pb-5" style={{ background: '#152644' }}>
+      <div className="px-4 pt-2 pb-5" style={{ background: 'var(--club-primary)' }}>
         <div className="flex justify-between items-center mb-4">
           {/* Hamburger — opens slide-in drawer */}
           <button onClick={() => setDrawerOpen(true)} className="flex flex-col gap-1.5 p-1 min-h-[44px] min-w-[44px] items-center justify-center">
@@ -176,11 +177,13 @@ export default function HomePage() {
           </button>
 
           {/* Club name — Playfair italic */}
-          <img src={config.logo_path} alt={config.club_name} className="h-40 object-contain" />          {/* Avatar */}
+          {/* Club logo — treatment-aware so opaque/dark logos stay legible */}
+          <ClubLogo className="h-28 object-contain" priority />
+          {/* Avatar */}
           <button
             onClick={() => user ? router.push('/profile') : router.push('/login')}
             className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2"
-            style={{ background: '#c9a84c', borderColor: '#c9a84c', color: '#152644' }}>
+            style={{ background: 'var(--club-accent)', borderColor: 'var(--club-accent)', color: 'var(--club-on-accent)' }}>
             {displayName.charAt(0).toUpperCase()}
           </button>
         </div>
@@ -199,7 +202,7 @@ export default function HomePage() {
                   className="bg-transparent border-b border-white/40 text-white text-xl font-bold outline-none flex-1"
                   style={{ fontFamily: 'Georgia, serif' }}
                 />
-                <button onClick={saveName} className="text-xs font-semibold" style={{ color: '#c9a84c' }}>Save</button>
+                <button onClick={saveName} className="text-xs font-semibold" style={{ color: 'var(--club-accent)' }}>Save</button>
               </div>
             ) : (
               <>
@@ -224,7 +227,7 @@ export default function HomePage() {
           {/* Stats row */}
           <div className="flex items-end gap-6">
             <div>
-              <div className="text-2xl font-bold" style={{ color: '#c9a84c', fontFamily: 'Georgia, serif' }}>
+              <div className="text-2xl font-bold" style={{ color: 'var(--club-accent)', fontFamily: 'Georgia, serif' }}>
                 {handicap !== null && handicap !== undefined ? handicap : '—'}
               </div>
               <div className="text-[10px] uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>
@@ -281,7 +284,7 @@ export default function HomePage() {
               </div>
               {lastRound && (
                 <div className="text-right">
-                  <div className="text-lg font-bold" style={{ color: '#152644' }}>{lastGross}</div>
+                  <div className="text-lg font-bold" style={{ color: 'var(--club-primary)' }}>{lastGross}</div>
                   <div className="text-xs text-slate-400">Gross</div>
                 </div>
               )}
@@ -291,13 +294,13 @@ export default function HomePage() {
             <div className="grid border-b border-slate-100" style={{ gridTemplateColumns: '28px repeat(9, 1fr) 28px repeat(9, 1fr) 36px' }}>
               <div className="py-1.5 text-[9px] font-bold text-slate-400 text-center" />
               {Array.from({ length: 9 }, (_, i) => (
-                <div key={i} className="py-1.5 text-[9px] font-bold text-center" style={{ color: '#152644' }}>{i + 1}</div>
+                <div key={i} className="py-1.5 text-[9px] font-bold text-center" style={{ color: 'var(--club-primary)' }}>{i + 1}</div>
               ))}
-              <div className="py-1.5 text-[9px] font-bold text-center bg-slate-50" style={{ color: '#152644' }}>Out</div>
+              <div className="py-1.5 text-[9px] font-bold text-center bg-slate-50" style={{ color: 'var(--club-primary)' }}>Out</div>
               {Array.from({ length: 9 }, (_, i) => (
-                <div key={i + 9} className="py-1.5 text-[9px] font-bold text-center" style={{ color: '#152644' }}>{i + 10}</div>
+                <div key={i + 9} className="py-1.5 text-[9px] font-bold text-center" style={{ color: 'var(--club-primary)' }}>{i + 10}</div>
               ))}
-              <div className="py-1.5 text-[9px] font-bold text-center bg-slate-50" style={{ color: '#152644' }}>Tot</div>
+              <div className="py-1.5 text-[9px] font-bold text-center bg-slate-50" style={{ color: 'var(--club-primary)' }}>Tot</div>
             </div>
 
             {/* Par row */}
@@ -337,7 +340,7 @@ export default function HomePage() {
                     ${diff <= -1 ? 'rounded-full border border-slate-800' :
                       diff === 1  ? 'rounded-sm border border-slate-800' :
                       diff >= 2   ? 'rounded-sm border-2 border-double border-slate-800' : ''}`}
-                    style={{ color: '#152644' }}>
+                    style={{ color: 'var(--club-primary)' }}>
                     {strokes}
                   </span>
                 )
@@ -351,7 +354,7 @@ export default function HomePage() {
                         <ScoreCell strokes={s} par={pars[i]} />
                       </div>
                     ))}
-                    <div className="py-2 text-[9px] font-bold text-center bg-slate-50" style={{ color: '#152644' }}>
+                    <div className="py-2 text-[9px] font-bold text-center bg-slate-50" style={{ color: 'var(--club-primary)' }}>
                       {anyFront ? frontTotal : '—'}
                     </div>
                     {allScores.slice(9).map((s, i) => (
@@ -359,7 +362,7 @@ export default function HomePage() {
                         <ScoreCell strokes={s} par={pars[i+9]} />
                       </div>
                     ))}
-                    <div className="py-2 text-[9px] font-bold text-center bg-slate-50" style={{ color: '#152644' }}>
+                    <div className="py-2 text-[9px] font-bold text-center bg-slate-50" style={{ color: 'var(--club-primary)' }}>
                       {anyAll ? grandTotal : '—'}
                     </div>
                   </div>
@@ -372,8 +375,8 @@ export default function HomePage() {
         {/* ── EVENTS ── closest upcoming event fetched from Supabase */}
         <div>
           <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-2">Next Event</p>
-          <div className="rounded-2xl p-4 shadow-sm relative overflow-hidden" style={{ background: '#152644' }}>
-            <div className="absolute right-4 top-4 w-16 h-16 rounded-full opacity-10" style={{ background: '#c9a84c' }} />
+          <div className="rounded-2xl p-4 shadow-sm relative overflow-hidden" style={{ background: 'var(--club-primary)' }}>
+            <div className="absolute right-4 top-4 w-16 h-16 rounded-full opacity-10" style={{ background: 'var(--club-accent)' }} />
             {nextEvent ? (
               <>
                 <p className="text-[10px] uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.45)' }}>
@@ -392,7 +395,7 @@ export default function HomePage() {
             <button
               onClick={() => router.push('/tournament')}
               className="px-4 py-2 rounded-xl text-sm font-bold"
-              style={{ background: '#c9a84c', color: '#152644' }}>
+              style={{ background: 'var(--club-accent)', color: 'var(--club-on-accent)' }}>
               View All Events →
             </button>
           </div>
@@ -406,14 +409,14 @@ export default function HomePage() {
             <div className="space-y-2">
               {feedPosts.length === 0 ? (
                 <div className="bg-white rounded-2xl px-4 py-8 text-center shadow-sm">
-                  <p className="text-sm font-semibold mb-1" style={{ color: '#152644' }}>Nothing posted yet</p>
+                  <p className="text-sm font-semibold mb-1" style={{ color: 'var(--club-primary)' }}>Nothing posted yet</p>
                   <p className="text-xs mb-4" style={{ color: '#94a3b8' }}>
                     Club updates and member posts will appear here
                   </p>
                   <button
                     onClick={() => router.push('/club')}
                     className="px-5 py-2 rounded-xl text-sm font-bold"
-                    style={{ background: '#152644', color: '#c9a84c' }}
+                    style={{ background: 'var(--club-primary)', color: 'var(--club-accent)' }}
                   >
                     Go to Club →
                   </button>
@@ -421,7 +424,7 @@ export default function HomePage() {
               ) : feedPosts.map(post => (
                 <div key={post.id} className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-start gap-3">
                   <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-                    style={{ background: '#152644' }}>
+                    style={{ background: 'var(--club-primary)' }}>
                     {post.author_initials}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -452,14 +455,14 @@ export default function HomePage() {
         className="fixed top-0 left-0 h-full z-50 flex flex-col overflow-y-auto"
         style={{
           width: 280,
-          background: '#152644',
+          background: 'var(--club-primary)',
           transform: drawerOpen ? 'translateX(0)' : 'translateX(-100%)',
           transition: 'transform 0.25s ease',
         }}
       >
         {/* Logo */}
         <div className="px-5 pt-12 pb-4">
-          <img src={config.logo_path} alt={config.club_name} className="h-20 object-contain" />
+          <ClubLogo className="h-20 object-contain" />
         </div>
 
         {/* Divider */}
@@ -471,7 +474,7 @@ export default function HomePage() {
             <button
               onClick={() => { setDrawerOpen(false); router.push('/login') }}
               className="w-full text-left px-5 py-3.5 text-sm font-semibold"
-              style={{ color: '#c9a84c' }}
+              style={{ color: 'var(--club-accent)' }}
             >
               Membership Login
             </button>
@@ -501,7 +504,7 @@ export default function HomePage() {
                 key={item.label}
                 onClick={() => { setDrawerOpen(false); window.open(item.href, '_blank') }}
                 className="w-full text-left px-5 py-3 text-sm font-medium"
-                style={{ color: '#c9a84c' }}
+                style={{ color: 'var(--club-accent)' }}
               >
                 {item.label}
               </button>
@@ -522,7 +525,7 @@ export default function HomePage() {
                   key={item.label}
                   onClick={() => { setDrawerOpen(false); router.push(item.href) }}
                   className="w-full text-left px-5 py-3 text-sm font-medium"
-                  style={{ color: '#c9a84c' }}
+                  style={{ color: 'var(--club-accent)' }}
                 >
                   {item.label}
                 </button>

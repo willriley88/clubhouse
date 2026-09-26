@@ -232,7 +232,7 @@ export default function Club() {
     <main className="min-h-screen bg-gray-100 pb-[max(96px,env(safe-area-inset-bottom))]">
 
       {/* ── HEADER ── */}
-      <div className="bg-[#152644] px-4 pt-[max(48px,env(safe-area-inset-top))] pb-4">
+      <div className="bg-[var(--club-primary)] px-4 pt-[max(48px,env(safe-area-inset-top))] pb-4">
         <p className="text-white/40 text-xs uppercase tracking-widest mb-1">Members Only</p>
         <h1 className="text-white text-2xl font-bold">{config.club_name}</h1>
         <p className="text-white/40 text-xs mt-1">
@@ -255,7 +255,7 @@ export default function Club() {
               className="bg-white rounded-2xl p-4 text-left"
             >
               <div className="text-2xl mb-2">🕐</div>
-              <div className="text-sm font-semibold text-[#152644]">Tee Times</div>
+              <div className="text-sm font-semibold text-[var(--club-primary)]">Tee Times</div>
               <div className="text-xs text-gray-400 mt-0.5">Book online</div>
             </button>
           )}
@@ -267,7 +267,7 @@ export default function Club() {
               className="w-full text-left"
             >
               <div className="text-2xl mb-2">🍽️</div>
-              <div className="text-sm font-semibold text-[#152644]">Menu</div>
+              <div className="text-sm font-semibold text-[var(--club-primary)]">Menu</div>
               <div className="text-xs text-gray-400 mt-0.5">Sunset Grille</div>
             </button>
             {config.phone && (
@@ -277,7 +277,7 @@ export default function Club() {
               aria-label="Call the club"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                stroke="#c9a84c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+ strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.32h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.13 6.13l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
               </svg>
             </button>
@@ -290,7 +290,7 @@ export default function Club() {
               className="bg-white rounded-2xl p-4 text-left"
             >
               <div className="text-2xl mb-2">📄</div>
-              <div className="text-sm font-semibold text-[#152644]">Member Statements</div>
+              <div className="text-sm font-semibold text-[var(--club-primary)]">Member Statements</div>
               <div className="text-xs text-gray-400 mt-0.5">View billing</div>
             </button>
           )}
@@ -301,7 +301,7 @@ export default function Club() {
             className="bg-white rounded-2xl p-4 text-left"
           >
             <div className="text-2xl mb-2">👤</div>
-            <div className="text-sm font-semibold text-[#152644]">Staff Info</div>
+            <div className="text-sm font-semibold text-[var(--club-primary)]">Staff Info</div>
             <div className="text-xs text-gray-400 mt-0.5">Contact staff</div>
           </button>
           )}
@@ -323,7 +323,7 @@ export default function Club() {
                 return (
                   <div key={slot.id}
                     className={`flex items-center gap-3 px-4 py-3 ${i < teeSheet.length - 1 ? 'border-b border-gray-100' : ''}`}>
-                    <div className="text-sm font-bold text-[#152644] w-20">{slot.tee_time}</div>
+                    <div className="text-sm font-bold text-[var(--club-primary)] w-20">{slot.tee_time}</div>
                     <div className="flex-1 text-xs text-gray-500">
                       {playerList.length > 0 ? playerList.join(', ') : 'Open'}
                     </div>
@@ -334,7 +334,7 @@ export default function Club() {
                         <span className="text-xs font-semibold text-green-600">{openSpots} open</span>
                         <button onClick={() => handleJoin(slot)} disabled={isJoining}
                           className="text-xs font-bold px-2 py-0.5 rounded-lg"
-                          style={{ background: '#152644', color: '#c9a84c', opacity: isJoining ? 0.5 : 1 }}>
+                          style={{ background: 'var(--club-primary)', color: 'var(--club-accent)', opacity: isJoining ? 0.5 : 1 }}>
                           {isJoining ? '…' : 'Join'}
                         </button>
                       </div>
@@ -369,7 +369,7 @@ export default function Club() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold text-[#152644]">{msg.author_name}</span>
+                        <span className="text-xs font-semibold text-[var(--club-primary)]">{msg.author_name}</span>
                         <span className="text-[10px] text-gray-400">{relativeTime(msg.created_at)}</span>
                         {/* Admin controls — edit and delete */}
                         {isAdmin && editingMsgId !== msg.id && (
@@ -415,9 +415,9 @@ export default function Club() {
                             autoFocus
                             maxLength={500}
                             className="flex-1 text-sm outline-none border-b pb-0.5"
-                            style={{ color: '#1e293b', borderColor: '#152644' }}
+                            style={{ color: '#1e293b', borderColor: 'var(--club-primary)' }}
                           />
-                          <button onClick={() => handleSaveEdit(msg.id)} style={{ color: '#152644' }} aria-label="Save">
+                          <button onClick={() => handleSaveEdit(msg.id)} style={{ color: 'var(--club-primary)' }} aria-label="Save">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                               stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                               <polyline points="20 6 9 17 4 12"/>
@@ -446,7 +446,7 @@ export default function Club() {
               <div className="border-t border-gray-100 px-4 py-3 flex items-center gap-3">
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-                  style={{ background: '#152644' }}
+                  style={{ background: 'var(--club-primary)' }}
                 >
                   {profileInitials || (user?.email?.charAt(0) ?? 'M').toUpperCase()}
                 </div>
@@ -463,10 +463,10 @@ export default function Club() {
                   onClick={handleSend}
                   disabled={!messageText.trim() || sending}
                   className="flex items-center justify-center w-8 h-8 rounded-full flex-shrink-0"
-                  style={{ background: messageText.trim() && !sending ? '#152644' : '#e2e8f0' }}
+                  style={{ background: messageText.trim() && !sending ? 'var(--club-primary)' : '#e2e8f0' }}
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                    stroke={messageText.trim() && !sending ? '#c9a84c' : '#94a3b8'}
+                    stroke={messageText.trim() && !sending ? 'var(--club-accent)' : '#94a3b8'}
                     strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="22" y1="2" x2="11" y2="13"/>
                     <polygon points="22 2 15 22 11 13 2 9 22 2"/>
@@ -488,7 +488,7 @@ export default function Club() {
       {/* Menu unavailable toast */}
       {menuToast && (
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl text-sm font-semibold shadow-lg"
-          style={{ background: '#152644', color: '#c9a84c' }}>
+          style={{ background: 'var(--club-primary)', color: 'var(--club-accent)' }}>
           Menu unavailable
         </div>
       )}
