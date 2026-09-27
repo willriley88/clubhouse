@@ -13,7 +13,7 @@ const HOLES = [
   { hole: 7, front: { lat: 41.862283, lng: -70.973144 }, center: { lat: 41.862183, lng: -70.973283 }, back: { lat: 41.862072, lng: -70.973439 } },
   { hole: 8, front: { lat: 41.862056, lng: -70.971875 }, center: { lat: 41.862122, lng: -70.971731 }, back: { lat: 41.862189, lng: -70.971600 } },
   { hole: 9, front: { lat: 41.864964, lng: -70.967597 }, center: { lat: 41.865125, lng: -70.967528 }, back: { lat: 41.865319, lng: -70.967367 } },
-  { hole: 10, front: { lat: 41.867694, lng: -70.971386 }, center: { lat: 41.867794, lng: -70.971517 }, back: { lat: 41.867933, lng: -70.971589 } },
+  { hole: 10, front: { lat: 41.868556, lng: -70.970856 }, center: { lat: 41.868697, lng: -70.970952 }, back: { lat: 41.868804, lng: -70.971023 } },
   { hole: 11, front: { lat: 41.869186, lng: -70.971058 }, center: { lat: 41.869261, lng: -70.971031 }, back: { lat: 41.869356, lng: -70.970978 } },
   { hole: 12, front: { lat: 41.870008, lng: -70.974719 }, center: { lat: 41.870022, lng: -70.974864 }, back: { lat: 41.870050, lng: -70.975039 } },
   { hole: 13, front: { lat: 41.868889, lng: -70.974828 }, center: { lat: 41.868783, lng: -70.974731 }, back: { lat: 41.868678, lng: -70.974653 } },
